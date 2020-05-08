@@ -41,3 +41,43 @@ std::unordered_map<std::string, token_type> string_to_token({
 	{"?",        TOK_QM},       {":",        TOK_COLON},
 	{"=",        TOK_ASSIGN},
                                                             });
+
+int get_token(std::string s){
+	int left=0,right=0;
+	state_type state=STAT_START;
+	int len=s.length();
+	int token_num=0;
+	while(right<len){
+		switch (state) {
+			case STAT_START:
+				if (isdigit(s[right])){                                         //number const
+					left=right;
+					right++;
+					state=STAT_INT;
+				} else if (s[right]=='_'||isalpha(s[right])){                   //identifier or reserved word
+					left=right;
+					right++;
+					state=STAT_IDENT;
+				} else if (s[right]=='\''){                                     //char const
+					left=right;
+					right++;
+					state=STAT_CHAR1;
+				} else if (s[right]=='\"'){                                     //string const
+					left=right;
+					right++;
+					state=STAT_STR1;
+				} else if (convert_table.find(s[right])!=convert_table.end()){  //blank
+					left=right;
+					right++;
+					state=STAT_BLANK;
+				} else {                                                        //symbols
+					left=right;
+					right++;
+					state=STAT_SMBL;
+				}
+				break;
+			default:
+				break;
+		}
+	}
+}

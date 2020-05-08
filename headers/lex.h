@@ -40,7 +40,7 @@ enum token_type{
 	TOK_CHARCONST,  TOK_STRINGCONST
 };
 
-enum state{
+enum state_type{
 	STAT_START,
 	STAT_IDENT,
 	STAT_INT,STAT_DBL,STAT_FLT,STAT_UINT,STAT_ULONG,
