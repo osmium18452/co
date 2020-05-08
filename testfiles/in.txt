@@ -1,0 +1,10 @@
+using std::cout;
+using std::cin;
+
+int main()
+{
+	std::string s;
+	s=readfile();
+	cout<<s<<std::endl;
+	return 0;
+}
