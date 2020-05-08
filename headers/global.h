@@ -1,7 +1,3 @@
-//
-// Created by 17110 on 2020/5/8.
-//
-
 #ifndef CO_GLOBAL_H
 #define CO_GLOBAL_H
 
@@ -12,5 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+
+#define LL long long
 
 #endif //CO_GLOBAL_H

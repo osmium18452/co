@@ -9,5 +9,6 @@ std::string readfile(std::string file) {
 		else ret += c;
 		c = (char) getchar();
 	}
+	ret+='$';
 	return ret;
 }
