@@ -12,7 +12,8 @@ std::unordered_set<char> symbol_set({
 	'(',')','[',']','{','}','<','>',
 	'+','-','*','/','%',
 	'~','!',
-	'=','&','^','|','\\',
+	'=','&','^','|',
+	'\\','\'','\"',
 	'?',':',
 });
 
@@ -53,6 +54,8 @@ std::unordered_map<std::string, token_type> string_to_token({
 	{"&&",       TOK_LOGIAND},  {"||",       TOK_LOGIOR},
 	{"?",        TOK_QM},       {":",        TOK_COLON},
 	{"=",        TOK_ASSIGN},
+	{"+=",       TOK_ADDASS},   {"-=",       TOK_SUBASS},
+	{"*=",       TOK_MULASS},   {"/=",       TOK_DIVASS},   {"%=",       TOK_MODASS},
                                                             });
 
 int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
@@ -351,64 +354,164 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 			case STAT_SMBL:
 				switch (s[right]) {
 					case '+':
+						right++;
+						state=STAT_PLUS;
 						break;
 					case '-':
+						right++;
+						state=STAT_SUB;
 						break;
 					case '~':
+						right++;
+						state=STAT_BITNOT;
 						break;
 					case '!':
+						right++;
+						state=STAT_LOGINOT;
 						break;
 					case '*':
+						right++;
+						state=STAT_MUL;
 						break;
 					case '/':
+						right++;
+						state=STAT_DIV;
 						break;
 					case '%':
+						right++;
+						state=STAT_MOD;
 						break;
 					case '<':
+						right++;
+						state=STAT_LT;
 						break;
 					case '>':
+						right++;
+						state=STAT_GT;
 						break;
 					case '(':
+						right++;
+						state=STAT_LPARE;
 						break;
 					case ')':
+						right++;
+						state=STAT_RPARE;
 						break;
 					case '{':
+						right++;
+						state=STAT_LBRACE;
 						break;
 					case '}':
+						right++;
+						state=STAT_RBRACE;
 						break;
 					case '[':
+						right++;
+						state=STAT_LBRACKET;
 						break;
 					case ']':
+						right++;
+						state=STAT_RBRACKET;
 						break;
 					case '=':
+						right++;
+						state=STAT_ASGN;
 						break;
 					case '&':
+						right++;
+						state=STAT_BITAND;
 						break;
 					case '^':
+						right++;
+						state=STAT_XOR;
 						break;
 					case '|':
+						right++;
+						state=STAT_BITOR;
 						break;
 					case '?':
+						right++;
+						state=STAT_QM;
 						break;
 					case ':':
+						right++;
+						state=STAT_COLON;
 						break;
 					case ',':
+						right++;
+						state=STAT_COMMA;
 						break;
-					case '':
-						break;
-					case '\'':
-						break;
-					case '\"':
+					case ';':
+						right++;
+						state=STAT_SEMICOLON;
 						break;
 				}
 				break;
 			case STAT_PLUS:
+				if (s[right]=='+'){
+					right++;
+					state=STAT_INCR;
+				} else if (s[right]=='='){
+					right++;
+					state=STAT_ADDASS;
+				} else {
+					token tmp;
+					tmp.type=TOK_PLUS;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_INCR:
+				if (true){
+					token tmp;
+					tmp.type=TOK_INC;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
+				break;
+			case STAT_ADDASS:
+				if (true){
+					token tmp;
+					tmp.type=TOK_ADDASS;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_SUB:
+				if (s[right]=='-'){
+					right++;
+					state=STAT_DECR;
+				} else if (s[right]=='='){
+					right++;
+					state=STAT_SUBASS;
+				} else {
+					token tmp;
+					tmp.type=TOK_SUB;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_DECR:
+				if (true){
+					token tmp;
+					tmp.type=TOK_DEC;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
+				break;
+			case STAT_SUBASS:
+				if (true){
+					token tmp;
+					tmp.type=TOK_SUBASS;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_BAND:
 				break;
@@ -437,6 +540,101 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 			case STAT_SL:
 				break;
 			case STAT_LE:
+				break;
+			case STAT_STR5:
+				break;
+			case STAT_MUL:
+				if (s[right]=='='){
+					right++;
+					state=STAT_MULASS;
+				} else {
+					token tmp;
+					tmp.type=TOK_MUL;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
+				break;
+			case STAT_DIV:
+				if (s[right]=='='){
+					right++;
+					state=STAT_DIVASS;
+				} else {
+					token tmp;
+					tmp.type=TOK_DIV;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
+				break;
+			case STAT_MOD:
+				if (s[right]=='='){
+					right++;
+					state=STAT_MODASS;
+				} else {
+					token tmp;
+					tmp.type=TOK_MOD;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
+				break;
+			case STAT_MULASS:
+				if (true){
+					token tmp;
+					tmp.type=TOK_MULASS;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
+				break;
+			case STAT_DIVASS:
+				if (true){
+					token tmp;
+					tmp.type=TOK_DIVASS;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
+				break;
+			case STAT_MODASS:
+				if (true){
+					token tmp;
+					tmp.type=TOK_MODASS;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
+				break;
+			case STAT_COMMA:
+				break;
+			case STAT_SEMICOLON:
+				break;
+			case STAT_LPARE:
+				break;
+			case STAT_RPARE:
+				break;
+			case STAT_LBRACKET:
+				break;
+			case STAT_RBRACKET:
+				break;
+			case STAT_LBRACE:
+				break;
+			case STAT_RBRACE:
+				break;
+			case STAT_XOR:
+				break;
+			case STAT_QM:
+				break;
+			case STAT_COLON:
+				break;
+			case STAT_BITNOT:
+				break;
+			case STAT_LOGINOT:
+				break;
+			case STAT_BITAND:
+				break;
+			case STAT_BITOR:
 				break;
 		}
 	}
