@@ -1,0 +1,136 @@
++----------------------+----------------------+---------------------+
+|  WORD                |  TOKEN TYPE          |  TOKEN VALUE        |
++----------------------+----------------------+---------------------+
+|                            SYMBOLS                                |
++----------------------+----------------------+---------------------+
+|  +                   |  TOK_PLUS            |                     |
+|  ++                  |  TOK_INC             |                     |
+|  +=                  |  TOK_ADDASS          |                     |
+|  -                   |  TOK_SUB             |                     |
+|  --                  |  TOK_DEC             |                     |
+|  -=                  |  TOK_SUBASS          |                     |
+|  *                   |  TOK_MUL             |                     |
+|  *=                  |  TOK_MULASS          |                     |
+|  /                   |  TOK_DIV             |                     |
+|  /=                  |  TOK_DIVASS          |                     |
+|  %                   |  TOK_MOD             |                     |
+|  %=                  |  TOK_MODASS          |                     |
+|  >                   |  TOK_GT              |                     |
+|  >>                  |  TOK_SHR             |                     |
+|  >=                  |  TOK_GE              |                     |
+|  >>=                 |  TOK_SHRASS          |                     |
+|  <                   |  TOK_LT              |                     |
+|  <<                  |  TOK_SHL             |                     |
+|  <=                  |  TOK_LE              |                     |
+|  <<=                 |  TOK_SHLASS          |                     |
+|  (                   |  TOK_LPARE           |                     |
+|  )                   |  TOK_RPARE           |                     |
+|  [                   |  TOK_LBRACKET        |                     |
+|  ]                   |  TOK_RBRACKET        |                     |
+|  {                   |  TOK_LBRACE          |                     |
+|  }                   |  TOK_RBRACE          |                     |
+|  }                   |  TOK_RBRACE          |                     |
+|  !                   |  TOK_LOGINOT         |                     |
+|  ?                   |  TOK_QM              |                     |
+|  :                   |  TOK_COLON           |                     |
+|  ,                   |  TOK_COMMA           |                     |
+|  ;                   |  TOK_SEMICOLON       |                     |
+|  &                   |  TOK_BITAND          |                     |
+|  |                   |  TOK_BITOR           |                     |
+|  ^                   |  TOK_BITXOR          |                     |
+|  ~                   |  TOK_BITNOT          |                     |
+|  &&                  |  TOK_LOGIAND         |                     |
+|  ||                  |  TOK_LOGIOR          |                     |
+|  =                   |  TOK_ASSIGN          |                     |
+|  ==                  |  TOK_EQ              |                     |
++----------------------+----------------------+---------------------+
+|                             KEY WORDS                             |
++----------------------+----------------------+---------------------+
+|  signed              |  TOK_SIGNED          |  signed             |
+|  unsigned            |  TOK_UNSIGNED        |  unsigned           |
+|  void                |  TOK_VOID            |  void               |
+|  const               |  TOK_CONST           |  const              |
+|  short               |  TOK_SHORT           |  short              |
+|  int                 |  TOK_INT             |  int                |
+|  long                |  TOK_LONG            |  long               |
+|  float               |  TOK_FLOAT           |  float              |
+|  double              |  TOK_DOUBLE          |  double             |
+|  char                |  TOK_CHAR            |  char               |
+|  if                  |  TOK_IF              |  if                 |
+|  else                |  TOK_ELSE            |  else               |
+|  for                 |  TOK_FOR             |  for                |
+|  while               |  TOK_WHILE           |  while              |
+|  do                  |  TOK_DO              |  do                 |
+|  return              |  TOK_RETURN          |  return             |
++----------------------+----------------------+---------------------+
+|                        INTEGER/FLOAT                              |
++----------------------+----------------------+---------------------+
+|  123                 |  TOK_INTCONST        |  123                |
+|  123s                |  TOK_SHORTCONST      |  123                |
+|  123l                |  TOK_LONGCONST       |  123                |
+|  123u                |  TOK_UINTCONST       |  123                |
+|  123us               |  TOK_USHORTCONST     |  123                |
+|  123ul               |  TOK_ULONGCONST      |  123                |
+|  1234567890123456    |  TOK_INTCONST        |  1015724736         |
+|  1234567890123456l   |  TOK_LONGCONST       |  1234567890123456   |
+|  1234567890123456ul  |  TOK_ULONGCONST      |  1234567890123456   |
+|  1234567890123456s   |  TOK_SHORTCONST      |  -17728             |
+|  123s                |  TOK_SHORTCONST      |  123                |
+|  123456s             |  TOK_SHORTCONST      |  -7616              |
+|  123456789           |  TOK_INTCONST        |  123456789          |
+|  123456789.          |  TOK_DOUBLECONST     |  1.23457e+08        |
+|  123456789f          |  TOK_FLOATCONST      |  1.23457e+08        |
+|  123456789d          |  TOK_DOUBLECONST     |  1.23457e+08        |
+|  123.456             |  TOK_DOUBLECONST     |  123.456            |
+|  123.456f            |  TOK_FLOATCONST      |  123.456            |
++----------------------+----------------------+---------------------+
+|                         IDENTIFIERS                               |
++----------------------+----------------------+---------------------+
+|  abc                 |  TOK_IDENT           |  abc                |
+|  _abc                |  TOK_IDENT           |  _abc               |
+|  abc123              |  TOK_IDENT           |  abc123             |
+|  _abc123             |  TOK_IDENT           |  _abc123            |
+|  _123                |  TOK_IDENT           |  _123               |
+|  ___                 |  TOK_IDENT           |  ___                |
+|  __                  |  TOK_IDENT           |  __                 |
+|  _hh                 |  TOK_IDENT           |  _hh                |
++----------------------+----------------------+---------------------+
+|                          CHARACTERS                               |
++----------------------+----------------------+---------------------+
+|  'a'                 |  TOK_CHARCONST       |  '                  |
+|  'b'                 |  TOK_CHARCONST       |  '                  |
+|  '\t'                |  TOK_CHARCONST       |  	                |
+|  '\\'                |  TOK_CHARCONST       |  \                  |
+|  '\''                |  TOK_CHARCONST       |  '                  |
+|  '\"'                |  TOK_CHARCONST       |  "                  |
+|  '\n'                |  TOK_CHARCONST       |  \n                 |
+|  '\r'                |  TOK_CHARCONST       |  \r                 |
+|  ' '                 |  TOK_CHARCONST       |  '                  |
++----------------------+----------------------+---------------------+
+|                             STRING                                |
++----------------------+----------------------+---------------------+
+|  "123456"            |  TOK_STRINGCONST     |  123456             |
+|  "1234 5678"         |  TOK_STRINGCONST     |  1234 5678          |
+|  "123abcde"          |  TOK_STRINGCONST     |  123abcde           |
+|  "hello world"       |  TOK_STRINGCONST     |  hello world        |
+|  "hello"             |  TOK_STRINGCONST     |  hello              |
+|  "hello\tworld"      |  TOK_STRINGCONST     |  hello	world       |
+|  "hello\rworld"      |  TOK_STRINGCONST     |  hello \n world     |
+|  "hello\nworld"      |  TOK_STRINGCONST     |  hello \r world     |
++----------------------+----------------------+---------------------+
+|  TOTAL NUMBER OF WORDS: 99                                        |
++-------------------------------------------------------------------+
+|                            WORD LIST                              |
++-------------------------------------------------------------------+
+|  + ++ += - -- -= * *= / /= % %= > >> >= >>= < << <= <<= ( ) [ ]   |
+|  { } } ! ? : , ; & | ^ ~ && || = == signed unsigned void const    |
+| short int long float double char if else for while do return 123  |
+|  123s 123l 123u 123us 123ul 1234567890123456 1234567890123456l    |
+|   1234567890123456ul 1234567890123456s 123s 123456s 123456789     |
+| 123456789. 123456789f 123456789d 123.456 123.456f abc _abc abc123 |
+|   _abc123 _123 ___ __ _hh 'a' 'b' '\t' '\\' '\'' '\"' "123456"    |
+|    "1234 5678" "123abcde" "hello world" "hello" "hello\tworld"    |
+|            "hello\rworld" "hello\nworld" '\n' '\r' ' '            |
++-------------------------------------------------------------------+
+
+

@@ -1,16 +1,99 @@
-+ ++ +=
-- -- -=
-* *=
-/ /=
-% %=
-> >> >= >>=
-< << <= <<=
-() [] {}
-! ? : , ;
-& | ^ ~
-&& ||
-= ==
-signed unsigned
-short int long
-float double
-for while do
++
+++
++=
+-
+--
+-=
+*
+*=
+/
+/=
+%
+%=
+>
+>>
+>=
+>>=
+<
+<<
+<=
+<<=
+(
+)
+[
+]
+{
+}
+}
+!
+?
+:
+,
+;
+&
+|
+^
+~
+&&
+||
+=
+==
+signed
+unsigned
+void
+const
+short
+int
+long
+float
+double
+char
+if
+else
+for
+while
+do
+return
+123
+123s
+123l
+123u
+123us
+123ul
+1234567890123456
+1234567890123456l
+1234567890123456ul
+1234567890123456s
+123s
+123456s
+123456789
+123456789.
+123456789f
+123456789d
+123.456
+123.456f
+abc
+_abc
+abc123
+_abc123
+_123
+___
+__
+_hh
+'a'
+'b'
+'\t'
+'\\'
+'\''
+'\"'
+"123456"
+"1234 5678"
+"123abcde"
+"hello world"
+"hello"
+"hello\tworld"
+"hello\rworld"
+"hello\nworld"
+'\n'
+'\r'
+' '

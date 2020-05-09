@@ -1,0 +1,88 @@
++-------------------+-------------------------+-----------------+
+|  WORDS            |  TOKEN TYPE             |  TOKEN VALUE    |
++-------------------+-------------------------+-----------------+
+|  int              |  TOK_INT                |  int            |
+|  main             |  TOK_IDENT              |  main           |
+|  (                |  TOK_LPARE              |                 |
+|  )                |  TOK_RPARE              |                 |
+|  {                |  TOK_LBRACE             |                 |
+|  int              |  TOK_INT                |  int            |
+|  a                |  TOK_IDENT              |  a              |
+|  ,                |  TOK_COMMA              |                 |
+|  b                |  TOK_IDENT              |  b              |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  a                |  TOK_IDENT              |  a              |
+|  =                |  TOK_ASSIGN             |                 |
+|  1                |  TOK_INTCONST           |  1              |
+|  ,                |  TOK_COMMA              |                 |
+|  b                |  TOK_IDENT              |  b              |
+|  =                |  TOK_ASSIGN             |                 |
+|  20               |  TOK_INTCONST           |  20             |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  for              |  TOK_FOR                |  for            |
+|  (                |  TOK_LPARE              |                 |
+|  int              |  TOK_INT                |  int            |
+|  i                |  TOK_IDENT              |  i              |
+|  =                |  TOK_ASSIGN             |                 |
+|  0                |  TOK_INTCONST           |  0              |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  i                |  TOK_IDENT              |  i              |
+|  <                |  TOK_LT                 |                 |
+|  b                |  TOK_IDENT              |  b              |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  i                |  TOK_IDENT              |  i              |
+|  ++               |  TOK_INC                |                 |
+|  )                |  TOK_RPARE              |                 |
+|  {                |  TOK_LBRACE             |                 |
+|  a                |  TOK_IDENT              |  a              |
+|  +=               |  TOK_ADDASS             |                 |
+|  b                |  TOK_IDENT              |  b              |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  }                |  TOK_RBRACE             |                 |
+|  char             |  TOK_CHAR char          |                 |
+|  c                |  TOK_IDENT              |  c              |
+|  [                |  TOK_LBRACKET           |                 |
+|  ]                |  TOK_RBRACKET           |                 |
+|  =                |  TOK_ASSIGN             |                 |
+|  "hello world"    |  TOK_STRINGCONST        |  hello world    |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  float            |  TOK_FLOAT              |  float          |
+|  d                |  TOK_IDENT              |  d              |
+|  =                |  TOK_ASSIGN             |                 |
+|  1.5f             |  TOK_FLOATCONST         |  1.5            |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  double           |  TOK_DOUBLE             |  double         |
+|  e                |  TOK_IDENT              |  e              |
+|  =                |  TOK_ASSIGN             |                 |
+|  2.               |  TOK_DOUBLECONST        |  2              |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  double           |  TOK_DOUBLE             |  double         |
+|  x                |  TOK_IDENT              |  x              |
+|  =                |  TOK_ASSIGN             |                 |
+|  d                |  TOK_IDENT              |  d              |
+|  +                |  TOK_PLUS               |                 |
+|  e                |  TOK_IDENT              |  e              |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  b                |  TOK_IDENT              |  b              |
+|  <<=              |  TOK_SHLASS             |                 |
+|  2                |  TOK_INTCONST           |  2              |
+|  ;                |  TOK_SEMICOLON          |                 |
+|  }                |  TOK_RBRACE             |                 |
++-------------------+-------------------------+-----------------+
+|  TOTAL NUMBER OF TOKENS: 67                                   |
++---------------------------------------------------------------+
+|                        PROGRAMME USED                         |
++---------------------------------------------------------------+
+|  int main(){                                                  |
+|      int a,b;                                                 |
+|      a=1,b=20;                                                |
+|      for (int i=0; i<b;i++){                                  |
+|          a+=b;                                                |
+|      }                                                        |
+|      char c[]="hello world";                                  |
+|      float d=1.5f;                                            |
+|      double e=2.;                                             |
+|      double x=d+e;                                            |
+|      b<<=2;                                                   |
+|  }                                                            |
++-------------------+-------------------------+-----------------+

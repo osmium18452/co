@@ -47,8 +47,9 @@ std::string conver_table[]={
 };
 
 int main() {
+	freopen("../testfiles/out2.txt","w",stdout);
 	std::string s;
-	std::string file = "../testfiles/in2.txt";
+	std::string file = "../testfiles/in.txt";
 	std::vector<token> tokens;
 	int token_num;
 	s = readfile(file);
@@ -57,37 +58,37 @@ int main() {
 	for (int i = 0; i < token_num; i++) {
 		switch (tokens[i].type) {
 			case TOK_SHORTCONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].shortval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].shortval << endl;
 				break;
 			case TOK_USHORTCONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].ushortval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].ushortval << endl;
 				break;
 			case TOK_INTCONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].intval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].intval << endl;
 				break;
 			case TOK_UINTCONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].uintval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].uintval << endl;
 				break;
 			case TOK_LONGCONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].llval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].llval << endl;
 				break;
 			case TOK_ULONGCONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].ullval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].ullval << endl;
 				break;
 			case TOK_IDENT:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].stringval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].stringval << endl;
 				break;
 			case TOK_FLOATCONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].floatval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].floatval << endl;
 				break;
 			case TOK_DOUBLECONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].doubleval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].doubleval << endl;
 				break;
 			case TOK_CHARCONST:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].charval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].charval << endl;
 				break;
 			default:
-				cout << conver_table[tokens[i].type] << "\t" << tokens[i].stringval << endl;
+				cout << conver_table[tokens[i].type] << " " << tokens[i].stringval << endl;
 				break;
 		}
 	}
