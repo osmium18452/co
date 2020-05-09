@@ -1,0 +1,16 @@
++ ++ +=
+- -- -=
+* *=
+/ /=
+% %=
+> >> >= >>=
+< << <= <<=
+() [] {}
+! ? : , ;
+& | ^ ~
+&& ||
+= ==
+signed unsigned
+short int long
+float double
+for while do

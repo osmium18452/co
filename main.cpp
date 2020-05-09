@@ -40,12 +40,15 @@ std::string conver_table[]={
 		"TOK_SHORTCONST", "TOK_USHORTCONST",
 		"TOK_LONGCONST",  "TOK_ULONGCONST",
 		"TOK_FLOATCONST", "TOK_DOUBLECONST",
-		"TOK_CHARCONST",  "TOK_STRINGCONST"
+		"TOK_CHARCONST",  "TOK_STRINGCONST",
+		"TOK_ADDASS",     "TOK_SUBASS",
+		"TOK_SHLASS",     "TOK_SHRASS",
+		"TOK_MULASS",     "TOK_DIVASS",     "TOK_MODASS",
 };
 
 int main() {
 	std::string s;
-	std::string file = "../testfiles/in.txt";
+	std::string file = "../testfiles/in2.txt";
 	std::vector<token> tokens;
 	int token_num;
 	s = readfile(file);

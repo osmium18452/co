@@ -7,19 +7,19 @@
   - [x] float/double
 - [x] char
 - [x] string
-- [ ] symbol
-  - [ ] single character symbols
-  - [ ] multi-character symbols
-    - [ ] plus
-    - [ ] sub
-    - [ ] bit and
-    - [ ] bit nor
-    - [ ] not
-    - [ ] asign
-    - [ ] eq
-    - [ ] gt
-      - [ ] ge
-      - [ ] sr
-    - [ ] lt
-      - [ ] le
-      - [ ] sl
+- [x] symbol
+  - [x] single character symbols
+  - [x] multi-character symbols
+    - [x] plus
+    - [x] sub
+    - [x] bit and
+    - [x] bit nor
+    - [x] not
+    - [x] asign
+    - [x] eq
+    - [x] gt
+      - [x] ge
+      - [x] sr
+    - [x] lt
+      - [x] le
+      - [x] sl

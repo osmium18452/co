@@ -87,8 +87,6 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					right++;
 					state = STAT_BLANK;
 				} else if (symbol_set.find(s[right]) != symbol_set.end()) {           //symbols
-					left = right;
-					right++;
 					state = STAT_SMBL;
 				} else if (s[right] == '$') {
 					right++;
@@ -189,45 +187,41 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state = STAT_START;
 				}
 				break;
-			case STAT_ULONG:
-				if (true) {
-					token tmp;
-					tmp.type = TOK_ULONGCONST;
-					tmp.ullval = strtoull(s.substr(left, right - left - 2).c_str(), NULL, 10);
-					tokens.push_back(tmp);
-					token_num++;
-					state = STAT_START;
-				}
+			case STAT_ULONG: {
+				token tmp;
+				tmp.type = TOK_ULONGCONST;
+				tmp.ullval = strtoull(s.substr(left, right - left - 2).c_str(), nullptr, 10);
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_LONG:
-				if (true) {
-					token tmp;
-					tmp.type = TOK_LONGCONST;
-					tmp.llval = strtoll(s.substr(left, right - left - 1).c_str(), NULL, 10);
-					tokens.push_back(tmp);
-					token_num++;
-					state = STAT_START;
-				}
+			case STAT_LONG: {
+				token tmp;
+				tmp.type = TOK_LONGCONST;
+				tmp.llval = strtoll(s.substr(left, right - left - 1).c_str(), nullptr, 10);
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_SHORT:
-				if (true) {
-					token tmp;
-					tmp.type = TOK_SHORTCONST;
-					tmp.shortval = (short) strtoll(s.substr(left, right - left - 1).c_str(), NULL, 10);
-					tokens.push_back(tmp);
-					token_num++;
-					state = STAT_START;
-				}
+			case STAT_SHORT: {
+				token tmp;
+				tmp.type = TOK_SHORTCONST;
+				tmp.shortval = (short) strtoll(s.substr(left, right - left - 1).c_str(), nullptr, 10);
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_USHORT:
-				if (true) {
-					token tmp;
-					tmp.type = TOK_USHORTCONST;
-					tmp.ushortval = (unsigned short) strtoll(s.substr(left, right - left - 2).c_str(), NULL, 10);
-					tokens.push_back(tmp);
-					token_num++;
-					state = STAT_START;
-				}
+			case STAT_USHORT: {
+				token tmp;
+				tmp.type = TOK_USHORTCONST;
+				tmp.ushortval = (unsigned short) strtoll(s.substr(left, right - left - 2).c_str(), NULL, 10);
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
 			case STAT_DBL:
 				if (isdigit(s[right])) {
@@ -245,15 +239,14 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state = STAT_START;
 				}
 				break;
-			case STAT_FLT:
-				if (true) {
-					token tmp;
-					tmp.type = TOK_FLOATCONST;
-					tmp.floatval = (float) atof(s.substr(left, right - left-1).c_str());
-					tokens.push_back(tmp);
-					token_num++;
-					state = STAT_START;
-				}
+			case STAT_FLT: {
+				token tmp;
+				tmp.type = TOK_FLOATCONST;
+				tmp.floatval = (float) atof(s.substr(left, right - left - 1).c_str());
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
 /*----------------------------------------character------------------------------------------*/
 			case STAT_CHAR1:
@@ -265,16 +258,15 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state = STAT_CHAR2;
 				}
 				break;
-			case STAT_CHAR2:
-				if (true) {
-					token tmp;
-					tmp.type = TOK_CHARCONST;
-					tmp.charval = s[right];
-					tokens.push_back(tmp);
-					token_num++;
-					right++;
-					state = STAT_CHAR3;
-				}
+			case STAT_CHAR2: {
+				token tmp;
+				tmp.type = TOK_CHARCONST;
+				tmp.charval = s[right];
+				tokens.push_back(tmp);
+				token_num++;
+				right++;
+				state = STAT_CHAR3;
+			}
 				break;
 			case STAT_CHAR3:
 				state = STAT_START;
@@ -301,18 +293,7 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 				state = STAT_CHAR3;
 				break;
 /*----------------------------------------string------------------------------------------*/
-			case STAT_STR1:
-				if (s[right] == '\\') {
-					right++;
-					state = STAT_STR4;
-				} else if (s[right] == '\"') {
-					right++;
-					state = STAT_STR3;
-				} else {
-					right++;
-					state = STAT_STR2;
-				}
-				break;
+			case STAT_STR1: //STAT_STR1 is the same as STAT_STR2...
 			case STAT_STR2:
 				if (s[right] == '\\') {
 					right++;
@@ -325,32 +306,29 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state = STAT_STR2;
 				}
 				break;
-			case STAT_STR3:
-				if (true) {
-					token tmp;
-					tmp.type = TOK_STRINGCONST;
-					std::string tmps;
-					for (int i=left+1;i<right-1;i++){
-						if (s[i]!='\\') tmps+=s[i];
-						else {
-							i++;
-							if (convert_table.find(s[i])==convert_table.end()) tmps+=s[i];
-							else tmps+=convert_table[s[i]];
-						}
+			case STAT_STR3: {
+				token tmp;
+				tmp.type = TOK_STRINGCONST;
+				std::string tmps;
+				for (int i = left + 1; i < right - 1; i++) {
+					if (s[i] != '\\') tmps += s[i];
+					else {
+						i++;
+						if (convert_table.find(s[i]) == convert_table.end()) tmps += s[i];
+						else tmps += convert_table[s[i]];
 					}
-					tmp.stringval=tmps;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
 				}
+				tmp.stringval = tmps;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
 			case STAT_STR4:
-				if (true) {
-					right++;
-					state = STAT_STR2;
-				}
+				right++;
+				state = STAT_STR2;
 				break;
-/*----------------------------------------character------------------------------------------*/
+/*----------------------------------------SYMBOLS------------------------------------------*/
 			case STAT_SMBL:
 				switch (s[right]) {
 					case '+':
@@ -447,6 +425,7 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 						break;
 				}
 				break;
+/*----------------------------------------plus related------------------------------------------*/
 			case STAT_PLUS:
 				if (s[right]=='+'){
 					right++;
@@ -462,24 +441,23 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state=STAT_START;
 				}
 				break;
-			case STAT_INCR:
-				if (true){
-					token tmp;
-					tmp.type=TOK_INC;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
-				}
+			case STAT_INCR: {
+				token tmp;
+				tmp.type = TOK_INC;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_ADDASS:
-				if (true){
-					token tmp;
-					tmp.type=TOK_ADDASS;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
-				}
+			case STAT_ADDASS: {
+				token tmp;
+				tmp.type = TOK_ADDASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
+/*----------------------------------------subtraction related------------------------------------------*/
 			case STAT_SUB:
 				if (s[right]=='-'){
 					right++;
@@ -495,24 +473,23 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state=STAT_START;
 				}
 				break;
-			case STAT_DECR:
-				if (true){
-					token tmp;
-					tmp.type=TOK_DEC;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
-				}
+			case STAT_DECR: {
+				token tmp;
+				tmp.type = TOK_DEC;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_SUBASS:
-				if (true){
-					token tmp;
-					tmp.type=TOK_SUBASS;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
-				}
+			case STAT_SUBASS: {
+				token tmp;
+				tmp.type = TOK_SUBASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
+/*---------------------------------------- & related ------------------------------------------*/
 			case STAT_BAND:
 				if (s[right]=='&'){
 					right++;
@@ -525,16 +502,16 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state=STAT_START;
 				}
 				break;
-			case STAT_AND:
-				if (true){
-					token tmp;
-					tmp.type=TOK_LOGIAND;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
-				}
+			case STAT_AND: {
+				token tmp;
+				tmp.type = TOK_LOGIAND;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_BOR:
+/*---------------------------------------- | related ------------------------------------------*/
+			case STAT_BITOR:
 				if (s[right]=='|'){
 					right++;
 					state=STAT_OR;
@@ -546,15 +523,15 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state=STAT_START;
 				}
 				break;
-			case STAT_OR:
-				if (true){
-					token tmp;
-					tmp.type=TOK_LOGIOR;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
-				}
+			case STAT_OR: {
+				token tmp;
+				tmp.type = TOK_LOGIOR;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
+/*---------------------------------------- ! related ------------------------------------------*/
 			case STAT_NOT:
 				if (s[right]=='='){
 					right++;
@@ -567,15 +544,15 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state=STAT_START;
 				}
 				break;
-			case STAT_NE:
-				if (true){
-					token tmp;
-					tmp.type=TOK_NE;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
-				}
+			case STAT_NE: {
+				token tmp;
+				tmp.type = TOK_NE;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
+/*---------------------------------------- = related ------------------------------------------*/
 			case STAT_ASGN:
 				if (s[right]=='='){
 					right++;
@@ -588,29 +565,15 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state=STAT_START;
 				}
 				break;
-			case STAT_EQ:
-				if (true){
-					token tmp;
-					tmp.type=TOK_EQ;
-					tokens.push_back(tmp);
-					token_num++;
-					state=STAT_START;
-				}
+			case STAT_EQ: {
+				token tmp;
+				tmp.type = TOK_EQ;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_GT:
-				break;
-			case STAT_SR:
-				break;
-			case STAT_GE:
-				break;
-			case STAT_LT:
-				break;
-			case STAT_SL:
-				break;
-			case STAT_LE:
-				break;
-			case STAT_STR5:
-				break;
+/*---------------------------------------- * / % related ------------------------------------------*/
 			case STAT_MUL:
 				if (s[right]=='='){
 					right++;
@@ -647,60 +610,221 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state=STAT_START;
 				}
 				break;
-			case STAT_MULASS:
-				if (true){
+			case STAT_MULASS: {
+				token tmp;
+				tmp.type = TOK_MULASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
+				break;
+			case STAT_DIVASS: {
+				token tmp;
+				tmp.type = TOK_DIVASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
+				break;
+			case STAT_MODASS: {
+				token tmp;
+				tmp.type = TOK_MODASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
+				break;
+/*---------------------------------------- > related------------------------------------------*/
+			case STAT_GT:
+				if (s[right]=='>'){
+					right++;
+					state=STAT_SR;
+				} else if (s[right]=='=') {
+					right++;
+					state=STAT_GE;
+				} else {
 					token tmp;
-					tmp.type=TOK_MULASS;
+					tmp.type=TOK_GT;
 					tokens.push_back(tmp);
 					token_num++;
 					state=STAT_START;
 				}
 				break;
-			case STAT_DIVASS:
-				if (true){
+			case STAT_SR:
+				if (s[right]=='='){
+					right++;
+					state=STAT_SHRASS;
+				} else {
 					token tmp;
-					tmp.type=TOK_DIVASS;
+					tmp.type = TOK_SHR;
+					tokens.push_back(tmp);
+					token_num++;
+					state = STAT_START;
+				}
+				break;
+			case STAT_SHRASS:{
+				token tmp;
+				tmp.type = TOK_SHRASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
+				break;
+			case STAT_GE: {
+				token tmp;
+				tmp.type = TOK_GE;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
+				break;
+/*---------------------------------------- < related ------------------------------------------*/
+			case STAT_LT:
+				if (s[right]=='<'){
+					right++;
+					state=STAT_SL;
+				} else if (s[right]=='=') {
+					right++;
+					state=STAT_LE;
+				} else {
+					token tmp;
+					tmp.type=TOK_LT;
 					tokens.push_back(tmp);
 					token_num++;
 					state=STAT_START;
 				}
 				break;
-			case STAT_MODASS:
-				if (true){
+			case STAT_SL:
+				if (s[right]=='='){
+					right++;
+					state=STAT_SHLASS;
+				} else{
 					token tmp;
-					tmp.type=TOK_MODASS;
+					tmp.type = TOK_SHL;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
-			case STAT_COMMA:
+			case STAT_SHLASS:{
+				token tmp;
+				tmp.type = TOK_SHLASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_SEMICOLON:
+			case STAT_LE:{
+				token tmp;
+				tmp.type = TOK_LE;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_LPARE:
+			case STAT_COMMA:{
+				token tmp;
+				tmp.type = TOK_COMMA;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_RPARE:
+			case STAT_SEMICOLON:{
+				token tmp;
+				tmp.type = TOK_SEMICOLON;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_LBRACKET:
+			case STAT_LPARE:{
+				token tmp;
+				tmp.type = TOK_LPARE;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_RBRACKET:
+			case STAT_RPARE:{
+				token tmp;
+				tmp.type = TOK_RPARE;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_LBRACE:
+			case STAT_LBRACKET:{
+				token tmp;
+				tmp.type = TOK_LBRACKET;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_RBRACE:
+			case STAT_RBRACKET:{
+				token tmp;
+				tmp.type = TOK_RBRACKET;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_XOR:
+			case STAT_LBRACE:{
+				token tmp;
+				tmp.type = TOK_LBRACE;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_QM:
+			case STAT_RBRACE:{
+				token tmp;
+				tmp.type = TOK_RBRACE;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_COLON:
+			case STAT_XOR:{
+				token tmp;
+				tmp.type = TOK_BITXOR;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_BITNOT:
+			case STAT_QM:{
+				token tmp;
+				tmp.type = TOK_QM;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_LOGINOT:
+			case STAT_COLON:{
+				token tmp;
+				tmp.type = TOK_COLON;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
-			case STAT_BITOR:
+			case STAT_BITNOT:{
+				token tmp;
+				tmp.type = TOK_BITNOT;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
+				break;
+			case STAT_LOGINOT:{
+				token tmp;
+				tmp.type = TOK_LOGINOT;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
 		}
 	}
