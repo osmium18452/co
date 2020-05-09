@@ -419,7 +419,7 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 						break;
 					case '&':
 						right++;
-						state=STAT_BITAND;
+						state=STAT_BAND;
 						break;
 					case '^':
 						right++;
@@ -514,20 +514,88 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 				}
 				break;
 			case STAT_BAND:
+				if (s[right]=='&'){
+					right++;
+					state=STAT_AND;
+				} else {
+					token tmp;
+					tmp.type=TOK_BITAND;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_AND:
+				if (true){
+					token tmp;
+					tmp.type=TOK_LOGIAND;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_BOR:
+				if (s[right]=='|'){
+					right++;
+					state=STAT_OR;
+				} else {
+					token tmp;
+					tmp.type=TOK_BITOR;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_OR:
+				if (true){
+					token tmp;
+					tmp.type=TOK_LOGIOR;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_NOT:
+				if (s[right]=='='){
+					right++;
+					state=STAT_NE;
+				} else {
+					token tmp;
+					tmp.type=TOK_LOGINOT;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_NE:
+				if (true){
+					token tmp;
+					tmp.type=TOK_NE;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_ASGN:
+				if (s[right]=='='){
+					right++;
+					state=STAT_EQ;
+				} else {
+					token tmp;
+					tmp.type=TOK_ASSIGN;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_EQ:
+				if (true){
+					token tmp;
+					tmp.type=TOK_EQ;
+					tokens.push_back(tmp);
+					token_num++;
+					state=STAT_START;
+				}
 				break;
 			case STAT_GT:
 				break;
@@ -631,8 +699,6 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 			case STAT_BITNOT:
 				break;
 			case STAT_LOGINOT:
-				break;
-			case STAT_BITAND:
 				break;
 			case STAT_BITOR:
 				break;
