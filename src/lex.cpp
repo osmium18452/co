@@ -128,113 +128,279 @@ int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
 					state = STAT_START;
 				}
 				break;
-/*----------------------------------------numbers-----------------------------------------*/
+/*----------------------------------------numbers------------------------------------------*/
 			case STAT_INT:
-				if (isdigit(s[right])){
+				if (isdigit(s[right])) {
 					right++;
-					state=STAT_INT;
-				} else if (s[right]=='.'){
+					state = STAT_INT;
+				} else if (s[right] == '.') {
 					right++;
-					state=STAT_FLT;
-				} else if (s[right]=='u'){
+					state = STAT_DBL;
+				} else if (s[right] == 'u') {
 					right++;
-					state=STAT_UINT;
-				} else if (s[right]=='l'){
+					state = STAT_UINT;
+				} else if (s[right] == 'l') {
 					right++;
-					state=STAT_LONG;
-				} else if (s[right]=='s'){
+					state = STAT_LONG;
+				} else if (s[right] == 's') {
 					right++;
-					state=STAT_SHORT;
-				} else {
+					state = STAT_SHORT;
+				} else if (s[right] == 'f') {
+					right++;
 					token tmp;
-					tmp.type=TOK_INTCONST;
-					tmp.intval=atoi(s.substr(left,right-left).c_str());
+					tmp.type = TOK_FLOATCONST;
+					tmp.floatval = (float) atof(s.substr(left, right - left-1).c_str());
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
+				}else if (s[right] == 'd') {
+					right++;
+					token tmp;
+					tmp.type = TOK_DOUBLECONST;
+					tmp.doubleval = atof(s.substr(left, right - left-1).c_str());
+					tokens.push_back(tmp);
+					token_num++;
+					state = STAT_START;
+				} else {
+					token tmp;
+					tmp.type = TOK_INTCONST;
+					tmp.intval = atoi(s.substr(left, right - left).c_str());
+					tokens.push_back(tmp);
+					token_num++;
+					state = STAT_START;
 				}
 				break;
 			case STAT_UINT:
-				if (s[right]=='l'){
+				if (s[right] == 'l') {
 					right++;
-					state=STAT_ULONG;
-				} else if(s[right]=='s'){
+					state = STAT_ULONG;
+				} else if (s[right] == 's') {
 					right++;
-					state=STAT_USHORT;
+					state = STAT_USHORT;
 				} else {
 					token tmp;
-					tmp.type=TOK_UINTCONST;
-					tmp.uintval=(unsigned int) atoll(s.substr(left,right-left-1).c_str());
+					tmp.type = TOK_UINTCONST;
+					tmp.uintval = (unsigned int) atoll(s.substr(left, right - left - 1).c_str());
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_ULONG:
-				if (true){
+				if (true) {
 					token tmp;
-					tmp.type=TOK_ULONGCONST;
-					tmp.ullval=strtoull(s.substr(left,right-left-2).c_str(),NULL,10);
+					tmp.type = TOK_ULONGCONST;
+					tmp.ullval = strtoull(s.substr(left, right - left - 2).c_str(), NULL, 10);
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_LONG:
-				if (true){
+				if (true) {
 					token tmp;
-					tmp.type=TOK_LONGCONST;
-					tmp.llval=strtoll(s.substr(left,right-left-1).c_str(),NULL,10);
+					tmp.type = TOK_LONGCONST;
+					tmp.llval = strtoll(s.substr(left, right - left - 1).c_str(), NULL, 10);
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_SHORT:
-				if (true){
+				if (true) {
 					token tmp;
-					tmp.type=TOK_SHORTCONST;
-					tmp.shortval=(short) strtoll(s.substr(left,right-left-1).c_str(),NULL,10);
+					tmp.type = TOK_SHORTCONST;
+					tmp.shortval = (short) strtoll(s.substr(left, right - left - 1).c_str(), NULL, 10);
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_USHORT:
-				if (true){
+				if (true) {
 					token tmp;
-					tmp.type=TOK_USHORTCONST;
-					tmp.ushortval=(unsigned short) strtoll(s.substr(left,right-left-2).c_str(),NULL,10);
+					tmp.type = TOK_USHORTCONST;
+					tmp.ushortval = (unsigned short) strtoll(s.substr(left, right - left - 2).c_str(), NULL, 10);
+					tokens.push_back(tmp);
+					token_num++;
+					state = STAT_START;
+				}
+				break;
+			case STAT_DBL:
+				if (isdigit(s[right])) {
+					right++;
+					state = STAT_DBL;
+				} else if (s[right] == 'f') {
+					right++;
+					state = STAT_FLT;
+				} else {
+					token tmp;
+					tmp.type = TOK_DOUBLECONST;
+					tmp.doubleval = atof(s.substr(left, right - left).c_str());
+					tokens.push_back(tmp);
+					token_num++;
+					state = STAT_START;
+				}
+				break;
+			case STAT_FLT:
+				if (true) {
+					token tmp;
+					tmp.type = TOK_FLOATCONST;
+					tmp.floatval = (float) atof(s.substr(left, right - left-1).c_str());
+					tokens.push_back(tmp);
+					token_num++;
+					state = STAT_START;
+				}
+				break;
+/*----------------------------------------character------------------------------------------*/
+			case STAT_CHAR1:
+				if (s[right] == '\\') {
+					right++;
+					state = STAT_CHAR4;
+				} else {
+					right++;
+					state = STAT_CHAR2;
+				}
+				break;
+			case STAT_CHAR2:
+				if (true) {
+					token tmp;
+					tmp.type = TOK_CHARCONST;
+					tmp.charval = s[right];
+					tokens.push_back(tmp);
+					token_num++;
+					right++;
+					state = STAT_CHAR3;
+				}
+				break;
+			case STAT_CHAR3:
+				state = STAT_START;
+				break;
+			case STAT_CHAR4:
+				right++;
+				state = STAT_CHAR5;
+				break;
+			case STAT_CHAR5:
+				if (convert_table.find(s[right - 1]) == convert_table.end()) {
+					token tmp;
+					tmp.type = TOK_CHARCONST;
+					tmp.charval = s[right - 1];
+					tokens.push_back(tmp);
+					token_num++;
+				} else {
+					token tmp;
+					tmp.type = TOK_CHARCONST;
+					tmp.charval = convert_table[s[right - 1]];
+					tokens.push_back(tmp);
+					token_num++;
+				}
+				right++;
+				state = STAT_CHAR3;
+				break;
+/*----------------------------------------string------------------------------------------*/
+			case STAT_STR1:
+				if (s[right] == '\\') {
+					right++;
+					state = STAT_STR4;
+				} else if (s[right] == '\"') {
+					right++;
+					state = STAT_STR3;
+				} else {
+					right++;
+					state = STAT_STR2;
+				}
+				break;
+			case STAT_STR2:
+				if (s[right] == '\\') {
+					right++;
+					state = STAT_STR4;
+				} else if (s[right] == '\"') {
+					right++;
+					state = STAT_STR3;
+				} else {
+					right++;
+					state = STAT_STR2;
+				}
+				break;
+			case STAT_STR3:
+				if (true) {
+					token tmp;
+					tmp.type = TOK_STRINGCONST;
+					std::string tmps;
+					for (int i=left+1;i<right-1;i++){
+						if (s[i]!='\\') tmps+=s[i];
+						else {
+							i++;
+							if (convert_table.find(s[i])==convert_table.end()) tmps+=s[i];
+							else tmps+=convert_table[s[i]];
+						}
+					}
+					tmp.stringval=tmps;
 					tokens.push_back(tmp);
 					token_num++;
 					state=STAT_START;
 				}
 				break;
-			case STAT_DBL:
-				break;
-			case STAT_FLT:
-				break;
-			case STAT_CHAR1:
-				break;
-			case STAT_CHAR2:
-				break;
-			case STAT_CHAR3:
-				break;
-			case STAT_CHAR4:
-				break;
-			case STAT_CHAR5:
-				break;
-			case STAT_STR1:
-				break;
-			case STAT_STR2:
-				break;
-			case STAT_STR3:
-				break;
 			case STAT_STR4:
+				if (true) {
+					right++;
+					state = STAT_STR2;
+				}
 				break;
-			case STAT_STR5:
-				break;
+/*----------------------------------------character------------------------------------------*/
 			case STAT_SMBL:
+				switch (s[right]) {
+					case '+':
+						break;
+					case '-':
+						break;
+					case '~':
+						break;
+					case '!':
+						break;
+					case '*':
+						break;
+					case '/':
+						break;
+					case '%':
+						break;
+					case '<':
+						break;
+					case '>':
+						break;
+					case '(':
+						break;
+					case ')':
+						break;
+					case '{':
+						break;
+					case '}':
+						break;
+					case '[':
+						break;
+					case ']':
+						break;
+					case '=':
+						break;
+					case '&':
+						break;
+					case '^':
+						break;
+					case '|':
+						break;
+					case '?':
+						break;
+					case ':':
+						break;
+					case ',':
+						break;
+					case '':
+						break;
+					case '\'':
+						break;
+					case '\"':
+						break;
+				}
 				break;
 			case STAT_PLUS:
 				break;

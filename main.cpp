@@ -80,10 +80,14 @@ int main() {
 			case TOK_DOUBLECONST:
 				cout << conver_table[tokens[i].type] << "\t" << tokens[i].doubleval << endl;
 				break;
+			case TOK_CHARCONST:
+				cout << conver_table[tokens[i].type] << "\t" << tokens[i].charval << endl;
+				break;
 			default:
 				cout << conver_table[tokens[i].type] << "\t" << tokens[i].stringval << endl;
 				break;
 		}
 	}
+	cout<<token_num<<endl;
 	return 0;
 }

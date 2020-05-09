@@ -2,11 +2,11 @@
 
 - [x] identifier
 - [x] blank
-- [ ] number
-  - [ ] int/long
-  - [ ] float/double
-- [ ] char
-- [ ] string
+- [x] number
+  - [x] int/long
+  - [x] float/double
+- [x] char
+- [x] string
 - [ ] symbol
   - [ ] single character symbols
   - [ ] multi-character symbols
