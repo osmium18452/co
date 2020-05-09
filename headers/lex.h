@@ -4,7 +4,7 @@
 #include "global.h"
 
 enum token_type{
-	TOK_CONST,
+	TOK_CONST, TOK_IDENT,
 	TOK_NIL,
 	TOK_BLANK,
 	TOK_SIGNED,     TOK_UNSIGNED,
@@ -43,7 +43,7 @@ enum token_type{
 enum state_type{
 	STAT_START,
 	STAT_IDENT,
-	STAT_INT,STAT_DBL,STAT_FLT,STAT_UINT,STAT_ULONG,
+	STAT_INT,STAT_DBL,STAT_FLT,STAT_UINT,STAT_ULONG,STAT_LONG,STAT_SHORT,STAT_USHORT,
 	STAT_CHAR1,STAT_CHAR2,STAT_CHAR3,STAT_CHAR4,STAT_CHAR5,
 	STAT_STR1,STAT_STR2,STAT_STR3,STAT_STR4,STAT_STR5,
 	STAT_SMBL,
@@ -58,6 +58,20 @@ enum state_type{
 	STAT_BLANK
 };
 
-int get_token(std::string s);
+struct token{
+	token_type type;
+	signed short shortval;
+	signed int intval;
+	signed LL llval;
+	unsigned short ushortval;
+	unsigned int uintval;
+	unsigned LL ullval;
+	float floatval;
+	double doubleval;
+	char charval;
+	std::string stringval;
+};
+
+int get_token(std::string s, std::vector<token> &token, bool use_blank);
 
 #endif //CO_LEX_H

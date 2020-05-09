@@ -9,6 +9,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <cctype>
+#include <vector>
+#include <sstream>
 
 #define LL long long
 

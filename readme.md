@@ -1,0 +1,25 @@
+### lexical
+
+- [x] identifier
+- [x] blank
+- [ ] number
+  - [ ] int/long
+  - [ ] float/double
+- [ ] char
+- [ ] string
+- [ ] symbol
+  - [ ] single character symbols
+  - [ ] multi-character symbols
+    - [ ] plus
+    - [ ] sub
+    - [ ] bit and
+    - [ ] bit nor
+    - [ ] not
+    - [ ] asign
+    - [ ] eq
+    - [ ] gt
+      - [ ] ge
+      - [ ] sr
+    - [ ] lt
+      - [ ] le
+      - [ ] sl
