@@ -47,9 +47,9 @@ std::string conver_table[]={
 };
 
 int main() {
-	freopen("../testfiles/out2.txt","w",stdout);
+	freopen("../accessory-files/out2.txt","w",stdout);
 	std::string s;
-	std::string file = "../testfiles/in.txt";
+	std::string file = "../accessory-files/in.txt";
 	std::vector<token> tokens;
 	int token_num;
 	s = readfile(file);
