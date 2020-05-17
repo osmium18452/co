@@ -1,4 +1,5 @@
 #include "../headers/global.h"
-std::string test_str;
+#include "../headers/lex.h"
+
 std::vector<token> tokens;
 

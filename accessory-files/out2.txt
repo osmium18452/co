@@ -1,4 +1,4 @@
-123 456 printf scanf ;;;$
+123 456 printf scanf ;;; ,,,$
 TOK_INTCONST 123
 TOK_INTCONST 456
 TOK_WRITE printf
@@ -6,5 +6,7 @@ TOK_READ scanf
 TOK_SEMICOLON 
 TOK_SEMICOLON 
 TOK_SEMICOLON 
-7
-hello world
+TOK_COMMA 
+TOK_COMMA 
+TOK_COMMA 
+10

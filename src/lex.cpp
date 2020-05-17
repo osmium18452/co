@@ -60,7 +60,6 @@ std::unordered_map<std::string, token_type> string_to_token({
                                                             });
 
 int get_token(std::string s, bool use_blank) {
-	test_str="hello world";
 	int left = 0, right = 0;
 	state_type state = STAT_START;
 	int len = s.length();

@@ -93,6 +93,5 @@ int main() {
 		}
 	}
 	cout<<token_num<<endl;
-	cout<<test_str<<endl;
 	return 0;
 }
