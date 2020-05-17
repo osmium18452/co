@@ -1,0 +1,98 @@
+<factor> := <(> <expr15> <)>
+         | <iden>
+         | <intcst>
+         | <uintcst>
+         | <longcst>
+         | <ulongcst>
+         | <floatcst>
+         | <doublecst>
+         | <charcst>
+         | <stringcst>
+<expr1> := <factor>
+        | <factor> {( … )} *
+        | <factor> {[ … ]} *
+        | <factor> {<++>}*
+        | <factor> {<-->}*
+<expr2> := <expr1>
+        | <++> <expr2>
+        | <--> <expr2>
+        | <+> <expr2>
+        | <-> <expr2>
+        | <!> <expr2>
+        | <~> <expr2>
+        | <*> <expr2>
+        | <&> <expr2>
+<expr3> := <expr2>
+        | <expr2> {<*> <expr2>}*
+        | <expr2> {</> <expr2>}*
+        | <expr2> {<%> <expr2>}*
+<expr4> := <expr3>
+        | <expr3> {<+> <expr3>}*
+        | <expr3> {<-> <expr3>}*
+<expr5> := <expr4>
+        | <expr4> {<<<> <expr4>}*
+        | <expr4> {<>>> <expr4>}*
+<expr6> := <expr5>
+        | <expr5> {<<> <expr5>}*
+        | <expr5> {<>> <expr5>}*
+        | <expr5> {<<=> <expr5>}*
+        | <expr5> {<>=> <expr5>}*
+<expr7>	:= <expr6>
+        | <expr6> {<==> <expr6>}*
+        | <expr6> {<!=> <expr6>}*
+<expr8>	:= <expr7>
+        | <expr7> {<&> <expr7>}*
+<expr9>	:= <expr8>
+        | <expr8> {<^> <expr8>}*
+<expr10> := <expr9>
+         | <expr9> {<|> <expr9>}*
+<expr11> := <expr10>
+         | <expr10> {<&&> <expr10>}*
+<expr12> := <expr11>
+         | <expr11> {<||> <expr11>}*
+<expr13> := <expr12>
+         | <expr12> <?> <expr13> <:> <expr13>
+<expr14> := <expr13>
+         | <expr13> <=> <expr14>
+<expr15> := <expr14>
+         | <expr14> {<,> <expr14>}*
+
+
+<ifstmt> = <(> <expr_max> <)> <stmt>
+         | <(> <expr_max> <)> <stmt> <else> <stmt>
+<forstmt> = <(> <expression 1> <expression 2> <expression 3> <)> <stmt>
+<expression 1> = <type> <iden> <vardef>
+               | (<expr_max>) <;>
+<expression 2> = (<expr_max>) <;>
+<expression 3> = (<expr_max>)
+<whilestmt> = <(> <expr_max> <)> <stmt>
+<dostmt> = <stmt> <while> <(> <expr_max> <)> <;>
+<stmt> = <type> <iden> <vardef>
+       | <block>
+       | <if> <ifstmt>
+       | <for> <forstmt>
+       | <for> <whilestmt>
+       | <do> <dostmt>
+       | <;>
+       | <return> <expr_max> <;>
+       | <expr_max> <;>
+<block> = <{> (<stmt>)* <}>
+<globdef> = (<type>) <iden> <vardef>
+          | (<type>) <iden> <funcdef>
+<vardef> = <[> <expr_sub> <]> <vardef>
+         | <=> <expr_sub> <,> <iden> <vardef>
+         | <=> <expr_sub> <;>
+         | <,> <iden> <vardef>
+         | <;>
+<paramdef> = <[> <]> <paramdef>
+           | <[> <expr_sub> <]> <paramdef>
+           | <=> <expr_sub>
+           | <=> <expr_sub> <,> (<type>) <iden> <paramdef>
+           | <,> (<type>) <iden> <paramdef>
+           | (null)
+<funcdef> = <(> <)> <block>
+          | <(> (<type>) <iden> <paramdef> <)> <block>
+<globdef> = <;>
+          | (<type>) <iden> <vardef>
+          | (<type>) <iden> <funcdef>
+<program> = {<globdef>}*

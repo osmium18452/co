@@ -29,6 +29,7 @@ std::unordered_map<char, char> convert_table({
 
 std::unordered_map<std::string, token_type> string_to_token({
 	{"const",    TOK_CONST},
+	{"scanf",     TOK_READ},     {"printf",    TOK_WRITE},
 	{"signed",   TOK_SIGNED},   {"unsigned", TOK_UNSIGNED},
 	{"void",     TOK_VOID},
 	{"char",     TOK_CHAR},
@@ -36,7 +37,7 @@ std::unordered_map<std::string, token_type> string_to_token({
 	{"float",    TOK_FLOAT},    {"double",   TOK_DOUBLE},
 	{"if",       TOK_IF},       {"else",     TOK_ELSE},
 	{"for",      TOK_FOR},      {"while",    TOK_WHILE},    {"do",       TOK_DO},
-	{"return",   TOK_RETURN},
+	{"return",   TOK_RETURN},   {"NULL",     TOK_NIL},
 	{",",        TOK_COMMA},
 	{";",        TOK_SEMICOLON},
 	{"(",        TOK_LPARE},    {")",        TOK_RPARE},
@@ -58,7 +59,8 @@ std::unordered_map<std::string, token_type> string_to_token({
 	{"*=",       TOK_MULASS},   {"/=",       TOK_DIVASS},   {"%=",       TOK_MODASS},
                                                             });
 
-int get_token(std::string s, std::vector<token> &tokens, bool use_blank) {
+int get_token(std::string s, bool use_blank) {
+	test_str="hello world";
 	int left = 0, right = 0;
 	state_type state = STAT_START;
 	int len = s.length();

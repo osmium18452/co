@@ -8,6 +8,7 @@ using std::endl;
 
 std::string conver_table[]={
 		"TOK_CONST", "TOK_IDENT",
+		"TOK_READ","TOK_WRITE",
 		"TOK_NIL",
 		"TOK_BLANK",
 		"TOK_SIGNED",     "TOK_UNSIGNED",
@@ -49,12 +50,11 @@ std::string conver_table[]={
 int main() {
 	freopen("../accessory-files/out2.txt","w",stdout);
 	std::string s;
-	std::string file = "../accessory-files/in.txt";
-	std::vector<token> tokens;
+	std::string file = "../accessory-files/in2.txt";
 	int token_num;
 	s = readfile(file);
 	cout<<s<<endl;
-	token_num = get_token(s, tokens, false);
+	token_num = get_token(s, false);
 	for (int i = 0; i < token_num; i++) {
 		switch (tokens[i].type) {
 			case TOK_SHORTCONST:
@@ -93,5 +93,6 @@ int main() {
 		}
 	}
 	cout<<token_num<<endl;
+	cout<<test_str<<endl;
 	return 0;
 }
