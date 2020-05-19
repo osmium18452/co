@@ -31,8 +31,6 @@ struct table_entry {
 	int address;
 };
 
-extern std::unordered_map<std::string, table_entry> global_symbol_table;
-extern std::unordered_map<std::string, table_entry> local_symbol_table;
 extern std::vector<std::unordered_map<std::string, table_entry>> symbol_table;
 extern std::string itype_convert_table[];
 extern std::string dtype_convert_table[];

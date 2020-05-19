@@ -66,9 +66,8 @@ int main() {
 				break;
 		}
 	}
-//	cout << token_num << endl;
 	curr_token = 0;
-	local_symbol_table_level=1;
+	local_symbol_table_level = 1;
 	init_symbol_table();
 	parse_program();
 	cout << "global symbol table size: " << symbol_table[0].size() << endl;
