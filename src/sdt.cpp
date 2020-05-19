@@ -7,12 +7,19 @@ int curr_token;
 
 /*parse function declaration*/
 void parse_const_declaration(scope scope);
+
 void parse_const_definition(scope scope);
+
 void parse_var_declaration(scope scope);
+
 void parse_var_definition(scope scope);
+
 void parse_func_declarartion();
+
 void parse_func_with_return_value();
+
 void parse_func_without_return_value();
+
 void parse_main_func_declaration();
 
 void match() {
@@ -142,6 +149,24 @@ void parse_var_definition(scope scope) {
 }
 
 void parse_func_declarartion() {
+	if (tokens[curr_token + 1].stringval == "main") {
+		parse_main_func_declaration();
+	} else if (tokens[curr_token].type == TOK_VOID) {
+		parse_func_without_return_value();
+	} else {
+		parse_func_with_return_value();
+	}
+}
+
+void parse_main_func_declaration() {
+
+}
+
+void parse_func_with_return_value() {
+
+}
+
+void parse_func_without_return_value() {
 
 }
 

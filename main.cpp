@@ -68,9 +68,11 @@ int main() {
 	}
 //	cout << token_num << endl;
 	curr_token = 0;
+	local_symbol_table_level=1;
+	init_symbol_table();
 	parse_program();
-	cout << "global symbol table size: " << global_symbol_table.size() << endl;
-	for (const auto &i:global_symbol_table) {
+	cout << "global symbol table size: " << symbol_table[0].size() << endl;
+	for (const auto &i:symbol_table[0]) {
 		table_stream << i.first << " " << itype_convert_table[i.second.itype] << " "
 		             << dtype_convert_table[i.second.dtype] << " " << i.second.value << " " << i.second.address << endl;
 	}

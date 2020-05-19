@@ -33,11 +33,19 @@ struct table_entry {
 
 extern std::unordered_map<std::string, table_entry> global_symbol_table;
 extern std::unordered_map<std::string, table_entry> local_symbol_table;
+extern std::vector<std::unordered_map<std::string, table_entry>> symbol_table;
 extern std::string itype_convert_table[];
 extern std::string dtype_convert_table[];
+extern int local_symbol_table_level;
+
+void init_symbol_table();
+
+void create_new_local_table();
+
+void destroy_current_local_table();
 
 void insert_to_symbol_table(scope gol, std::string &ident, table_entry entry);
 
-table_entry query(scope gol, std::string &ident);
+table_entry query_symbol_table(std::string &ident);
 
 #endif //CO_TABLE_H

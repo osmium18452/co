@@ -6,7 +6,6 @@
 
 extern int curr_token;
 
-void match();
 void parse_program();
 
 
