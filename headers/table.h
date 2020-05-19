@@ -18,6 +18,12 @@ enum scope {
 	GLOBAL, LOCAL,
 };
 
+/*
+ * itype stand for the type of the identifier
+ * dtype stand for the data type of the identifier
+ * value stand for the size of the array or the value of constant
+ * address is used to assign an memory address for each variable,only used in the quadruple to x86 process
+ */
 struct table_entry {
 	itype itype;
 	dtype dtype;
@@ -30,7 +36,7 @@ extern std::unordered_map<std::string, table_entry> local_symbol_table;
 extern std::string itype_convert_table[];
 extern std::string dtype_convert_table[];
 
-void insert(scope gol, std::string &ident, table_entry entry);
+void insert_to_symbol_table(scope gol, std::string &ident, table_entry entry);
 
 table_entry query(scope gol, std::string &ident);
 

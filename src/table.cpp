@@ -14,7 +14,7 @@ std::string dtype_convert_table[]={
 		"DATA_CHAR", "DATA_VOID"
 };
 
-void insert(scope gol, std::string &ident, table_entry entry) {
+void insert_to_symbol_table(scope gol, std::string &ident, table_entry entry) {
 	std::unordered_map<std::string, table_entry> &table = gol == GLOBAL ? global_symbol_table : local_symbol_table;
 	if (table.find(ident)==table.end()){
 		table[ident]=entry;

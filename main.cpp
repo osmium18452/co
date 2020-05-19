@@ -12,15 +12,15 @@ using std::endl;
 int main() {
 //	freopen("../accessory-files/out2.txt","w",stdout);
 	std::ostream token_stream(NULL), table_stream(NULL);
-	std::string token_file = "../accessory-files/tokens.txt";
-	std::string table_file = "../accessory-files/table.txt";
+	std::string token_file = "../testfile_dir/tokens.txt";
+	std::string table_file = "../testfile_dir/table.txt";
 	std::filebuf token_buffer, table_buffer;
 	token_buffer.open(token_file, std::ios_base::out);
 	table_buffer.open(table_file, std::ios_base::out);
 	token_stream.rdbuf(&token_buffer);
 	table_stream.rdbuf(&table_buffer);
 	std::string s;
-	std::string file = "../accessory-files/in2.txt";
+	std::string file = "../testfile_dir/in2.txt";
 	int token_num;
 	s = readfile(file);
 	cout << s << endl;
