@@ -1,0 +1,20 @@
+GVAR int e 
+GVAR int f 
+GVAR int g 
+GVAR int h 
+ASSIGN 1 h 
+GVAR int i 
+ASSIGN 2 i 
+GVAR int j 
+ASSIGN 3 j 
+GVAR int k 
+ASSIGN 4 k 
+GVAR char l 
+GVAR char m 
+GVAR char n 
+ASSIGN 99 n 
+GVAR char o 
+ASSIGN 92 o 
+GVAR char p 
+ASSIGN 9 p 
+GVAR int aaa 10

@@ -5,6 +5,16 @@
 
 int curr_token;
 
+/*parse function declaration*/
+void parse_const_declaration(scope scope);
+void parse_const_definition(scope scope);
+void parse_var_declaration(scope scope);
+void parse_var_definition(scope scope);
+void parse_func_declarartion();
+void parse_func_with_return_value();
+void parse_func_without_return_value();
+void parse_main_func_declaration();
+
 void match() {
 	curr_token++;
 }
@@ -93,7 +103,16 @@ void parse_var_definition(scope scope) {
 	while (true) {
 		ident_name = tokens[curr_token].stringval;
 		if (tokens[curr_token + 1].type == TOK_LBRACKET) {
-			element = {scope == GLOBAL ? GVAR : VAR, dtype == DATA_INT ? "int" : "char", ident_name, NONE};
+			match();
+			match();//consume the [;
+			int array_size = tokens[curr_token].intval;
+			match();
+			element = {scope == GLOBAL ? GVAR : VAR, dtype == DATA_INT ? "int" : "char", ident_name,
+			           std::to_string(array_size)};
+			insert_quadruple(element);
+			entry = {IDN_ARRAY, dtype, array_size, -1};
+			insert_to_symbol_table(scope, ident_name, entry);
+			match();
 		} else {
 			element = {scope == GLOBAL ? GVAR : VAR, dtype == DATA_INT ? "int" : "char", ident_name, NONE};
 			insert_quadruple(element);
