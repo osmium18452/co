@@ -299,7 +299,7 @@ int get_token(std::string &s, bool use_blank) {
 					right++;
 					state = STAT_CHAR4;
 				} else {
-					right++;
+//					right++;
 					state = STAT_CHAR2;
 				}
 				break;
@@ -309,7 +309,7 @@ int get_token(std::string &s, bool use_blank) {
 				tmp.charval = s[right];
 				tokens.push_back(tmp);
 				token_num++;
-				right++;
+				right++;right++;
 				state = STAT_CHAR3;
 			}
 				break;

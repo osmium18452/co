@@ -1,7 +1,7 @@
 <programme> -> [<constant_declaration>][<variable_declaration>][<func_definition>]<main_func_definition>
 <constant_declaration> -> const <const_definition>;{const <const_definition>;}
-<const_definition> -> int <identifier>=<int>{,<identifier>=<int>}
-                    | char <identifier>=<char>{,<identifier>=<char>}
+<const_definition> -> int <identifier>=<int>{,<identifier>=<int_val>}
+                    | char <identifier>=<char>{,<identifier>=<char_val>}
 <variable_declaration> -> <variable_definition>;{<variable_definition>;}
-<variable_definition> -> int <identifier>{,<identifier>}
-                        |char <identifier>{,<identifier>}
+<variable_definition> -> int <identifier>|<identifier>=<int_val>{,<identifier>|<identifier>=<int_val>}
+                        |char <identifier>|<identifier>=<char_val>{,<identifier>|<identifier>=<char_val>}

@@ -24,8 +24,8 @@ int main() {
 	int token_num;
 	s = readfile(file);
 	cout << s << endl;
-	cout << "tokens size: "<<tokens.size()<<endl;
 	token_num = get_token(s, false);
+	cout << "tokens size: "<<tokens.size()<<endl;
 	for (int i = 0; i < token_num; i++) {
 		switch (tokens[i].type) {
 			case TOK_SHORTCONST:
@@ -63,10 +63,10 @@ int main() {
 				break;
 		}
 	}
-	cout << token_num << endl;
+//	cout << token_num << endl;
 	curr_token=0;
 	parse_program();
-	cout<<global_symbol_table.size();
+	cout<<"global symbol table size: "<<global_symbol_table.size()<<endl;
 	for (const auto& i:global_symbol_table) {
 		table_stream << i.first << " " << itype_convert_table[i.second.itype] << " "
 		             << dtype_convert_table[i.second.dtype] << " " << i.second.value << " " << i.second.address << endl;

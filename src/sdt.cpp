@@ -10,35 +10,32 @@ void match() {
 }
 
 void parse_program() {
-	parse_const_declaration();
-//	parse_var_declaration();
+	int total_token_num = tokens.size();
+	while (curr_token < total_token_num) {
+		if (tokens[curr_token].type == TOK_CONST) {
+			parse_const_declaration(GLOBAL);
+		} else if (tokens[curr_token].type == TOK_VOID || tokens[curr_token + 2].type == TOK_LPARE) {
+			parse_func_declarartion();
+		} else if (tokens[curr_token + 2].type == TOK_COMMA || tokens[curr_token + 2].type == TOK_SEMICOLON ||
+		           tokens[curr_token + 2].type == TOK_ASSIGN) {
+			parse_var_declaration(GLOBAL);
+		}
+	}
+	parse_var_declaration(GLOBAL);
 }
 
-void parse_const_declaration() {
+void parse_const_declaration(scope scope) {
 	while (tokens[curr_token].type == TOK_CONST) {
 		match();
-//		cout << "curr_token: " << curr_token << " token type: " << token_convert_table[tokens[curr_token].type] << endl;
-		parse_const_definition();
+		parse_const_definition(scope);
 	}
 }
 
-void parse_const_definition() {
-	dtype dtype;
+void parse_const_definition(scope scope) {
+	dtype dtype = DATA_INT;
 	switch (tokens[curr_token].type) {
 		case TOK_INT:
 			dtype = DATA_INT;
-			break;
-		case TOK_SHORT:
-			dtype = DATA_SHORT;
-			break;
-		case TOK_LONG:
-			dtype = DATA_LONG;
-			break;
-		case TOK_FLOAT:
-			dtype = DATA_FLOAT;
-			break;
-		case TOK_DOUBLE:
-			dtype = DATA_DOUBLE;
 			break;
 		case TOK_CHAR:
 			dtype = DATA_CHAR;
@@ -52,26 +49,17 @@ void parse_const_definition() {
 	std::string ident_name;
 	while (true) {
 		ident_name = tokens[curr_token].stringval;
+//		cout<<"ident_name: "<<ident_name<<endl;
 		match();
 		match();/*'=' token*/
 		switch (dtype) {
-			case DATA_SHORT:
-				entry = {IDN_CONST, dtype, tokens[curr_token].shortval, -1};
-				insert(GLOBAL, ident_name, entry);
-				break;
 			case DATA_INT:
 				entry = {IDN_CONST, dtype, tokens[curr_token].intval, -1};
-				insert(GLOBAL, ident_name, entry);
-				break;
-			case DATA_LONG:
-				entry = {IDN_CONST, dtype, tokens[curr_token].llval, -1};
-				insert(GLOBAL, ident_name, entry);
+				insert(scope, ident_name, entry);
 				break;
 			case DATA_CHAR:
 				entry = {IDN_CONST, dtype, tokens[curr_token].charval, -1};
-				insert(GLOBAL, ident_name, entry);
-				break;
-			default:
+				insert(scope, ident_name, entry);
 				break;
 		}
 		match();
@@ -84,12 +72,45 @@ void parse_const_definition() {
 	}
 }
 
-void parse_var_declaration() {
-
+void parse_var_declaration(scope scope) {
+	parse_var_definition(scope);
 }
 
-void parse_var_definition() {
-
+void parse_var_definition(scope scope) {
+	dtype dtype = DATA_INT;
+	switch (tokens[curr_token].type) {
+		case TOK_INT:
+			dtype = DATA_INT;
+			break;
+		case TOK_CHAR:
+			dtype = DATA_CHAR;
+			break;
+		default:
+			break;
+	}
+	match();
+	while (true) {
+		std::string ident_name = tokens[curr_token].stringval;
+		gen_quadruple(VAR, dtype == DATA_INT ? "int" : "char", ident_name, NONE);
+		match();
+		if (tokens[curr_token].type == TOK_ASSIGN) {
+			match();
+			gen_quadruple(ASSIGN, dtype == DATA_INT ? std::to_string(tokens[curr_token].intval) : std::to_string(
+					tokens[curr_token].charval), ident_name, NONE);
+			match();
+			if (tokens[curr_token].type==TOK_SEMICOLON){
+				match();
+				break;
+			} else {
+				match();
+			}
+		} else if (tokens[curr_token].type==TOK_SEMICOLON){
+			match();
+			break;
+		} else if (tokens[curr_token].type==TOK_COMMA){
+			match();
+		}
+	}
 }
 
 

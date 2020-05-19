@@ -1,2 +1,0 @@
-const int a=1,b=2,c=3;
-const char d='c',e='e',f='f';

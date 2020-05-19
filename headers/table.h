@@ -10,20 +10,19 @@ enum itype {
 
 /* data type */
 enum dtype {
-	DATA_SHORT, DATA_INT, DATA_LONG,
-	DATA_FLOAT, DATA_DOUBLE,
+	DATA_INT,
 	DATA_CHAR, DATA_VOID,
 };
 
-enum gol {
+enum scope {
 	GLOBAL, LOCAL,
 };
 
 struct table_entry {
 	itype itype;
 	dtype dtype;
-	LL value;
-	LL address;
+	int value;
+	int address;
 };
 
 extern std::unordered_map<std::string, table_entry> global_symbol_table;
@@ -31,8 +30,8 @@ extern std::unordered_map<std::string, table_entry> local_symbol_table;
 extern std::string itype_convert_table[];
 extern std::string dtype_convert_table[];
 
-void insert(gol gol, std::string &ident, table_entry entry);
+void insert(scope gol, std::string &ident, table_entry entry);
 
-table_entry query(gol gol, std::string &ident);
+table_entry query(scope gol, std::string &ident);
 
 #endif //CO_TABLE_H
