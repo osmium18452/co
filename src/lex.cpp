@@ -5,6 +5,8 @@ using std::cout;
 using std::cin;
 using std::endl;
 
+std::vector<token> tokens;
+
 std::unordered_set<char> blank_set({' ', '\t', '\v', '\f', '\n', '\r',});
 
 std::unordered_set<char> symbol_set({
@@ -59,7 +61,49 @@ std::unordered_map<std::string, token_type> string_to_token({
 	{"*=",       TOK_MULASS},   {"/=",       TOK_DIVASS},   {"%=",       TOK_MODASS},
                                                             });
 
-int get_token(std::string s, bool use_blank) {
+std::string token_convert_table[]={
+		"TOK_CONST", "TOK_IDENT",
+		"TOK_READ","TOK_WRITE",
+		"TOK_NIL",
+		"TOK_BLANK",
+		"TOK_SIGNED",     "TOK_UNSIGNED",
+		"TOK_VOID",
+		"TOK_SHORT",      "TOK_INT",        "TOK_LONG",
+		"TOK_FLOAT",      "TOK_DOUBLE",
+		"TOK_CHAR",
+		"TOK_IF",         "TOK_ELSE",
+		"TOK_FOR",        "TOK_WHILE",      "TOK_DO",
+		"TOK_RETURN",
+		"TOK_COMMA",
+		"TOK_SEMICOLON",
+		"TOK_LPARE",      "TOK_RPARE",
+		"TOK_LBRACKET",   "TOK_RBRACKET",
+		"TOK_LBRACE",     "TOK_RBRACE",
+		"TOK_INC",        "TOK_DEC",
+		"TOK_BITNOT",     "TOK_LOGINOT",
+		"TOK_PLUS",       "TOK_SUB",
+		"TOK_MUL",        "TOK_DIV",        "TOK_MOD",
+		"TOK_SHL",        "TOK_SHR",
+		"TOK_LT",         "TOK_GT",
+		"TOK_LE",         "TOK_GE",
+		"TOK_EQ",         "TOK_NE",
+		"TOK_BITAND",     "TOK_LOGIAND",
+		"TOK_BITOR",      "TOK_LOGIOR",
+		"TOK_BITXOR",
+		"TOK_QM",         "TOK_COLON",
+		"TOK_ASSIGN",
+		"TOK_INTCONST",   "TOK_UINTCONST",
+		"TOK_SHORTCONST", "TOK_USHORTCONST",
+		"TOK_LONGCONST",  "TOK_ULONGCONST",
+		"TOK_FLOATCONST", "TOK_DOUBLECONST",
+		"TOK_CHARCONST",  "TOK_STRINGCONST",
+		"TOK_ADDASS",     "TOK_SUBASS",
+		"TOK_SHLASS",     "TOK_SHRASS",
+		"TOK_MULASS",     "TOK_DIVASS",     "TOK_MODASS",
+		"TOK_PROG_END"
+};
+
+int get_token(std::string &s, bool use_blank) {
 	int left = 0, right = 0;
 	state_type state = STAT_START;
 	int len = s.length();
@@ -151,15 +195,15 @@ int get_token(std::string s, bool use_blank) {
 					right++;
 					token tmp;
 					tmp.type = TOK_FLOATCONST;
-					tmp.floatval = (float) atof(s.substr(left, right - left-1).c_str());
+					tmp.floatval = (float) atof(s.substr(left, right - left - 1).c_str());
 					tokens.push_back(tmp);
 					token_num++;
 					state = STAT_START;
-				}else if (s[right] == 'd') {
+				} else if (s[right] == 'd') {
 					right++;
 					token tmp;
 					tmp.type = TOK_DOUBLECONST;
-					tmp.doubleval = atof(s.substr(left, right - left-1).c_str());
+					tmp.doubleval = atof(s.substr(left, right - left - 1).c_str());
 					tokens.push_back(tmp);
 					token_num++;
 					state = STAT_START;
@@ -334,112 +378,112 @@ int get_token(std::string s, bool use_blank) {
 				switch (s[right]) {
 					case '+':
 						right++;
-						state=STAT_PLUS;
+						state = STAT_PLUS;
 						break;
 					case '-':
 						right++;
-						state=STAT_SUB;
+						state = STAT_SUB;
 						break;
 					case '~':
 						right++;
-						state=STAT_BITNOT;
+						state = STAT_BITNOT;
 						break;
 					case '!':
 						right++;
-						state=STAT_LOGINOT;
+						state = STAT_LOGINOT;
 						break;
 					case '*':
 						right++;
-						state=STAT_MUL;
+						state = STAT_MUL;
 						break;
 					case '/':
 						right++;
-						state=STAT_DIV;
+						state = STAT_DIV;
 						break;
 					case '%':
 						right++;
-						state=STAT_MOD;
+						state = STAT_MOD;
 						break;
 					case '<':
 						right++;
-						state=STAT_LT;
+						state = STAT_LT;
 						break;
 					case '>':
 						right++;
-						state=STAT_GT;
+						state = STAT_GT;
 						break;
 					case '(':
 						right++;
-						state=STAT_LPARE;
+						state = STAT_LPARE;
 						break;
 					case ')':
 						right++;
-						state=STAT_RPARE;
+						state = STAT_RPARE;
 						break;
 					case '{':
 						right++;
-						state=STAT_LBRACE;
+						state = STAT_LBRACE;
 						break;
 					case '}':
 						right++;
-						state=STAT_RBRACE;
+						state = STAT_RBRACE;
 						break;
 					case '[':
 						right++;
-						state=STAT_LBRACKET;
+						state = STAT_LBRACKET;
 						break;
 					case ']':
 						right++;
-						state=STAT_RBRACKET;
+						state = STAT_RBRACKET;
 						break;
 					case '=':
 						right++;
-						state=STAT_ASGN;
+						state = STAT_ASGN;
 						break;
 					case '&':
 						right++;
-						state=STAT_BAND;
+						state = STAT_BAND;
 						break;
 					case '^':
 						right++;
-						state=STAT_XOR;
+						state = STAT_XOR;
 						break;
 					case '|':
 						right++;
-						state=STAT_BITOR;
+						state = STAT_BITOR;
 						break;
 					case '?':
 						right++;
-						state=STAT_QM;
+						state = STAT_QM;
 						break;
 					case ':':
 						right++;
-						state=STAT_COLON;
+						state = STAT_COLON;
 						break;
 					case ',':
 						right++;
-						state=STAT_COMMA;
+						state = STAT_COMMA;
 						break;
 					case ';':
 						right++;
-						state=STAT_SEMICOLON;
+						state = STAT_SEMICOLON;
 						break;
 				}
 				break;
 /*----------------------------------------plus related------------------------------------------*/
 			case STAT_PLUS:
-				if (s[right]=='+'){
+				if (s[right] == '+') {
 					right++;
-					state=STAT_INCR;
-				} else if (s[right]=='='){
+					state = STAT_INCR;
+				} else if (s[right] == '=') {
 					right++;
-					state=STAT_ADDASS;
+					state = STAT_ADDASS;
 				} else {
 					token tmp;
-					tmp.type=TOK_PLUS;
+					tmp.type = TOK_PLUS;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_INCR: {
@@ -460,18 +504,18 @@ int get_token(std::string s, bool use_blank) {
 				break;
 /*----------------------------------------subtraction related------------------------------------------*/
 			case STAT_SUB:
-				if (s[right]=='-'){
+				if (s[right] == '-') {
 					right++;
-					state=STAT_DECR;
-				} else if (s[right]=='='){
+					state = STAT_DECR;
+				} else if (s[right] == '=') {
 					right++;
-					state=STAT_SUBASS;
+					state = STAT_SUBASS;
 				} else {
 					token tmp;
-					tmp.type=TOK_SUB;
+					tmp.type = TOK_SUB;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_DECR: {
@@ -492,15 +536,15 @@ int get_token(std::string s, bool use_blank) {
 				break;
 /*---------------------------------------- & related ------------------------------------------*/
 			case STAT_BAND:
-				if (s[right]=='&'){
+				if (s[right] == '&') {
 					right++;
-					state=STAT_AND;
+					state = STAT_AND;
 				} else {
 					token tmp;
-					tmp.type=TOK_BITAND;
+					tmp.type = TOK_BITAND;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_AND: {
@@ -513,15 +557,15 @@ int get_token(std::string s, bool use_blank) {
 				break;
 /*---------------------------------------- | related ------------------------------------------*/
 			case STAT_BITOR:
-				if (s[right]=='|'){
+				if (s[right] == '|') {
 					right++;
-					state=STAT_OR;
+					state = STAT_OR;
 				} else {
 					token tmp;
-					tmp.type=TOK_BITOR;
+					tmp.type = TOK_BITOR;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_OR: {
@@ -534,15 +578,15 @@ int get_token(std::string s, bool use_blank) {
 				break;
 /*---------------------------------------- ! related ------------------------------------------*/
 			case STAT_NOT:
-				if (s[right]=='='){
+				if (s[right] == '=') {
 					right++;
-					state=STAT_NE;
+					state = STAT_NE;
 				} else {
 					token tmp;
-					tmp.type=TOK_LOGINOT;
+					tmp.type = TOK_LOGINOT;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_NE: {
@@ -555,15 +599,15 @@ int get_token(std::string s, bool use_blank) {
 				break;
 /*---------------------------------------- = related ------------------------------------------*/
 			case STAT_ASGN:
-				if (s[right]=='='){
+				if (s[right] == '=') {
 					right++;
-					state=STAT_EQ;
+					state = STAT_EQ;
 				} else {
 					token tmp;
-					tmp.type=TOK_ASSIGN;
+					tmp.type = TOK_ASSIGN;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_EQ: {
@@ -576,39 +620,39 @@ int get_token(std::string s, bool use_blank) {
 				break;
 /*---------------------------------------- * / % related ------------------------------------------*/
 			case STAT_MUL:
-				if (s[right]=='='){
+				if (s[right] == '=') {
 					right++;
-					state=STAT_MULASS;
+					state = STAT_MULASS;
 				} else {
 					token tmp;
-					tmp.type=TOK_MUL;
+					tmp.type = TOK_MUL;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_DIV:
-				if (s[right]=='='){
+				if (s[right] == '=') {
 					right++;
-					state=STAT_DIVASS;
+					state = STAT_DIVASS;
 				} else {
 					token tmp;
-					tmp.type=TOK_DIV;
+					tmp.type = TOK_DIV;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_MOD:
-				if (s[right]=='='){
+				if (s[right] == '=') {
 					right++;
-					state=STAT_MODASS;
+					state = STAT_MODASS;
 				} else {
 					token tmp;
-					tmp.type=TOK_MOD;
+					tmp.type = TOK_MOD;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_MULASS: {
@@ -637,24 +681,24 @@ int get_token(std::string s, bool use_blank) {
 				break;
 /*---------------------------------------- > related------------------------------------------*/
 			case STAT_GT:
-				if (s[right]=='>'){
+				if (s[right] == '>') {
 					right++;
-					state=STAT_SR;
-				} else if (s[right]=='=') {
+					state = STAT_SR;
+				} else if (s[right] == '=') {
 					right++;
-					state=STAT_GE;
+					state = STAT_GE;
 				} else {
 					token tmp;
-					tmp.type=TOK_GT;
+					tmp.type = TOK_GT;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_SR:
-				if (s[right]=='='){
+				if (s[right] == '=') {
 					right++;
-					state=STAT_SHRASS;
+					state = STAT_SHRASS;
 				} else {
 					token tmp;
 					tmp.type = TOK_SHR;
@@ -663,7 +707,7 @@ int get_token(std::string s, bool use_blank) {
 					state = STAT_START;
 				}
 				break;
-			case STAT_SHRASS:{
+			case STAT_SHRASS: {
 				token tmp;
 				tmp.type = TOK_SHRASS;
 				tokens.push_back(tmp);
@@ -681,25 +725,25 @@ int get_token(std::string s, bool use_blank) {
 				break;
 /*---------------------------------------- < related ------------------------------------------*/
 			case STAT_LT:
-				if (s[right]=='<'){
+				if (s[right] == '<') {
 					right++;
-					state=STAT_SL;
-				} else if (s[right]=='=') {
+					state = STAT_SL;
+				} else if (s[right] == '=') {
 					right++;
-					state=STAT_LE;
+					state = STAT_LE;
 				} else {
 					token tmp;
-					tmp.type=TOK_LT;
+					tmp.type = TOK_LT;
 					tokens.push_back(tmp);
 					token_num++;
-					state=STAT_START;
+					state = STAT_START;
 				}
 				break;
 			case STAT_SL:
-				if (s[right]=='='){
+				if (s[right] == '=') {
 					right++;
-					state=STAT_SHLASS;
-				} else{
+					state = STAT_SHLASS;
+				} else {
 					token tmp;
 					tmp.type = TOK_SHL;
 					tokens.push_back(tmp);
@@ -707,7 +751,7 @@ int get_token(std::string s, bool use_blank) {
 					state = STAT_START;
 				}
 				break;
-			case STAT_SHLASS:{
+			case STAT_SHLASS: {
 				token tmp;
 				tmp.type = TOK_SHLASS;
 				tokens.push_back(tmp);
@@ -715,7 +759,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_LE:{
+			case STAT_LE: {
 				token tmp;
 				tmp.type = TOK_LE;
 				tokens.push_back(tmp);
@@ -723,7 +767,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_COMMA:{
+			case STAT_COMMA: {
 				token tmp;
 				tmp.type = TOK_COMMA;
 				tokens.push_back(tmp);
@@ -731,7 +775,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_SEMICOLON:{
+			case STAT_SEMICOLON: {
 				token tmp;
 				tmp.type = TOK_SEMICOLON;
 				tokens.push_back(tmp);
@@ -739,7 +783,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_LPARE:{
+			case STAT_LPARE: {
 				token tmp;
 				tmp.type = TOK_LPARE;
 				tokens.push_back(tmp);
@@ -747,7 +791,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_RPARE:{
+			case STAT_RPARE: {
 				token tmp;
 				tmp.type = TOK_RPARE;
 				tokens.push_back(tmp);
@@ -755,7 +799,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_LBRACKET:{
+			case STAT_LBRACKET: {
 				token tmp;
 				tmp.type = TOK_LBRACKET;
 				tokens.push_back(tmp);
@@ -763,7 +807,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_RBRACKET:{
+			case STAT_RBRACKET: {
 				token tmp;
 				tmp.type = TOK_RBRACKET;
 				tokens.push_back(tmp);
@@ -771,7 +815,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_LBRACE:{
+			case STAT_LBRACE: {
 				token tmp;
 				tmp.type = TOK_LBRACE;
 				tokens.push_back(tmp);
@@ -779,7 +823,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_RBRACE:{
+			case STAT_RBRACE: {
 				token tmp;
 				tmp.type = TOK_RBRACE;
 				tokens.push_back(tmp);
@@ -787,7 +831,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_XOR:{
+			case STAT_XOR: {
 				token tmp;
 				tmp.type = TOK_BITXOR;
 				tokens.push_back(tmp);
@@ -795,7 +839,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_QM:{
+			case STAT_QM: {
 				token tmp;
 				tmp.type = TOK_QM;
 				tokens.push_back(tmp);
@@ -803,7 +847,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_COLON:{
+			case STAT_COLON: {
 				token tmp;
 				tmp.type = TOK_COLON;
 				tokens.push_back(tmp);
@@ -811,7 +855,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_BITNOT:{
+			case STAT_BITNOT: {
 				token tmp;
 				tmp.type = TOK_BITNOT;
 				tokens.push_back(tmp);
@@ -819,7 +863,7 @@ int get_token(std::string s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_LOGINOT:{
+			case STAT_LOGINOT: {
 				token tmp;
 				tmp.type = TOK_LOGINOT;
 				tokens.push_back(tmp);
@@ -829,5 +873,8 @@ int get_token(std::string s, bool use_blank) {
 				break;
 		}
 	}
+	token temp_tok{};
+	temp_tok.type=TOK_PROG_END;
+	tokens.push_back(temp_tok);
 	return token_num;
 }

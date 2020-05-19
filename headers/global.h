@@ -11,10 +11,13 @@
 #include <cctype>
 #include <vector>
 #include <sstream>
-#include "lex.h"
+#include <fstream>
+
+using std::cout;
+using std::cin;
+using std::endl;
 
 #define LL long long
-
-extern std::vector<token> tokens;
+#define NONE ""
 
 #endif //CO_GLOBAL_H

@@ -44,7 +44,8 @@ enum token_type{
 	TOK_CHARCONST,  TOK_STRINGCONST,
 	TOK_ADDASS,     TOK_SUBASS,
 	TOK_SHLASS,     TOK_SHRASS,
-	TOK_MULASS,     TOK_DIVASS,     TOK_MODASS
+	TOK_MULASS,     TOK_DIVASS,     TOK_MODASS,
+	TOK_PROG_END,
 };
 
 struct token{
@@ -87,6 +88,9 @@ enum state_type{
 	STAT_SHLASS,STAT_SHRASS,
 };
 
-int get_token(std::string s, bool use_blank);
+extern std::vector<token> tokens;
+extern std::string token_convert_table[];
+
+int get_token(std::string &s, bool use_blank);
 
 #endif //CO_LEX_H
