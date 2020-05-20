@@ -16,6 +16,7 @@
 
 <statement_block> -> '{'
                    { <var_declaration>
+                   | <ret_statement>
                    | <statement_block>
                    | <constant_declaration>
                    | <if-else_statement>

@@ -18,7 +18,7 @@ void init_symbol_table() {
 	if (!symbol_table.empty()) symbol_table.clear();
 	std::unordered_map<std::string, table_entry> empty_table;
 	symbol_table.push_back(empty_table);
-	local_symbol_table_level = 1;
+	local_symbol_table_level = 0;
 }
 
 void create_new_local_table() {

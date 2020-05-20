@@ -11,19 +11,15 @@ using std::endl;
 
 int main() {
 //	freopen("../accessory-files/out2.txt","w",stdout);
-	std::ostream token_stream(NULL), table_stream(NULL), quadruple_stream(NULL);
 	std::string token_file = "../testfile_dir/tokens.txt";
 	std::string table_file = "../testfile_dir/table.txt";
 	std::string quadruple_file = "../testfile_dir/quadruple.txt";
-	std::filebuf token_buffer, table_buffer, quadruple_buffer;
-	token_buffer.open(token_file, std::ios_base::out);
-	table_buffer.open(table_file, std::ios_base::out);
-	quadruple_buffer.open(quadruple_file, std::ios_base::out);
-	token_stream.rdbuf(&token_buffer);
-	table_stream.rdbuf(&table_buffer);
-	quadruple_stream.rdbuf(&quadruple_buffer);
-	std::string s;
 	std::string file = "../testfile_dir/in2.txt";
+	std::ostream token_stream(NULL);
+	std::filebuf token_buffer;
+	token_buffer.open(token_file, std::ios_base::out);
+	token_stream.rdbuf(&token_buffer);
+	std::string s;
 	int token_num;
 	s = readfile(file);
 	cout << s << endl;
@@ -71,13 +67,7 @@ int main() {
 	init_symbol_table();
 	parse_program();
 	cout << "global symbol table size: " << symbol_table[0].size() << endl;
-	/*for (const auto &i:symbol_table[0]) {
-		table_stream << i.first << " " << itype_convert_table[i.second.itype] << " "
-		             << dtype_convert_table[i.second.dtype] << " " << i.second.value << " " << i.second.address << endl;
-	}*/
 	print_symbol_table(table_file,0, true);
-	for (const auto &i:quadruple_list) {
-		quadruple_stream << instruct_convert_table[i.instruct] << " " << i.a << " " << i.b << " " << i.c << endl;
-	}
+	print_quadruple_list(quadruple_file);
 	return 0;
 }

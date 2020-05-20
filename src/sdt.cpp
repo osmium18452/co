@@ -44,10 +44,6 @@ void parse_program() {
 void parse_const_declaration(scope scope) {
 	match();
 	parse_const_definition(scope);
-	/*while (tokens[curr_token].type == TOK_CONST) {
-		match();
-		parse_const_definition(scope);
-	}*/
 }
 
 void parse_const_definition(scope scope) {
@@ -120,13 +116,13 @@ void parse_var_definition(scope scope) {
 			match();
 			element = {scope == GLOBAL ? GVAR : VAR, dtype == DATA_INT ? "int" : "char", ident_name,
 			           std::to_string(array_size)};
-			insert_quadruple(element);
+			insert_to_quadruple_list(element);
 			entry = {IDN_ARRAY, dtype, array_size, -1};
 			insert_to_symbol_table(scope, ident_name, entry);
 			match();
 		} else {
 			element = {scope == GLOBAL ? GVAR : VAR, dtype == DATA_INT ? "int" : "char", ident_name, NONE};
-			insert_quadruple(element);
+			insert_to_quadruple_list(element);
 			entry = {IDN_VAR, dtype, -1, -1};
 			insert_to_symbol_table(scope, ident_name, entry);
 			match();
@@ -135,7 +131,7 @@ void parse_var_definition(scope scope) {
 			match();
 			element = {ASSIGN, dtype == DATA_INT ? std::to_string(tokens[curr_token].intval) : std::to_string(
 					tokens[curr_token].charval), ident_name, NONE};
-			insert_quadruple(element);
+			insert_to_quadruple_list(element);
 			match();
 			if (tokens[curr_token].type == TOK_SEMICOLON) {
 				match();
@@ -165,9 +161,10 @@ void parse_func_declarartion() {
 void parse_main_func_declaration() {
 	match();match();match();match();
 	quadruple_element element{FUNC,"void","main",NONE};
-	insert_quadruple(element);
+	insert_to_quadruple_list(element);
 	parse_block();
 	element={END,NONE,NONE,NONE};
+	insert_to_quadruple_list(element);
 }
 
 void parse_func_with_return_value() {
@@ -179,17 +176,20 @@ void parse_func_without_return_value() {
 }
 
 void parse_block(){
-//	create_new_local_table();
-//	match();
-//	while (tokens[curr_token].type!=TOK_RBRACE){
-//		switch (tokens[curr_token].type) {
-//			case TOK_CONST:
-//				parse_const_declaration(LOCAL);
-//			case TOK_INT:
-//			case TOK_CHAR:
-//
-//		}
-//	}
-//	destroy_current_local_table();
+	create_new_local_table();
+	match();
+	while (tokens[curr_token].type!=TOK_RBRACE){
+		switch (tokens[curr_token].type) {
+			case TOK_CONST:
+				parse_const_declaration(LOCAL);
+				break;
+			case TOK_INT:
+			case TOK_CHAR:
+				parse_var_declaration(LOCAL);
+				break;
+		}
+	}
+	match();
+	destroy_current_local_table();
 }
 

@@ -1,20 +1,12 @@
-GVAR int e 
-GVAR int f 
-GVAR int g 
-GVAR int h 
-ASSIGN 1 h 
-GVAR int i 
-ASSIGN 2 i 
-GVAR int j 
-ASSIGN 3 j 
-GVAR int k 
-ASSIGN 4 k 
-GVAR char l 
-GVAR char m 
-GVAR char n 
-ASSIGN 99 n 
-GVAR char o 
-ASSIGN 92 o 
-GVAR char p 
-ASSIGN 9 p 
-GVAR int aaa 10
+FUNC void main 
+VAR int a 
+VAR int b 
+VAR int c 
+VAR int e 
+ASSIGN 1 e 
+VAR int f 
+ASSIGN 2 f 
+VAR int g 
+ASSIGN 3 g 
+END   
+

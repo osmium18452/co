@@ -19,8 +19,8 @@ struct quadruple_element{
 	std::string c;
 };
 
-void insert_quadruple(quadruple_element &element);
-void print_quadruple_list();
+void insert_to_quadruple_list(quadruple_element &element);
+void print_quadruple_list(std::string &file);
 
 extern std::vector<quadruple_element> quadruple_list;
 extern std::string instruct_convert_table[];
