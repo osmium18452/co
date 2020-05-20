@@ -231,59 +231,69 @@ void parse_para_list() {
 	}
 }
 
+void parse_single_statement(){
+	switch (tokens[curr_token].type) {
+		case TOK_CONST:
+			parse_const_declaration(LOCAL);
+			break;
+		case TOK_INT:
+		case TOK_CHAR:
+			parse_var_declaration(LOCAL);
+			break;
+		case TOK_LBRACE:
+			parse_block();
+			break;
+		case TOK_IF:
+			parse_if_else_statement();
+			break;
+		case TOK_SWITCH:
+			parse_switch_statement();
+			break;
+		case TOK_FOR:
+			parse_for_statement();
+			break;
+		case TOK_WHILE:
+			parse_while_statement();
+			break;
+		case TOK_DO:
+			parse_do_statement();
+			break;
+		case TOK_WRITE:
+			parse_print_statement();
+			break;
+		case TOK_READ:
+			parse_scan_statement();
+			break;
+		case TOK_IDENT:
+			switch (tokens[curr_token + 1].type) {
+				case TOK_ASSIGN:
+				case TOK_SHLASS:
+				case TOK_SHRASS:
+				case TOK_MODASS:
+				case TOK_MULASS:
+				case TOK_DIVASS:
+				case TOK_ADDASS:
+				case TOK_SUBASS:
+					parse_assignment_statement();
+					break;
+				case TOK_LPARE:
+					parse_func_call_statement();
+					break;
+				default:
+					expression();
+					break;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
 void parse_block() {
-	create_new_local_table();
 	match();
+	create_new_local_table();
 	while (tokens[curr_token].type != TOK_RBRACE) {
-		switch (tokens[curr_token].type) {
-			case TOK_CONST:
-				parse_const_declaration(LOCAL);
-				break;
-			case TOK_INT:
-			case TOK_CHAR:
-				parse_var_declaration(LOCAL);
-				break;
-			case TOK_LBRACE:
-				parse_block();
-				break;
-			case TOK_IF:
-				parse_if_else_statement();
-				break;
-			case TOK_SWITCH:
-				parse_switch_statement();
-				break;
-			case TOK_FOR:
-				parse_for_statement();
-				break;
-			case TOK_WHILE:
-				parse_while_statement();
-				break;
-			case TOK_DO:
-				parse_do_statement();
-				break;
-			case TOK_IDENT:
-				switch (tokens[curr_token + 1].type) {
-					case TOK_ASSIGN:
-					case TOK_SHLASS:
-					case TOK_SHRASS:
-					case TOK_MODASS:
-					case TOK_MULASS:
-					case TOK_DIVASS:
-					case TOK_ADDASS:
-					case TOK_SUBASS:
-						parse_assignment_statement();
-						break;
-					case TOK_LPARE:
-						parse_func_call_statement();
-						break;
-					default:
-						expression();
-						break;
-				}
-				break;
-			default:
-				break;
-		}
+		parse_single_statement();
 	}
 	match();
 	std::string table_file = "../testfile_dir/table.txt";
@@ -343,6 +353,14 @@ void parse_do_statement() {
 }
 
 void parse_switch_statement() {
+
+}
+
+void parse_print_statement(){
+
+}
+
+void parse_scan_statement(){
 
 }
 

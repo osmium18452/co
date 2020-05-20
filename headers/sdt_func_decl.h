@@ -23,7 +23,9 @@ void parse_block();
 
 void parse_assignment_statement();
 
-void parse_func_call_statement();
+void parse_func_call_statement(std::string &res, dtype &dtype);
+
+void parse_void_func_call_statement();
 
 void parse_if_else_statement();
 
@@ -50,5 +52,15 @@ void parse_divass();
 void parse_shlass();
 
 void parse_shrass();
+
+void parse_print_statement();
+
+void parse_scan_statement();
+
+void parse_single_statement();
+
+void parse_array_read(std::string &res, dtype &dtype, const std::string &id);
+
+void parse_array_assign();
 
 #endif //CO_SDT_FUNC_DECL_H
