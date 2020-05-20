@@ -22,6 +22,8 @@ void parse_func_without_return_value();
 
 void parse_main_func_declaration();
 
+void parse_block();
+
 void match() {
 	curr_token++;
 }
@@ -40,10 +42,12 @@ void parse_program() {
 }
 
 void parse_const_declaration(scope scope) {
-	while (tokens[curr_token].type == TOK_CONST) {
+	match();
+	parse_const_definition(scope);
+	/*while (tokens[curr_token].type == TOK_CONST) {
 		match();
 		parse_const_definition(scope);
-	}
+	}*/
 }
 
 void parse_const_definition(scope scope) {
@@ -159,7 +163,11 @@ void parse_func_declarartion() {
 }
 
 void parse_main_func_declaration() {
-
+	match();match();match();match();
+	quadruple_element element{FUNC,"void","main",NONE};
+	insert_quadruple(element);
+	parse_block();
+	element={END,NONE,NONE,NONE};
 }
 
 void parse_func_with_return_value() {
@@ -170,4 +178,18 @@ void parse_func_without_return_value() {
 
 }
 
+void parse_block(){
+//	create_new_local_table();
+//	match();
+//	while (tokens[curr_token].type!=TOK_RBRACE){
+//		switch (tokens[curr_token].type) {
+//			case TOK_CONST:
+//				parse_const_declaration(LOCAL);
+//			case TOK_INT:
+//			case TOK_CHAR:
+//
+//		}
+//	}
+//	destroy_current_local_table();
+}
 

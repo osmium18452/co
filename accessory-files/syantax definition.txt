@@ -15,7 +15,8 @@
 <main_func> -> int main ( ) <statement_block>
 
 <statement_block> -> '{'
-                     {<var_declaration>
+                   { <var_declaration>
+                   | <statement_block>
                    | <constant_declaration>
                    | <if-else_statement>
                    | <for_loop_statement>
@@ -24,18 +25,19 @@
                    | <switch-case_statement>
                    | <func_call_statement>
                    | <assignment_statement>
-                   | <statement_block>}
+                   | <statement_block> }
                    '}'
 
-<if-else_statement> -> if
+<if-else_statement> -> if (<expression>) <statement_block>
+                     | if (<expression>) <statement_block> else <statement_block>
 
-<for_loop_statement>
+<for_loop_statement> for (<expression1>;<express2>;<express3>) <statement_block>
 
-<while_loop_statement>
+<while_loop_statement> while (<expression>)<statement_block>
 
-<do-while_loop_statement>
+<do-while_loop_statement> do <statement_block> while (<expression>)
 
-<switch-case_statement>
+<switch-case_statement> switch <emmm>
 
 <func_call_statement>
 

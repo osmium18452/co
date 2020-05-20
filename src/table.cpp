@@ -55,3 +55,17 @@ table_entry query_symbol_table(std::string &ident) {
 	}
 }
 
+void print_symbol_table(std::string &file, int which_table, bool append) {
+	std::ostream table_stream(NULL);
+	std::filebuf buffer;
+	buffer.open(file, append ? std::ios::app : std::ios::out);
+	table_stream.rdbuf(&buffer);
+	if (which_table == 0) {
+		table_stream << "/***** GLOBAL SYMBOL TABLE *****/" << endl;
+	}
+	for (const auto &i:symbol_table[which_table]) {
+		table_stream << i.first << " " << itype_convert_table[i.second.itype] << " "
+		             << dtype_convert_table[i.second.dtype] << " " << i.second.value << " " << i.second.address << endl;
+	}
+	table_stream << endl;
+}

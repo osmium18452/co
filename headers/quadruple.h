@@ -4,10 +4,12 @@
 #include "global.h"
 
 enum instruct{
-GVAR,VAR,PARAM,
+GVAR,VAR,
+PARAM,FUNC,
 ASSIGN,
 ADD,SUB,MUL,DIV,
 CMP,JZ,JNE,
+END,
 };
 
 struct quadruple_element{
@@ -18,6 +20,7 @@ struct quadruple_element{
 };
 
 void insert_quadruple(quadruple_element &element);
+void print_quadruple_list();
 
 extern std::vector<quadruple_element> quadruple_list;
 extern std::string instruct_convert_table[];
