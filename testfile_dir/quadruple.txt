@@ -1,3 +1,9 @@
+VAR int c 
+VAR int int 
+VAR int d 
+FUNC void world 
+VAR int c 
+VAR int d 
 FUNC void main 
 VAR int a 
 VAR int b 

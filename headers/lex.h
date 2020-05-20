@@ -46,6 +46,7 @@ enum token_type{
 	TOK_SHLASS,     TOK_SHRASS,
 	TOK_MULASS,     TOK_DIVASS,     TOK_MODASS,
 	TOK_PROG_END,
+	TOK_BREAK,      TOK_CONTINUE,
 };
 
 struct token{

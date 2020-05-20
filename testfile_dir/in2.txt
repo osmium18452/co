@@ -1,4 +1,9 @@
-
+int hello(){
+   int c, int d;
+}
+void world(){
+   int c,d;
+}
 void main(){
 int a,b,c;
 int e=1,f=2,g=3;

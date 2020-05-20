@@ -24,6 +24,8 @@ void parse_main_func_declaration();
 
 void parse_block();
 
+void parse_para_list();
+
 void match() {
 	curr_token++;
 }
@@ -159,26 +161,83 @@ void parse_func_declarartion() {
 }
 
 void parse_main_func_declaration() {
-	match();match();match();match();
-	quadruple_element element{FUNC,"void","main",NONE};
+	match();
+	match();
+	match();
+	match();
+	quadruple_element element{FUNC, "void", "main", NONE};
 	insert_to_quadruple_list(element);
 	parse_block();
-	element={END,NONE,NONE,NONE};
+	element = {END, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
 
 void parse_func_with_return_value() {
-
+	table_entry entry{};
+	quadruple_element element{};
+	std::string ident_name;
+	dtype dtype = DATA_INT;
+	switch (tokens[curr_token].type) {
+		case TOK_CHAR:
+			dtype = DATA_CHAR;
+			break;
+		case TOK_VOID:
+			dtype = DATA_VOID;
+			break;
+	}
+	match();
+	entry = {IDN_FUNCTION, dtype, -1, -1};
+	ident_name = tokens[curr_token].stringval;
+	match();
+	insert_to_symbol_table(GLOBAL, ident_name, entry);
+	match();//left parenthesis
+	if (tokens[curr_token].type != TOK_RPARE) {// function with parameters.
+		parse_para_list();
+	}
+	match();//right parenthesis
+	parse_block();
 }
 
 void parse_func_without_return_value() {
+	table_entry entry{};
+	quadruple_element element{};
+	std::string ident_name;
+	std::string tp = "int";
+	dtype dtype = DATA_INT;
+	switch (tokens[curr_token].type) {
+		case TOK_CHAR:
+			dtype = DATA_CHAR;
+			tp = "char";
+			break;
+		case TOK_VOID:
+			dtype = DATA_VOID;
+			tp = "void";
+			break;
+	}
+	match();
+	entry = {IDN_FUNCTION, dtype, -1, -1};
+	ident_name = tokens[curr_token].stringval;
+	element = {FUNC, tp, ident_name, NONE};
+	match();
+	match();//left parenthesis
+	insert_to_symbol_table(GLOBAL, ident_name, entry);
+	insert_to_quadruple_list(element);
+	if (tokens[curr_token].type != TOK_RPARE) {// function with parameters.
+		parse_para_list();
+	}
+	match();//right parenthesis
+	parse_block();
+	element = {END, NONE, NONE, NONE};
+}
+
+void parse_para_list() {
 
 }
 
-void parse_block(){
+void parse_block() {
 	create_new_local_table();
 	match();
-	while (tokens[curr_token].type!=TOK_RBRACE){
+	while (tokens[curr_token].type != TOK_RBRACE) {
 		switch (tokens[curr_token].type) {
 			case TOK_CONST:
 				parse_const_declaration(LOCAL);
@@ -187,9 +246,14 @@ void parse_block(){
 			case TOK_CHAR:
 				parse_var_declaration(LOCAL);
 				break;
+			case TOK_LBRACE:
+				parse_block();
+				break;
 		}
 	}
 	match();
+	std::string table_file = "../testfile_dir/table.txt";
+	print_symbol_table(table_file, local_symbol_table_level, true);
 	destroy_current_local_table();
 }
 

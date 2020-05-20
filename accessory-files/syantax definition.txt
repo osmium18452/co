@@ -12,6 +12,9 @@
 
 <func_definition> -> <func_with_return_value>|<func_without_return_value>|<main_func>
 
+<func_with_return_value> -> <type> <identifier> '('[<paramaters>]')' <statement_block>
+<func_without_return_value> -> <type> <identifier> '('[<paramaters>]')' <statement_block>
+
 <main_func> -> int main ( ) <statement_block>
 
 <statement_block> -> '{'

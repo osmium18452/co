@@ -62,6 +62,8 @@ void print_symbol_table(std::string &file, int which_table, bool append) {
 	table_stream.rdbuf(&buffer);
 	if (which_table == 0) {
 		table_stream << "/***** GLOBAL SYMBOL TABLE *****/" << endl;
+	} else {
+		table_stream << "/***** LOCAL SYMBOL TABLE "<<which_table<<" *****/" << endl;
 	}
 	for (const auto &i:symbol_table[which_table]) {
 		table_stream << i.first << " " << itype_convert_table[i.second.itype] << " "
