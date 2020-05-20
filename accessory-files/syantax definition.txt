@@ -29,6 +29,8 @@
                    | <switch-case_statement>
                    | <func_call_statement>
                    | <assignment_statement>
+                   | <break_statemet>
+                   | <continue_statement>
                    | <statement_block> }
                    '}'
 

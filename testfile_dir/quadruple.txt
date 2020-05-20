@@ -1,9 +1,13 @@
+FUNC int hello 
+PARAM int a 
+PARAM int b 
 VAR int c 
-VAR int int 
 VAR int d 
+END   
 FUNC void world 
 VAR int c 
 VAR int d 
+END   
 FUNC void main 
 VAR int a 
 VAR int b 

@@ -2,7 +2,6 @@
 #define CO_SDT_H
 
 #include "global.h"
-#include "table.h"
 
 extern int curr_token;
 

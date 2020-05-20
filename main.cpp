@@ -4,6 +4,7 @@
 #include "headers/table.h"
 #include "headers/quadruple.h"
 #include "headers/sdt.h"
+#include "headers/expression.h"
 
 using std::cout;
 using std::cin;
@@ -63,8 +64,8 @@ int main() {
 		}
 	}
 	curr_token = 0;
-	local_symbol_table_level = 1;
 	init_symbol_table();
+	init_temp_var();
 	parse_program();
 	cout << "global symbol table size: " << symbol_table[0].size() << endl;
 	print_symbol_table(table_file,0, true);

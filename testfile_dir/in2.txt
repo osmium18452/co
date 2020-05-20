@@ -1,5 +1,5 @@
-int hello(){
-   int c, int d;
+int hello(int a,int b){
+   int c; int d;
 }
 void world(){
    int c,d;
