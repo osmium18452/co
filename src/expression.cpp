@@ -8,7 +8,7 @@
 
 void expression(std::string &res, dtype &res_dtype) {
 	parse_exp14(res, res_dtype);
-	cout << res << "***********" << endl;
+	cout << res << endl;
 }
 
 void parse_factor(std::string &res, dtype &res_dtype) {
@@ -377,15 +377,6 @@ void parse_exp12(std::string &res, dtype &res_dtype) {
 }/* || */
 void parse_exp13(std::string &res, dtype &res_dtype) {//not supported yet.
 	parse_exp12(res, res_dtype);
-	/*std::string temp_var1,temp_var2,temp_var3;
-	dtype temp_dtype1,temp_dtype2,temp_dtype3;
-	quadruple_element element{};
-	parse_exp12(temp_var1,temp_dtype1);
-	match();// question mark
-	parse_exp12(temp_var2,temp_dtype2);
-	match();// :
-	parse_exp12(temp_var3,temp_dtype3);*/
-
 }/* ? : */
 void parse_exp14(std::string &res, dtype &res_dtype) {//looks comma operand won't do anything...
 	parse_exp13(res, res_dtype);

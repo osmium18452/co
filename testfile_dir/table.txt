@@ -143,3 +143,43 @@ b IDN_VAR DATA_SHORT -1 -1
 
 /***** GLOBAL SYMBOL TABLE *****/
 
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+

@@ -396,7 +396,7 @@ int get_token(std::string &s, bool use_blank) {
 						break;
 					case '!':
 						right++;
-						state = STAT_LOGINOT;
+						state = STAT_NOT;
 						break;
 					case '*':
 						right++;
