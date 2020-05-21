@@ -3,14 +3,17 @@
 #include "../headers/expression_func_def.h"
 #include "../headers/utils.h"
 #include "../headers/lex.h"
-#include "../headers/table.h"
 #include "../headers/quadruple.h"
 
 void expression(std::string &res, dtype &res_dtype) {
 	parse_exp14(res, res_dtype);
 	cout << res << endl;
 }
-
+/*factor:   identifier
+ *          immediate number
+ *          func call (with return value)
+ *          array read
+ */
 void parse_factor(std::string &res, dtype &res_dtype) {
 	std::string temp_res, id_name;
 	dtype temp_dtype;
@@ -28,12 +31,6 @@ void parse_factor(std::string &res, dtype &res_dtype) {
 			break;
 	}
 }
-
-/*factor:   identifier
- *          immidiate number
- *          func call (with return value)
- *          array read
- */
 void parse_exp1(std::string &res, dtype &res_dtype) {
 	parse_factor(res, res_dtype);
 }/* (backward) ++ -- */

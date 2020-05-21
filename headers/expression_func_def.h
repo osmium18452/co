@@ -5,15 +5,14 @@
 #include "table.h"
 
 extern void parse_non_void_func_call(std::string &res, dtype &dtype, std::string &id);
-
 extern void parse_array_read(std::string &res, dtype &dtype, const std::string &id);
 
-void parse_factor(std::string &res, dtype &dtype);
 /*factor:   identifier
  *          immidiate number
  *          func call (with return value)
  *          array read
  */
+void parse_factor(std::string &res, dtype &dtype);
 void parse_exp1(std::string &res, dtype &res_dtype);/* (backward) ++ -- */
 void parse_exp2(std::string &res, dtype &res_dtype);/* (frontward) ++ -- + - !*/
 void parse_exp3(std::string &res, dtype &res_dtype);/* * / % */
