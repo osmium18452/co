@@ -44,7 +44,7 @@ void destroy_current_local_table();
 
 void insert_to_symbol_table(scope gol, std::string &ident, table_entry entry);
 
-table_entry query_symbol_table(std::string &ident);
+bool query_symbol_table(const std::string &ident,table_entry &entry);
 
 void print_symbol_table(std::string &file,int which_table,bool append);
 

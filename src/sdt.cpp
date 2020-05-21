@@ -175,6 +175,8 @@ void parse_func_without_return_value() {
 			dtype = DATA_VOID;
 			tp = "void";
 			break;
+		default:
+			break;
 	}
 	match();
 	entry = {IDN_FUNCTION, dtype, -1, -1};
@@ -232,6 +234,8 @@ void parse_para_list() {
 }
 
 void parse_single_statement() {
+	std::string res;
+	dtype dtype;
 	switch (tokens[curr_token].type) {
 		case TOK_CONST:
 			parse_const_declaration(LOCAL);
@@ -266,7 +270,7 @@ void parse_single_statement() {
 			break;
 		case TOK_INC:
 		case TOK_DEC:
-			expression();
+			expression(res,dtype);
 			break;
 		case TOK_IDENT:
 			switch (tokens[curr_token + 1].type) {
@@ -287,7 +291,8 @@ void parse_single_statement() {
 					parse_array_assign();
 					break;
 				default:
-					expression();
+					expression(res,dtype);
+					match();
 					break;
 			}
 			break;
@@ -301,72 +306,11 @@ void parse_block() {
 	create_new_local_table();
 	while (tokens[curr_token].type != TOK_RBRACE) {
 		parse_single_statement();
-//		cout<<"*******"<<;
 	}
 	match();
 	std::string table_file = "../testfile_dir/table.txt";
 	print_symbol_table(table_file, local_symbol_table_level, true);
 	destroy_current_local_table();
-}
-
-void parse_assignment_statement() {
-	switch (tokens[curr_token + 1].type) {
-		case TOK_ASSIGN:
-			parse_ass();
-			break;
-		case TOK_SHLASS:
-			parse_shlass();
-			break;
-		case TOK_SHRASS:
-			parse_shrass();
-			break;
-		case TOK_MODASS:
-			parse_modass();
-			break;
-		case TOK_MULASS:
-			parse_mulass();
-			break;
-		case TOK_DIVASS:
-			parse_divass();
-			break;
-		case TOK_ADDASS:
-			parse_addass();
-			break;
-		case TOK_SUBASS:
-			parse_subass();
-			break;
-		default:
-			break;
-	}
-}
-
-void parse_func_call_statement(std::string &id) {
-	table_entry entry = query_symbol_table(id);
-
-}
-
-void parse_non_void_func_call(std::string &res, dtype &dtype, std::string &id) {
-
-}
-
-void parse_if_else_statement() {
-
-}
-
-void parse_for_statement() {
-
-}
-
-void parse_while_statement() {
-
-}
-
-void parse_do_statement() {
-
-}
-
-void parse_switch_statement() {
-
 }
 
 void parse_print_statement() {
@@ -387,7 +331,7 @@ void parse_print_statement() {
 				match();
 				break;
 			case TOK_IDENT:
-				entry = query_symbol_table(tokens[curr_token].stringval);
+				query_symbol_table(tokens[curr_token].stringval,entry);
 				switch (entry.itype) {
 					case IDN_VAR:
 						dtp = entry.dtype == DATA_CHAR ? "char" : "int";
@@ -439,7 +383,7 @@ void parse_scan_statement() {
 			cout<<"error"<<endl;
 			break;
 		} else {
-			entry=query_symbol_table(tokens[curr_token].stringval);
+			query_symbol_table(tokens[curr_token].stringval,entry);
 			switch (entry.dtype) {
 				case DATA_INT:
 					element={SCAN,"int",tokens[curr_token].stringval,NONE};
@@ -451,6 +395,8 @@ void parse_scan_statement() {
 					insert_to_quadruple_list(element);
 					match();
 					break;
+				default:
+					break;
 			}
 		}
 		if (tokens[curr_token].type!=TOK_COMMA) break;
@@ -459,6 +405,69 @@ void parse_scan_statement() {
 	match();
 	match();
 }
+
+void parse_assignment_statement() {
+	switch (tokens[curr_token + 1].type) {
+		case TOK_ASSIGN:
+			parse_ass();
+			break;
+		case TOK_SHLASS:
+			parse_shlass();
+			break;
+		case TOK_SHRASS:
+			parse_shrass();
+			break;
+		case TOK_MODASS:
+			parse_modass();
+			break;
+		case TOK_MULASS:
+			parse_mulass();
+			break;
+		case TOK_DIVASS:
+			parse_divass();
+			break;
+		case TOK_ADDASS:
+			parse_addass();
+			break;
+		case TOK_SUBASS:
+			parse_subass();
+			break;
+		default:
+			break;
+	}
+}
+
+void parse_func_call_statement(std::string &id) {
+	table_entry entry{};
+	query_symbol_table(id,entry);
+
+}
+
+void parse_non_void_func_call(std::string &res, dtype &dtype, std::string &id) {
+
+}
+
+void parse_if_else_statement() {
+
+}
+
+void parse_for_statement() {
+
+}
+
+void parse_while_statement() {
+
+}
+
+void parse_do_statement() {
+
+}
+
+void parse_switch_statement() {
+
+}
+
+
 
 void parse_ass() {
 

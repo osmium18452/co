@@ -1,72 +1,346 @@
 #include "../headers/global.h"
 #include "../headers/expression.h"
 #include "../headers/expression_func_def.h"
+#include "../headers/utils.h"
+#include "../headers/lex.h"
+#include "../headers/table.h"
+#include "../headers/quadruple.h"
 
-int temp_var_num;
-
-void init_temp_var(){
-	temp_var_num=0;
+void expression(std::string &res, dtype &res_dtype) {
+	parse_exp14(res, res_dtype);
 }
 
-std::string gen_temp_var(){
-	std::string temp_var="$temp_";
-	temp_var+=std::to_string(temp_var_num);
-	return temp_var;
+void parse_factor(std::string &res, dtype &res_dtype) {
+	std::string temp_res;
+	dtype temp_dtype;
+	switch (tokens[curr_token].type) {
+		case TOK_IDENT:
+			break;
+		case TOK_CHARCONST:
+			break;
+		case TOK_LPARE:
+			break;
+		default:
+			res=std::to_string(tokens[curr_token].intval);
+			break;
+	}
 }
 
-void expression(){
-
-}
-void parse_factor(std::string &res, dtype &dtype){
-
-}
 /*factor:   identifier
  *          immidiate number
  *          func call (with return value)
  *          array read
  */
-void parse_exp1(std::string &res, dtype &dtype){
-
+void parse_exp1(std::string &res, dtype &res_dtype) {
+	parse_factor(res,res_dtype);
 }/* (backward) ++ -- */
-void parse_exp2(std::string &res, dtype &dtype){
-
+void parse_exp2(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	parse_exp1(res,res_dtype);
+	switch (tokens[curr_token].type) {
+		case TOK_INC:
+			element={ADD,res,"1",res};
+			break;
+		case TOK_DEC:
+			element={SUB,res,"1",res};
+			break;
+		case TOK_SUB:
+			element={SUB,"0",res,res};
+			break;
+		case TOK_PLUS:
+			break;
+	}
+	insert_to_quadruple_list(element);
 }/* (frontward) ++ -- + - !*/
-void parse_exp3(std::string &res, dtype &dtype){
-
+void parse_exp3(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	instruct instr;
+	parse_exp2(res, res_dtype);
+	while (tokens[curr_token].type == TOK_MUL || tokens[curr_token].type == TOK_DIV) {
+		instr = tokens[curr_token].type == TOK_MUL ? MUL : DIV;
+		match();
+		parse_exp2(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string(instr == MUL ? t1 * t2 : t1 / t2);
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {instr, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* * / % */
-void parse_exp4(std::string &res, dtype &dtype){
-
+void parse_exp4(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	instruct instr;
+	parse_exp3(res, res_dtype);
+	while (tokens[curr_token].type == TOK_PLUS || tokens[curr_token].type == TOK_SUB) {
+		instr = tokens[curr_token].type == TOK_PLUS ? ADD : SUB;
+		match();
+		parse_exp3(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string(instr == ADD ? t1 + t2 : t1 - t2);
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {instr, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* + - */
-void parse_exp5(std::string &res, dtype &dtype){
-
+void parse_exp5(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	instruct instr;
+	parse_exp4(res, res_dtype);
+	while (tokens[curr_token].type == TOK_SHL || tokens[curr_token].type == TOK_SHR) {
+		instr = tokens[curr_token].type == TOK_SHL ? SHL : SHR;
+		match();
+		parse_exp4(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string(instr == SHL ? ((unsigned) t1 << (unsigned) t2) : ((unsigned) t1 >> (unsigned) t2));
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {instr, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* << >> */
-void parse_exp6(std::string &res, dtype &dtype){
-
+void parse_exp6(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	instruct instr;
+	parse_exp5(res, res_dtype);
+	while (tokens[curr_token].type == TOK_GT || tokens[curr_token].type == TOK_GE ||
+	       tokens[curr_token].type == TOK_LT || tokens[curr_token].type == TOK_LE) {
+		switch (tokens[curr_token].type) {
+			case TOK_GT:
+				instr = GT;
+				break;
+			case TOK_GE:
+				instr = GE;
+				break;
+			case TOK_LT:
+				instr = LT;
+				break;
+			case TOK_LE:
+				instr = LE;
+				break;
+			default:
+				break;
+		}
+		match();
+		parse_exp5(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			switch (instr) {
+				case GT:
+					res = std::to_string((int) (t1 > t2));
+					break;
+				case GE:
+					res = std::to_string((int) (t1 >= t2));
+					break;
+				case LT:
+					res = std::to_string((int) (t1 < t2));
+					break;
+				case LE:
+					res = std::to_string((int) (t1 <= t2));
+					break;
+				default:
+					break;
+			}
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {instr, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* > < >= <= */
-void parse_exp7(std::string &res, dtype &dtype){
-
+void parse_exp7(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	instruct instr;
+	parse_exp6(res, res_dtype);
+	while (tokens[curr_token].type == TOK_NE || tokens[curr_token].type == TOK_EQ) {
+		instr = tokens[curr_token].type == TOK_NE ? NE : EQ;
+		match();
+		parse_exp6(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string((int) (instr == NE ? (t1 != t2) : (t1 == t2)));
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {instr, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* == != */
-void parse_exp8(std::string &res, dtype &dtype){
-
+void parse_exp8(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	parse_exp7(res, res_dtype);
+	while (tokens[curr_token].type == TOK_BITAND) {
+		match();
+		parse_exp7(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string((unsigned) t1 & (unsigned) t2);
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {BITAND, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* & */
-void parse_exp9(std::string &res, dtype &dtype){
-
+void parse_exp9(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	parse_exp8(res, res_dtype);
+	while (tokens[curr_token].type == TOK_BITXOR) {
+		match();
+		parse_exp8(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string((unsigned) t1 ^ (unsigned) t2);
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {BITXOR, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* ^ */
-void parse_exp10(std::string &res, dtype &dtype){
-
+void parse_exp10(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	parse_exp9(res, res_dtype);
+	while (tokens[curr_token].type == TOK_BITOR) {
+		match();
+		parse_exp9(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string((unsigned) t1 | (unsigned) t2);
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {BITOR, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* | */
-void parse_exp11(std::string &res, dtype &dtype){
-
+void parse_exp11(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	parse_exp10(res, res_dtype);
+	while (tokens[curr_token].type == TOK_LOGIAND) {
+		match();
+		parse_exp10(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string(t1 * t2);
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {LOGIAND, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* && */
-void parse_exp12(std::string &res, dtype &dtype){
-
+void parse_exp12(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	dtype temp_dtype;
+	quadruple_element element{};
+	parse_exp11(res, res_dtype);
+	while (tokens[curr_token].type == TOK_LOGIOR) {
+		match();// ||
+		parse_exp11(temp_var, temp_dtype);
+		int t1, t2;
+		if (is_const(res, t1) && is_const(temp_var, t2)) {
+			res = std::to_string(t1 + t2);
+			res_dtype = DATA_INT;
+		} else {
+			std::string new_res = gen_temp_var();
+			element = {TEMP, "int", new_res, NONE};
+			insert_to_quadruple_list(element);
+			element = {LOGIOR, res, temp_var, new_res};
+			insert_to_quadruple_list(element);
+			res = new_res;
+			res_dtype = DATA_INT;
+		}
+	}
 }/* || */
-void parse_exp13(std::string &res, dtype &dtype){
+void parse_exp13(std::string &res, dtype &res_dtype) {//not supported yet.
+	parse_exp12(res, res_dtype);
+	/*std::string temp_var1,temp_var2,temp_var3;
+	dtype temp_dtype1,temp_dtype2,temp_dtype3;
+	quadruple_element element{};
+	parse_exp12(temp_var1,temp_dtype1);
+	match();// question mark
+	parse_exp12(temp_var2,temp_dtype2);
+	match();// :
+	parse_exp12(temp_var3,temp_dtype3);*/
 
 }/* ? : */
-void parse_exp14(std::string &res, dtype &dtype){
-
-}/* = */
-void parse_exp15(std::string &res, dtype &dtype){
-
+void parse_exp14(std::string &res, dtype &res_dtype) {//looks comma operand won't do anything...
+	parse_exp13(res, res_dtype);
+	while (tokens[curr_token].type == TOK_COMMA) {
+		match();
+		parse_exp13(res, res_dtype);
+	}
 }/* , */

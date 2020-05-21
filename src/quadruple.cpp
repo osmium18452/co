@@ -10,6 +10,13 @@ std::string instruct_convert_table[] = {
 		"CMP", "JZ", "JNE",
 		"END",
 		"PRINT","SCAN",
+		"COMMA","LABEL",
+		"LOGI_AND","LOGI_OR",
+		"TEMP",
+		"BITAND","BITOR","BITXOR",
+		"NE","EQ",
+		"SHL","SHR",
+		"LT","LE","GT","GE",
 };
 
 void insert_to_quadruple_list(quadruple_element &element){

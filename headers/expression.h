@@ -5,11 +5,10 @@
 #include "table.h"
 
 extern int temp_var_num;
+extern int curr_token;
 
-void expression();
+extern void match();
 
-void init_temp_var();
-
-std::string gen_temp_var();
+void expression(std::string &res,dtype &dtype);
 
 #endif //CO_EXPRESSION_H

@@ -41,17 +41,17 @@ void insert_to_symbol_table(scope gol, std::string &ident, table_entry entry) {
 	}
 }
 
-table_entry query_symbol_table(std::string &ident) {
+bool query_symbol_table(const std::string &ident,table_entry &entry) {
 	int current_table = local_symbol_table_level;
 	while (current_table > 0 && symbol_table[current_table].find(ident) == symbol_table[current_table].end()) {
 		current_table--;
 	}
 	if (symbol_table[current_table].find(ident) != symbol_table[current_table].end()) {
-		return symbol_table[current_table][ident];
+		entry=symbol_table[current_table][ident];
+		return true;
 	} else {
 		cout << "cannot find label " << ident << endl;
-		table_entry tmp_{};
-		return tmp_;
+		return false;
 	}
 }
 
