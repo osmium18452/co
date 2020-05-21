@@ -8,20 +8,23 @@
 
 void expression(std::string &res, dtype &res_dtype) {
 	parse_exp14(res, res_dtype);
+	cout << res << "***********" << endl;
 }
 
 void parse_factor(std::string &res, dtype &res_dtype) {
-	std::string temp_res;
+	std::string temp_res, id_name;
 	dtype temp_dtype;
 	switch (tokens[curr_token].type) {
 		case TOK_IDENT:
+
 			break;
 		case TOK_CHARCONST:
 			break;
 		case TOK_LPARE:
 			break;
 		default:
-			res=std::to_string(tokens[curr_token].intval);
+			res = std::to_string(tokens[curr_token].intval);
+			match();
 			break;
 	}
 }
@@ -32,27 +35,34 @@ void parse_factor(std::string &res, dtype &res_dtype) {
  *          array read
  */
 void parse_exp1(std::string &res, dtype &res_dtype) {
-	parse_factor(res,res_dtype);
+	parse_factor(res, res_dtype);
 }/* (backward) ++ -- */
 void parse_exp2(std::string &res, dtype &res_dtype) {
 	std::string temp_var;
 	dtype temp_dtype;
 	quadruple_element element{};
-	parse_exp1(res,res_dtype);
-	switch (tokens[curr_token].type) {
-		case TOK_INC:
-			element={ADD,res,"1",res};
-			break;
-		case TOK_DEC:
-			element={SUB,res,"1",res};
-			break;
-		case TOK_SUB:
-			element={SUB,"0",res,res};
-			break;
-		case TOK_PLUS:
-			break;
+	parse_exp1(res, res_dtype);
+	if (tokens[curr_token].type == TOK_INC || tokens[curr_token].type == TOK_DEC ||
+	    tokens[curr_token].type == TOK_REVERSE) {
+		switch (tokens[curr_token].type) {
+			case TOK_INC:
+				match();
+				element = {ADD, res, "1", res};
+				insert_to_quadruple_list(element);
+				break;
+			case TOK_DEC:
+				match();
+				element = {SUB, res, "1", res};
+				insert_to_quadruple_list(element);
+				break;
+			case TOK_REVERSE:
+				match();
+				element = {SUB, "0", res, res};
+				insert_to_quadruple_list(element);
+				break;
+		}
+		insert_to_quadruple_list(element);
 	}
-	insert_to_quadruple_list(element);
 }/* (frontward) ++ -- + - !*/
 void parse_exp3(std::string &res, dtype &res_dtype) {
 	std::string temp_var;

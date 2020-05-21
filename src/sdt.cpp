@@ -297,6 +297,8 @@ void parse_single_statement() {
 			}
 			break;
 		default:
+			expression(res,dtype);
+			match();
 			break;
 	}
 }

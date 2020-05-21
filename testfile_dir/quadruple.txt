@@ -1,22 +1,6 @@
-FUNC int hello 
-PARAM int a 
-PARAM int b 
-VAR int c 
-VAR int d 
-END   
-FUNC void world 
-VAR int c 
-VAR int d 
-END   
 FUNC void main 
 VAR int a 
 VAR int b 
 VAR int c 
-VAR char d 
-VAR char e 
-VAR char f 
-SCAN char d 
-SCAN char e 
-SCAN char f 
 END   
 

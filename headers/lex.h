@@ -48,6 +48,7 @@ enum token_type{
 	TOK_PROG_END,
 	TOK_BREAK,      TOK_CONTINUE,
 	TOK_SWITCH,     TOK_CASE,
+	TOK_REVERSE,
 };
 
 struct token{
@@ -88,6 +89,7 @@ enum state_type{
 	STAT_BITNOT,STAT_LOGINOT,
 	STAT_BITOR,
 	STAT_SHLASS,STAT_SHRASS,
+	STAT_REVERSE,
 };
 
 extern std::vector<token> tokens;

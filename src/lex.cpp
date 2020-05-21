@@ -13,7 +13,7 @@ std::unordered_set<char> symbol_set({
 	',',';',
 	'(',')','[',']','{','}','<','>',
 	'+','-','*','/','%',
-	'~','!',
+	'~','!','$',
 	'=','&','^','|',
 	'\\','\'','\"',
 	'?',':',
@@ -57,7 +57,7 @@ std::unordered_map<std::string, token_type> string_to_token({
 	{"&",        TOK_BITAND},   {"^",        TOK_BITXOR},   {"|",        TOK_BITOR},
 	{"&&",       TOK_LOGIAND},  {"||",       TOK_LOGIOR},
 	{"?",        TOK_QM},       {":",        TOK_COLON},
-	{"=",        TOK_ASSIGN},
+	{"=",        TOK_ASSIGN},   {"~",        TOK_REVERSE},
 	{"<=",       TOK_LE},       {">=",       TOK_GE},
 	{"<<=",      TOK_SHLASS},   {">>=",      TOK_SHRASS},
 	{"+=",       TOK_ADDASS},   {"-=",       TOK_SUBASS},
@@ -105,6 +105,7 @@ std::string token_convert_table[]={
 		"TOK_MULASS",     "TOK_DIVASS",     "TOK_MODASS",
 		"TOK_PROG_END",
 		"TOK_BREAK",      "TOK_CONTINUE",
+		"TOK_REVERSE",
 };
 
 int get_token(std::string &s, bool use_blank) {
@@ -313,7 +314,8 @@ int get_token(std::string &s, bool use_blank) {
 				tmp.charval = s[right];
 				tokens.push_back(tmp);
 				token_num++;
-				right++;right++;
+				right++;
+				right++;
 				state = STAT_CHAR3;
 			}
 				break;
@@ -407,6 +409,10 @@ int get_token(std::string &s, bool use_blank) {
 					case '%':
 						right++;
 						state = STAT_MOD;
+						break;
+					case '$':
+						right++;
+						state = STAT_REVERSE;
 						break;
 					case '<':
 						right++;
@@ -575,6 +581,14 @@ int get_token(std::string &s, bool use_blank) {
 			case STAT_OR: {
 				token tmp;
 				tmp.type = TOK_LOGIOR;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
+				break;
+			case STAT_REVERSE: {
+				token tmp;
+				tmp.type = TOK_REVERSE;
 				tokens.push_back(tmp);
 				token_num++;
 				state = STAT_START;
@@ -878,7 +892,7 @@ int get_token(std::string &s, bool use_blank) {
 		}
 	}
 	token temp_tok{};
-	temp_tok.type=TOK_PROG_END;
+	temp_tok.type = TOK_PROG_END;
 	tokens.push_back(temp_tok);
 	return token_num;
 }
