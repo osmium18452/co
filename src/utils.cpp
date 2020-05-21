@@ -11,6 +11,9 @@ bool is_const(const std::string &t, int &val){
 	} else if (std::isdigit(t[0])){
 		val=std::stoi(t);
 		return true;
+	} else if (t[0]=='-'&&isdigit(t[1])){
+		val=std::stoi(t);
+		return true;
 	} else return false;
 }
 

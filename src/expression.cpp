@@ -39,31 +39,71 @@ void parse_exp1(std::string &res, dtype &res_dtype) {
 }/* (backward) ++ -- */
 void parse_exp2(std::string &res, dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	instruct instr;
 	quadruple_element element{};
-	parse_exp1(res, res_dtype);
+	bool flag = false;
 	if (tokens[curr_token].type == TOK_INC || tokens[curr_token].type == TOK_DEC ||
-	    tokens[curr_token].type == TOK_REVERSE) {
+	    tokens[curr_token].type == TOK_REVERSE || tokens[curr_token].type == TOK_LOGINOT) {
+		flag = true;
 		switch (tokens[curr_token].type) {
 			case TOK_INC:
-				match();
-				element = {ADD, res, "1", res};
-				insert_to_quadruple_list(element);
+				instr = INC;
 				break;
 			case TOK_DEC:
-				match();
-				element = {SUB, res, "1", res};
-				insert_to_quadruple_list(element);
+				instr = DEC;
 				break;
 			case TOK_REVERSE:
-				match();
-				element = {SUB, "0", res, res};
-				insert_to_quadruple_list(element);
+				instr = REVERSE;
+				break;
+			case TOK_LOGINOT:
+				instr = NOT;
+				break;
+			default:
 				break;
 		}
-		insert_to_quadruple_list(element);
+		match();
 	}
-}/* (frontward) ++ -- + - !*/
+	parse_exp1(res, res_dtype);
+	if (flag && (instr == REVERSE || instr == INC || instr == DEC || instr == NOT)) {
+		int t1;
+		switch (instr) {
+			case INC:
+				if (is_const(res, t1)) {
+					res = std::to_string(t1 + 1);
+				} else {
+					element = {INC, res, NONE, NONE};
+					insert_to_quadruple_list(element);
+				}
+				break;
+			case DEC:
+				if (is_const(res, t1)) {
+					res = std::to_string(t1 - 1);
+				} else {
+					element = {DEC, res, NONE, NONE};
+					insert_to_quadruple_list(element);
+				}
+				break;
+			case REVERSE:
+				if (is_const(res, t1)) {
+					res = std::to_string(-t1);
+				} else {
+					element = {SUB, "0", res, res};
+					insert_to_quadruple_list(element);
+				}
+				break;
+			case NOT:
+				if (is_const(res, t1)) {
+					res = std::to_string(t1 ? 0 : 1);
+				} else {
+					element = {NOT, res, NONE, NONE};
+					insert_to_quadruple_list(element);
+				}
+				break;
+			default:
+				break;
+		}
+	}
+}/* (frontward) ++ -- $ ! */
 void parse_exp3(std::string &res, dtype &res_dtype) {
 	std::string temp_var;
 	dtype temp_dtype;

@@ -270,7 +270,10 @@ void parse_single_statement() {
 			break;
 		case TOK_INC:
 		case TOK_DEC:
+		case TOK_REVERSE:
+		case TOK_LOGINOT:
 			expression(res,dtype);
+			match();
 			break;
 		case TOK_IDENT:
 			switch (tokens[curr_token + 1].type) {

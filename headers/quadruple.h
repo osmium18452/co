@@ -18,6 +18,7 @@ BITAND,BITOR,BITXOR,
 NE,EQ,
 SHL,SHR,
 LT,LE,GT,GE,
+INC,DEC,NOT,REVERSE,
 };
 
 struct quadruple_element{
