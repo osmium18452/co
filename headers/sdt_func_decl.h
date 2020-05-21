@@ -23,7 +23,9 @@ void parse_block();
 
 void parse_assignment_statement();
 
-void parse_func_call_statement(std::string &res, dtype &dtype);
+void parse_func_call_statement(std::string &id);
+
+void parse_non_void_func_call(std::string &res, dtype &dtype, std::string &id);
 
 void parse_void_func_call_statement();
 

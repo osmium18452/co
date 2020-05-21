@@ -10,6 +10,7 @@ ASSIGN,
 ADD,SUB,MUL,DIV,
 CMP,JZ,JNE,
 END,
+PRINT,SCAN,
 };
 
 struct quadruple_element{

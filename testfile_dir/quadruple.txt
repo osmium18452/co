@@ -12,11 +12,11 @@ FUNC void main
 VAR int a 
 VAR int b 
 VAR int c 
-VAR int e 
-ASSIGN 1 e 
-VAR int f 
-ASSIGN 2 f 
-VAR int g 
-ASSIGN 3 g 
+VAR char d 
+VAR char e 
+VAR char f 
+SCAN char d 
+SCAN char e 
+SCAN char f 
 END   
 

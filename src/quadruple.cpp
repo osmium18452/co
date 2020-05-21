@@ -9,6 +9,7 @@ std::string instruct_convert_table[] = {
 		"ADD", "SUB", "MUL", "DIV",
 		"CMP", "JZ", "JNE",
 		"END",
+		"PRINT","SCAN",
 };
 
 void insert_to_quadruple_list(quadruple_element &element){

@@ -231,7 +231,7 @@ void parse_para_list() {
 	}
 }
 
-void parse_single_statement(){
+void parse_single_statement() {
 	switch (tokens[curr_token].type) {
 		case TOK_CONST:
 			parse_const_declaration(LOCAL);
@@ -264,6 +264,10 @@ void parse_single_statement(){
 		case TOK_READ:
 			parse_scan_statement();
 			break;
+		case TOK_INC:
+		case TOK_DEC:
+			expression();
+			break;
 		case TOK_IDENT:
 			switch (tokens[curr_token + 1].type) {
 				case TOK_ASSIGN:
@@ -277,7 +281,10 @@ void parse_single_statement(){
 					parse_assignment_statement();
 					break;
 				case TOK_LPARE:
-					parse_func_call_statement();
+					parse_func_call_statement(tokens[curr_token].stringval);
+					break;
+				case TOK_LBRACKET:
+					parse_array_assign();
 					break;
 				default:
 					expression();
@@ -294,6 +301,7 @@ void parse_block() {
 	create_new_local_table();
 	while (tokens[curr_token].type != TOK_RBRACE) {
 		parse_single_statement();
+//		cout<<"*******"<<;
 	}
 	match();
 	std::string table_file = "../testfile_dir/table.txt";
@@ -332,7 +340,12 @@ void parse_assignment_statement() {
 	}
 }
 
-void parse_func_call_statement() {
+void parse_func_call_statement(std::string &id) {
+	table_entry entry = query_symbol_table(id);
+
+}
+
+void parse_non_void_func_call(std::string &res, dtype &dtype, std::string &id) {
 
 }
 
@@ -356,12 +369,95 @@ void parse_switch_statement() {
 
 }
 
-void parse_print_statement(){
-
+void parse_print_statement() {
+	quadruple_element element{};
+	std::string dtp;
+	std::string res;
+	dtype dtype;
+	table_entry entry{};
+	std::string s="\"";
+	match();// printf
+	match();// (
+	while (true) {
+		switch (tokens[curr_token].type) {
+			case TOK_STRINGCONST:
+				s+=tokens[curr_token].stringval+"\"";
+				element={PRINT,"string",s,NONE};
+				insert_to_quadruple_list(element);
+				match();
+				break;
+			case TOK_IDENT:
+				entry = query_symbol_table(tokens[curr_token].stringval);
+				switch (entry.itype) {
+					case IDN_VAR:
+						dtp = entry.dtype == DATA_CHAR ? "char" : "int";
+						element = {PRINT, dtp, tokens[curr_token].stringval, NONE};
+						insert_to_quadruple_list(element);
+						match();
+						break;
+					case IDN_ARRAY:
+						parse_array_read(res, dtype, tokens[curr_token].stringval);
+						dtp = dtype == DATA_CHAR ? "char" : "int";
+						element = {PRINT,dtp,res,NONE};
+						insert_to_quadruple_list(element);
+						match();
+						break;
+					case IDN_FUNCTION:
+						parse_non_void_func_call(res,dtype,tokens[curr_token].stringval);
+						dtp = dtype == DATA_CHAR ? "char" : "int";
+						element = {PRINT,dtp,res,NONE};
+						insert_to_quadruple_list(element);
+						match();
+						break;
+					case IDN_CONST:
+						res=entry.dtype==DATA_CHAR?std::to_string((char)(entry.value)):std::to_string(entry.value);
+						element={PRINT,"const",res,NONE};
+						insert_to_quadruple_list(element);
+						match();
+						break;
+					default:
+						break;
+				}
+				break;
+			default:
+				break;
+		}
+		if (tokens[curr_token].type != TOK_COMMA) break;
+		else match();
+	}
+	match();// )
+	match();// ;
 }
 
-void parse_scan_statement(){
-
+void parse_scan_statement() {
+	quadruple_element element{};
+	table_entry entry{};
+	match();// scanf
+	match();// (
+	while (true){
+		if (tokens[curr_token].type!=TOK_IDENT){
+			cout<<"error"<<endl;
+			break;
+		} else {
+			entry=query_symbol_table(tokens[curr_token].stringval);
+			switch (entry.dtype) {
+				case DATA_INT:
+					element={SCAN,"int",tokens[curr_token].stringval,NONE};
+					insert_to_quadruple_list(element);
+					match();
+					break;
+				case DATA_CHAR:
+					element={SCAN,"char",tokens[curr_token].stringval,NONE};
+					insert_to_quadruple_list(element);
+					match();
+					break;
+			}
+		}
+		if (tokens[curr_token].type!=TOK_COMMA) break;
+		else match();
+	}
+	match();
+	match();
 }
 
 void parse_ass() {
@@ -393,5 +489,13 @@ void parse_shlass() {
 }
 
 void parse_shrass() {
+
+}
+
+void parse_array_assign(){
+
+}
+
+void parse_array_read(std::string &res, dtype &dtype, const std::string &id){
 
 }
