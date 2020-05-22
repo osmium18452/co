@@ -16,6 +16,7 @@ int main() {
 	std::string token_file = "../testfile_dir/tokens.txt";
 	std::string table_file = "../testfile_dir/table.txt";
 	std::string quadruple_file = "../testfile_dir/quadruple.txt";
+	std::string para_table_file="../testfile_dir/para_table.txt";
 	std::string file = "../testfile_dir/in2.txt";
 	std::ostream token_stream(NULL);
 	std::filebuf token_buffer;
@@ -66,11 +67,13 @@ int main() {
 	}
 	curr_token = 0;
 	init_symbol_table();
+	init_param_table();
 	init_temp_var();
 	init_temp_label();
 	parse_program();
 	cout << "global symbol table size: " << symbol_table[0].size() << endl;
 	print_symbol_table(table_file,0, true);
 	print_quadruple_list(quadruple_file);
+	print_para_table(para_table_file,0, false);
 	return 0;
 }

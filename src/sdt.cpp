@@ -166,6 +166,7 @@ void parse_func_without_return_value() {
 	std::string ident_name;
 	std::string tp = "int";
 	dtype dtype = DATA_INT;
+	int para_table_num;
 	switch (tokens[curr_token].type) {
 		case TOK_CHAR:
 			dtype = DATA_CHAR;
@@ -179,7 +180,8 @@ void parse_func_without_return_value() {
 			break;
 	}
 	match();
-	entry = {IDN_FUNCTION, dtype, -1, -1};
+	para_table_num=allocate_a_param_table();
+	entry = {IDN_FUNCTION, dtype, para_table_num, -1};
 	ident_name = tokens[curr_token].stringval;
 	element = {FUNC, tp, ident_name, NONE};
 	match();
@@ -188,7 +190,7 @@ void parse_func_without_return_value() {
 	insert_to_quadruple_list(element);
 	create_new_local_table();
 	if (tokens[curr_token].type != TOK_RPARE) {// function with parameters.
-		parse_para_list();
+		parse_para_list(para_table_num);
 		std::string table_file = "../testfile_dir/table.txt";
 		print_symbol_table(table_file, local_symbol_table_level, true);
 	}
@@ -199,7 +201,7 @@ void parse_func_without_return_value() {
 	destroy_current_local_table();
 }
 
-void parse_para_list() {
+void parse_para_list(const int para_table_num) {
 	while (true) {
 		std::string para_name;
 		std::string tp;
@@ -224,6 +226,7 @@ void parse_para_list() {
 		element = {PARAM, tp, para_name, NONE};
 		insert_to_symbol_table(LOCAL, para_name, entry);
 		insert_to_quadruple_list(element);
+		insert_to_para_table(para_table_num,dtype);
 		match();
 		if (tokens[curr_token].type == TOK_RPARE) {
 			break;
@@ -272,7 +275,7 @@ void parse_single_statement() {
 		case TOK_DEC:
 		case TOK_REVERSE:
 		case TOK_LOGINOT:
-			expression(res,dtype);
+			expression(res, dtype);
 			match();
 			break;
 		case TOK_IDENT:
@@ -294,13 +297,13 @@ void parse_single_statement() {
 					parse_array_assign();
 					break;
 				default:
-					expression(res,dtype);
+					expression(res, dtype);
 					match();
 					break;
 			}
 			break;
 		default:
-			expression(res,dtype);
+			expression(res, dtype);
 			match();
 			break;
 	}
@@ -324,19 +327,19 @@ void parse_print_statement() {
 	std::string res;
 	dtype dtype;
 	table_entry entry{};
-	std::string s="\"";
+	std::string s = "\"";
 	match();// printf
 	match();// (
 	while (true) {
 		switch (tokens[curr_token].type) {
 			case TOK_STRINGCONST:
-				s+=tokens[curr_token].stringval+"\"";
-				element={PRINT,"string",s,NONE};
+				s += tokens[curr_token].stringval + "\"";
+				element = {PRINT, "string", s, NONE};
 				insert_to_quadruple_list(element);
 				match();
 				break;
 			case TOK_IDENT:
-				query_symbol_table(tokens[curr_token].stringval,entry);
+				query_symbol_table(tokens[curr_token].stringval, entry);
 				switch (entry.itype) {
 					case IDN_VAR:
 						dtp = entry.dtype == DATA_CHAR ? "char" : "int";
@@ -347,20 +350,21 @@ void parse_print_statement() {
 					case IDN_ARRAY:
 						parse_array_read(res, dtype, tokens[curr_token].stringval);
 						dtp = dtype == DATA_CHAR ? "char" : "int";
-						element = {PRINT,dtp,res,NONE};
+						element = {PRINT, dtp, res, NONE};
 						insert_to_quadruple_list(element);
 						match();
 						break;
 					case IDN_FUNCTION:
-						parse_non_void_func_call(res,dtype,tokens[curr_token].stringval);
+						parse_non_void_func_call(res, dtype, tokens[curr_token].stringval);
 						dtp = dtype == DATA_CHAR ? "char" : "int";
-						element = {PRINT,dtp,res,NONE};
+						element = {PRINT, dtp, res, NONE};
 						insert_to_quadruple_list(element);
 						match();
 						break;
 					case IDN_CONST:
-						res=entry.dtype==DATA_CHAR?std::to_string((char)(entry.value)):std::to_string(entry.value);
-						element={PRINT,"const",res,NONE};
+						res = entry.dtype == DATA_CHAR ? std::to_string((char) (entry.value)) : std::to_string(
+								entry.value);
+						element = {PRINT, "const", res, NONE};
 						insert_to_quadruple_list(element);
 						match();
 						break;
@@ -383,20 +387,20 @@ void parse_scan_statement() {
 	table_entry entry{};
 	match();// scanf
 	match();// (
-	while (true){
-		if (tokens[curr_token].type!=TOK_IDENT){
-			cout<<"error"<<endl;
+	while (true) {
+		if (tokens[curr_token].type != TOK_IDENT) {
+			cout << "error" << endl;
 			break;
 		} else {
-			query_symbol_table(tokens[curr_token].stringval,entry);
+			query_symbol_table(tokens[curr_token].stringval, entry);
 			switch (entry.dtype) {
 				case DATA_INT:
-					element={SCAN,"int",tokens[curr_token].stringval,NONE};
+					element = {SCAN, "int", tokens[curr_token].stringval, NONE};
 					insert_to_quadruple_list(element);
 					match();
 					break;
 				case DATA_CHAR:
-					element={SCAN,"char",tokens[curr_token].stringval,NONE};
+					element = {SCAN, "char", tokens[curr_token].stringval, NONE};
 					insert_to_quadruple_list(element);
 					match();
 					break;
@@ -404,7 +408,7 @@ void parse_scan_statement() {
 					break;
 			}
 		}
-		if (tokens[curr_token].type!=TOK_COMMA) break;
+		if (tokens[curr_token].type != TOK_COMMA) break;
 		else match();
 	}
 	match();
@@ -442,13 +446,20 @@ void parse_assignment_statement() {
 	}
 }
 
-void parse_func_call_statement(std::string &id) {
+void parse_func_call_statement(const std::string &id) {
 	table_entry entry{};
-	query_symbol_table(id,entry);
+	if (!query_symbol_table(id, entry)) {
+		cout<<"function "<<id<<" not defined."<<endl;
+		return ;
+	}
+	if (entry.itype!=IDN_FUNCTION){
+		cout<<"identifier "<<id<<" is not a function"<<endl;
+		return ;
+	}
 
 }
 
-void parse_non_void_func_call(std::string &res, dtype &dtype, std::string &id) {
+void parse_non_void_func_call(std::string &res, dtype &dtype, const std::string &id) {
 
 }
 
@@ -471,7 +482,6 @@ void parse_do_statement() {
 void parse_switch_statement() {
 
 }
-
 
 
 void parse_ass() {
@@ -506,10 +516,10 @@ void parse_shrass() {
 
 }
 
-void parse_array_assign(){
+void parse_array_assign() {
 
 }
 
-void parse_array_read(std::string &res, dtype &dtype, const std::string &id){
+void parse_array_read(std::string &res, dtype &dtype, const std::string &id) {
 
 }

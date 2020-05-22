@@ -17,15 +17,15 @@ void parse_func_without_return_value();
 
 void parse_main_func_declaration();
 
-void parse_para_list();
+void parse_para_list(const int para_table);
 
 void parse_block();
 
 void parse_assignment_statement();
 
-void parse_func_call_statement(std::string &id);
+void parse_func_call_statement(const std::string &id);
 
-void parse_non_void_func_call(std::string &res, dtype &dtype, std::string &id);
+void parse_non_void_func_call(std::string &res, dtype &dtype, const std::string &id);
 
 void parse_void_func_call_statement();
 

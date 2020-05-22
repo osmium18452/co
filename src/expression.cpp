@@ -17,9 +17,13 @@ void expression(std::string &res, dtype &res_dtype) {
 void parse_factor(std::string &res, dtype &res_dtype) {
 	std::string temp_res, id_name;
 	dtype temp_dtype;
+	table_entry entry{};
 	switch (tokens[curr_token].type) {
 		case TOK_IDENT:
-
+			if (!query_symbol_table(tokens[curr_token].stringval,entry)){
+				cout<<"identifier "<<tokens[curr_token].stringval<<" undefined"<<endl;
+				return ;
+			}
 			break;
 		case TOK_CHARCONST:
 			break;
