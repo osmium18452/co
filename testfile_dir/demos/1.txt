@@ -1,0 +1,12 @@
+void hello(int a,int b){
+printf("hello world");
+}
+int rtn_1(){
+return 1;
+}
+void main(){
+int a[10];
+int d,e,f;
+hello(rtn_1()+rtn_1(),a[d+e]);
+a[d+e]=a[2]+a[3];
+}

@@ -9,9 +9,10 @@ void expression(std::string &res, dtype &res_dtype) {
 	parse_exp14(res, res_dtype);
 }
 
-void expression_without_comma(std::string &res,dtype &res_type){
-	parse_exp13(res,res_type);
+void expression_without_comma(std::string &res, dtype &res_type) {
+	parse_exp13(res, res_type);
 }
+
 /*factor:   identifier
  *          immediate number
  *          func call (with return value)
@@ -23,25 +24,27 @@ void parse_factor(std::string &res, dtype &res_dtype) {
 	table_entry entry{};
 	switch (tokens[curr_token].type) {
 		case TOK_IDENT:
-			id_name=tokens[curr_token].stringval;
-			if (!query_symbol_table(id_name,entry)){
-				cout<<"identifier "<<tokens[curr_token].stringval<<" undefined"<<endl;
-				return ;
+			id_name = tokens[curr_token].stringval;
+			if (!query_symbol_table(id_name, entry)) {
+				cout << "identifier " << tokens[curr_token].stringval << " undefined" << endl;
+				return;
 			}
 			switch (entry.itype) {
 				case IDN_FUNCTION:
-					parse_non_void_func_call(res,res_dtype,id_name);
+					parse_non_void_func_call(res, res_dtype, id_name);
 					break;
 				case IDN_CONST:
-					res_dtype=entry.dtype;
-					if (res_dtype==DATA_INT) res=std::to_string(entry.value);
-					else res="\'"+std::to_string((char)entry.value)+"\'";
+					res_dtype = entry.dtype;
+					if (res_dtype == DATA_INT) res = std::to_string(entry.value);
+					else res = "\'" + std::to_string((char) entry.value) + "\'";
 					match();
 					break;
 				case IDN_ARRAY:
+					parse_array_read(res, res_dtype, id_name);
+					break;
 				case IDN_VAR:
-					res=id_name;
-					res_dtype=entry.dtype;
+					res = id_name;
+					res_dtype = entry.dtype;
 					match();
 				default:
 					break;
@@ -51,7 +54,7 @@ void parse_factor(std::string &res, dtype &res_dtype) {
 			break;
 		case TOK_LPARE:
 			match();//(
-			expression(res,res_dtype);
+			expression(res, res_dtype);
 			match();//)
 			break;
 		default:
@@ -60,8 +63,21 @@ void parse_factor(std::string &res, dtype &res_dtype) {
 			break;
 	}
 }
+
 void parse_exp1(std::string &res, dtype &res_dtype) {
 	parse_factor(res, res_dtype);
+	if (tokens[curr_token].type == TOK_INC || tokens[curr_token].type == TOK_DEC) {
+		instruct instr = tokens[curr_token].type == TOK_INC ? INC : DEC;
+		quadruple_element element{};
+		match();
+		if (instr == DEC) {
+			element = {SUB, res, "1", res};
+			insert_to_quadruple_list(element);
+		} else {
+			element = {ADD, res, "1", res};
+			insert_to_quadruple_list(element);
+		}
+	}
 }/* (backward) ++ -- */
 void parse_exp2(std::string &res, dtype &res_dtype) {
 	std::string temp_var;

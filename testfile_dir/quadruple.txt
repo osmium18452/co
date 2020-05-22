@@ -1,25 +1,16 @@
-FUNC void hello 
-PARAM int a 
-PARAM int b 
-PRINT string "hello world" 
-END   
-FUNC int rtn_1 
-RET 1  
-END   
 FUNC void main 
+VAR int a 
 VAR int d 
 VAR int e 
 VAR int f 
-CALL rtn_1  
-TEMP int $temp_0 
-GETRET $temp_0  
-CALL rtn_1  
-TEMP int $temp_1 
-GETRET $temp_1  
-TEMP int $temp_2 
-ADD $temp_0 $temp_1 $temp_2
-PUSH int $temp_2 
-PUSH int e 
-CALL hello  
+VAR int g 
+TEMP int @temp_0 
+ADD a d @temp_0
+TEMP int @temp_1 
+ADD @temp_0 e @temp_1
+TEMP int @temp_2 
+ADD @temp_1 f @temp_2
+ASSIGN @temp_2 g 
+RET 0  
 END   
 

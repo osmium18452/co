@@ -9,7 +9,7 @@ void parse_var_declaration(scope scope);
 
 void parse_var_definition(scope scope);
 
-void parse_func_declarartion();
+void parse_func_declaration();
 
 void parse_func_with_return_value();
 
@@ -61,10 +61,14 @@ void parse_scan_statement();
 
 void parse_single_statement();
 
-void parse_array_read(std::string &res, dtype &dtype, const std::string &id);
+void parse_array_read(std::string &res, dtype &data_dtype, const std::string &id);
 
 void parse_array_assign();
 
 void parse_argument_list(const std::vector<dtype> &param_list);
+
+void parse_break_statement();
+
+void parse_continue_statement();
 
 #endif //CO_SDT_FUNC_DECL_H

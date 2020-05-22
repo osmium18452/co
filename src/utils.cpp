@@ -26,14 +26,15 @@ void init_temp_label() {
 }
 
 std::string gen_temp_var() {
-	std::string temp_var = "$temp_";
+	std::string temp_var = "@temp_";
 	temp_var += std::to_string(temp_var_num);
 	temp_var_num++;
 	return temp_var;
 }
 
 std::string gen_temp_label() {
-	std::string temp_label = "$label_";
+	std::string temp_label = ".label_";
 	temp_label += std::to_string(temp_label_num);
+	temp_label_num++;
 	return temp_label;
 }

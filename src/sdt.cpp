@@ -8,6 +8,8 @@
 
 int curr_token;
 
+std::string break_point,continue_point;
+
 /*parse function declaration*/
 
 
@@ -20,7 +22,7 @@ void parse_program() {
 		if (tokens[curr_token].type == TOK_CONST) {
 			parse_const_declaration(GLOBAL);
 		} else if (tokens[curr_token].type == TOK_VOID || tokens[curr_token + 2].type == TOK_LPARE) {
-			parse_func_declarartion();
+			parse_func_declaration();
 		} else if (tokens[curr_token + 2].type == TOK_COMMA || tokens[curr_token + 2].type == TOK_SEMICOLON ||
 		           tokens[curr_token + 2].type == TOK_ASSIGN || tokens[curr_token + 2].type == TOK_LBRACKET) {
 			parse_var_declaration(GLOBAL);
@@ -79,16 +81,16 @@ void parse_var_declaration(scope scope) {
 }
 
 void parse_var_definition(scope scope) {
-	dtype dtype = DATA_INT;
+	dtype data_type = DATA_INT;
 	table_entry entry{};
 	quadruple_element element{};
 	std::string ident_name;
 	switch (tokens[curr_token].type) {
 		case TOK_INT:
-			dtype = DATA_INT;
+			data_type = DATA_INT;
 			break;
 		case TOK_CHAR:
-			dtype = DATA_CHAR;
+			data_type = DATA_CHAR;
 			break;
 		default:
 			break;
@@ -101,32 +103,28 @@ void parse_var_definition(scope scope) {
 			match();//consume the [;
 			int array_size = tokens[curr_token].intval;
 			match();
-			element = {scope == GLOBAL ? GVAR : VAR, dtype == DATA_INT ? "int" : "char", ident_name,
+			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name,
 			           std::to_string(array_size)};
 			insert_to_quadruple_list(element);
-			entry = {IDN_ARRAY, dtype, array_size, -1};
+			entry = {IDN_ARRAY, data_type, array_size, -1};
 			insert_to_symbol_table(scope, ident_name, entry);
 			match();
 		} else {
-			element = {scope == GLOBAL ? GVAR : VAR, dtype == DATA_INT ? "int" : "char", ident_name, NONE};
+			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name, NONE};
 			insert_to_quadruple_list(element);
-			entry = {IDN_VAR, dtype, -1, -1};
+			entry = {IDN_VAR, data_type, -1, -1};
 			insert_to_symbol_table(scope, ident_name, entry);
 			match();
 		}
 		if (tokens[curr_token].type == TOK_ASSIGN) {
-			match();
-			element = {ASSIGN, dtype == DATA_INT ? std::to_string(tokens[curr_token].intval) : std::to_string(
-					tokens[curr_token].charval), ident_name, NONE};
+			match();// =
+			std::string res;
+			dtype res_dtype;
+			expression_without_comma(res,res_dtype);
+			element={ASSIGN,res,ident_name,NONE};
 			insert_to_quadruple_list(element);
-			match();
-			if (tokens[curr_token].type == TOK_SEMICOLON) {
-				match();
-				break;
-			} else {
-				match();
-			}
-		} else if (tokens[curr_token].type == TOK_SEMICOLON) {
+		}
+		if (tokens[curr_token].type == TOK_SEMICOLON) {
 			match();
 			break;
 		} else if (tokens[curr_token].type == TOK_COMMA) {
@@ -135,7 +133,7 @@ void parse_var_definition(scope scope) {
 	}
 }
 
-void parse_func_declarartion() {
+void parse_func_declaration() {
 	if (tokens[curr_token + 1].stringval == "main") {
 		parse_main_func_declaration();
 	} else if (tokens[curr_token].type == TOK_VOID) {
@@ -241,6 +239,12 @@ void parse_single_statement() {
 	std::string res;
 	dtype dtype;
 	switch (tokens[curr_token].type) {
+		case TOK_CONTINUE:
+			parse_continue_statement();
+			break;
+		case TOK_BREAK:
+			parse_break_statement();
+			break;
 		case TOK_CONST:
 			parse_const_declaration(LOCAL);
 			break;
@@ -507,17 +511,17 @@ void parse_func_call_statement(const std::string &id) {
 void parse_non_void_func_call(std::string &res, dtype &data_type, const std::string &id) {
 	table_entry entry{};
 	quadruple_element element{};
-	if (!query_symbol_table(id,entry)){
-		cout<<"cannot find identifier "<< id <<endl;
-		return ;
+	if (!query_symbol_table(id, entry)) {
+		cout << "cannot find identifier " << id << endl;
+		return;
 	}
-	if (entry.itype!=IDN_FUNCTION){
-		cout<<id<<" is not a function"<<endl;
-		return ;
+	if (entry.itype != IDN_FUNCTION) {
+		cout << id << " is not a function" << endl;
+		return;
 	}
-	if (entry.dtype==DATA_VOID){
-		cout<<"function "<<id<<" has no return value"<<endl;
-		return ;
+	if (entry.dtype == DATA_VOID) {
+		cout << "function " << id << " has no return value" << endl;
+		return;
 	}
 	match();// identifier
 	match();// (
@@ -528,18 +532,65 @@ void parse_non_void_func_call(std::string &res, dtype &data_type, const std::str
 	}
 	parse_argument_list(para_list);
 	match();// )
-	element={CALL, id, NONE, NONE};
+	element = {CALL, id, NONE, NONE};
 	insert_to_quadruple_list(element);
-	res=gen_temp_var();
-	data_type=entry.dtype;
-	element={TEMP,data_type==DATA_INT?"int":"char",res,NONE};
+	res = gen_temp_var();
+	data_type = entry.dtype;
+	element = {TEMP, data_type == DATA_INT ? "int" : "char", res, NONE};
 	insert_to_quadruple_list(element);
-	element={GETRET,res,NONE,NONE};
+	element = {GETRET, res, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
 
-void parse_array_read(std::string &res, dtype &dtype, const std::string &id) {
+void parse_array_read(std::string &res, dtype &data_dtype, const std::string &id) {
+	table_entry entry{};
+	std::string index;
+	dtype index_dtype;
+	quadruple_element element{};
+	if (!query_symbol_table(id, entry)) {
+		cout << "cannot find identifier" << id << endl;
+		return;
+	}
+	if (entry.itype != IDN_ARRAY) {
+		cout << id << " is not an array" << endl;
+		return;
+	}
+	match();// identifier
+	match();// [
+	expression(index, index_dtype);
+	match();// ]
+	res = gen_temp_var();
+	data_dtype = entry.dtype;
+	element = {TEMP, data_dtype == DATA_INT ? "int" : "char", res, NONE};
+	insert_to_quadruple_list(element);
+	element = {RDARR, id, index, res};
+	insert_to_quadruple_list(element);
+}
 
+void parse_array_assign() {
+	table_entry entry{};
+	std::string id = tokens[curr_token].stringval;
+	std::string index;
+	dtype index_dtype;
+	std::string res;
+	dtype res_type;
+	match();// identifier.
+	if (!query_symbol_table(id, entry)) {
+		cout << "cannot find identifier" << id << endl;
+		return;
+	}
+	if (entry.itype != IDN_ARRAY) {
+		cout << id << " is not an array" << endl;
+		return;
+	}
+	match();// [
+	expression(index, index_dtype);
+	match();// ]
+	match();// =
+	expression(res, res_type);
+	quadruple_element element{WRARR, id, index, res};
+	insert_to_quadruple_list(element);
+	match();// ;
 }
 
 void parse_return_statement() {
@@ -551,66 +602,267 @@ void parse_return_statement() {
 		element = {RET, NONE, NONE, NONE};
 		insert_to_quadruple_list(element);
 	} else {
-		expression(ret_val,ret_dtype);
-		element={RET,ret_val,NONE,NONE};
+		expression(ret_val, ret_dtype);
+		element = {RET, ret_val, NONE, NONE};
 		insert_to_quadruple_list(element);
 	}
 	match();// ;
 }
 
 void parse_if_else_statement() {
-
+	match();// if
+	match();// (
+	std::string res;
+	dtype res_dtype;
+	quadruple_element element{};
+	std::string false_label, end_label;
+	false_label = gen_temp_label();
+	end_label = gen_temp_label();
+	expression(res, res_dtype);
+	match();// )
+	element = {CMP, res, "0", NONE};
+	insert_to_quadruple_list(element);
+	element = {JE, false_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	if (tokens[curr_token].type == TOK_LBRACE) {
+		parse_block();
+	} else {
+		parse_single_statement();
+	}
+	element = {JMP, end_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {LABEL, false_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	if (tokens[curr_token].type == TOK_ELSE) {
+		match();// else
+		if (tokens[curr_token].type == TOK_LBRACE) {
+			parse_block();
+		} else {
+			parse_single_statement();
+		}
+	}
+	element = {LABEL, end_label};
+	insert_to_quadruple_list(element);
 }
 
 void parse_for_statement() {
-
+	std::string start_label,end_label;
+	std::string res;
+	dtype res_dtype;
+	quadruple_element element{};
+	std::vector<quadruple_element> quadruple_element_for_exp3;
+	int quadruple_list_size_b4_stmt3;
+	create_new_local_table();
+	start_label = gen_temp_label();
+	end_label = gen_temp_label();
+	continue_point=start_label;
+	break_point=end_label;
+	match();//for
+	match();//(
+	parse_single_statement();
+	element={LABEL,start_label,NONE,NONE};
+	insert_to_quadruple_list(element);
+	expression(res,res_dtype);
+	match();//;
+	element = {CMP, res, "0", NONE};
+	insert_to_quadruple_list(element);
+	element = {JE, end_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	quadruple_list_size_b4_stmt3=quadruple_list.size();
+	expression(res,res_dtype);
+	while (quadruple_list.size()>quadruple_list_size_b4_stmt3){
+		quadruple_element_for_exp3.push_back(quadruple_list.back());
+		quadruple_list.pop_back();
+	}
+	match();// )
+	if (tokens[curr_token].type == TOK_LBRACE) {
+		parse_block();
+	} else {
+		parse_single_statement();
+	}
+	while (!quadruple_element_for_exp3.empty()){
+		quadruple_list.push_back(quadruple_element_for_exp3.back());
+		quadruple_element_for_exp3.pop_back();
+	}
+	element={JMP,start_label,NONE,NONE};
+	insert_to_quadruple_list(element);
+	element={LABEL,end_label,NONE,NONE};
+	insert_to_quadruple_list(element);
+	destroy_current_local_table();
 }
 
 void parse_while_statement() {
-
+	std::string start_label, end_label;
+	std::string res;
+	dtype res_dtype;
+	quadruple_element element{};
+	start_label = gen_temp_label();
+	end_label = gen_temp_label();
+	continue_point=start_label;
+	break_point=end_label;
+	element = {LABEL, start_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	match();// while
+	match();// (
+	expression(res, res_dtype);
+	match();// )
+	element = {CMP, res, "0", NONE};
+	insert_to_quadruple_list(element);
+	element = {JE, end_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	if (tokens[curr_token].type == TOK_LBRACE) {
+		parse_block();
+	} else {
+		parse_single_statement();
+	}
+	element = {JMP, start_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {LABEL, end_label, NONE, NONE};
+	insert_to_quadruple_list(element);
 }
 
 void parse_do_statement() {
-
+	std::string start_label, end_label;
+	std::string res;
+	dtype res_dtype;
+	quadruple_element element{};
+	start_label = gen_temp_label();
+	end_label = gen_temp_label();
+	continue_point=start_label;
+	break_point=end_label;
+	element = {LABEL, start_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	match();//do
+	parse_block();
+	match();//while
+	match();//(
+	expression(res,res_dtype);
+	element = {CMP, res, "0", NONE};
+	insert_to_quadruple_list(element);
+	element = {JE, end_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {JMP, start_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {LABEL, end_label, NONE, NONE};
+	insert_to_quadruple_list(element);
 }
 
 void parse_switch_statement() {
+	std::string label_end_of_switch;
+	std::string res;
+	dtype res_dtype;
+	label_end_of_switch=gen_temp_label();
+	break_point=label_end_of_switch;
+	match();//switch
+	match();//(
+	expression(res,res_dtype);
+	match();//)
 
 }
 
 void parse_ass() {
-
+	std::string id = tokens[curr_token].stringval;
+	match();// identifier.
+	match();// =
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{ASSIGN, res, id, NONE};
+	insert_to_quadruple_list(element);
+	match();// ;
 }
 
 void parse_addass() {
-
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{ADD, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
 }
 
 void parse_subass() {
-
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{SUB, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
 }
 
 void parse_modass() {
-
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{MOD, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
 }
 
 void parse_mulass() {
-
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{MUL, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
 }
 
 void parse_divass() {
-
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{DIV, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
 }
 
 void parse_shlass() {
-
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{SHL, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
 }
 
 void parse_shrass() {
-
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{SHR, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
 }
 
-void parse_array_assign() {
+void parse_break_statement(){
+	quadruple_element element{JMP,break_point,NONE,NONE};
+	insert_to_quadruple_list(element);
+}
 
+void parse_continue_statement(){
+	quadruple_element element{JMP,continue_point,NONE,NONE};
+	insert_to_quadruple_list(element);
 }
 

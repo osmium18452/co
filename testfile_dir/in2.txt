@@ -1,11 +1,16 @@
-void hello(int a,int b){
-printf("hello world");
-}
-int rtn_1(){
-return 1;
-}
-void main(){
-int d,e,f;
-hello(rtn_1()+rtn_1(),e);
-
+int main(){
+    int a;
+    {
+        int d;
+        {
+            int e;
+            {
+                int f;
+                {
+                    int g=a+d+e+f;
+                }
+            }
+        }
+    }
+    return 0;
 }

@@ -6,8 +6,8 @@ std::string instruct_convert_table[] = {
 		"GVAR","VAR",
 		"PARAM","FUNC",
 		"ASSIGN",
-		"ADD", "SUB", "MUL", "DIV",
-		"CMP", "JZ", "JNE",
+		"ADD", "SUB", "MUL", "DIV","MOD",
+		"CMP", "JE", "JNE","JMP",
 		"END",
 		"PRINT","SCAN",
 		"COMMA","LABEL",
@@ -20,6 +20,7 @@ std::string instruct_convert_table[] = {
 		"INC","DEC","NOT","REVERSE",
 		"PUSH","POP",
 		"CALL","RET","GETRET",
+		"RDARR","WRARR",
 };
 
 void insert_to_quadruple_list(quadruple_element &element){
