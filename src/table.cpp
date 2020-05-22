@@ -30,6 +30,10 @@ void init_param_table() {
 	curr_param_table = 0;
 }
 
+std::vector<dtype> get_para_table(const int para_table_num){
+	return param_table[para_table_num];
+}
+
 
 void init_symbol_table() {
 	if (!symbol_table.empty()) symbol_table.clear();

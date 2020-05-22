@@ -17,6 +17,9 @@ std::string instruct_convert_table[] = {
 		"NE","EQ",
 		"SHL","SHR",
 		"LT","LE","GT","GE",
+		"INC","DEC","NOT","REVERSE",
+		"PUSH","POP",
+		"CALL","RET","GETRET",
 };
 
 void insert_to_quadruple_list(quadruple_element &element){

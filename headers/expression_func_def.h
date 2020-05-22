@@ -4,7 +4,7 @@
 #include "global.h"
 #include "table.h"
 
-extern void parse_non_void_func_call(std::string &res, dtype &dtype, std::string &id);
+extern void parse_non_void_func_call(std::string &res, dtype &data_type, const std::string &id);
 extern void parse_array_read(std::string &res, dtype &dtype, const std::string &id);
 
 /*factor:   identifier

@@ -74,6 +74,5 @@ int main() {
 	cout << "global symbol table size: " << symbol_table[0].size() << endl;
 	print_symbol_table(table_file,0, true);
 	print_quadruple_list(quadruple_file);
-	print_para_table(para_table_file,0, false);
 	return 0;
 }

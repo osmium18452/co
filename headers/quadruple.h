@@ -19,6 +19,8 @@ NE,EQ,
 SHL,SHR,
 LT,LE,GT,GE,
 INC,DEC,NOT,REVERSE,
+PUSH,POP,
+CALL,RET,GETRET,
 };
 
 struct quadruple_element{

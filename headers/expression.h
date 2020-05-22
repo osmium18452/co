@@ -10,5 +10,6 @@ extern int curr_token;
 extern void match();
 
 void expression(std::string &res,dtype &dtype);
+void expression_without_comma(std::string &res,dtype &res_type);
 
 #endif //CO_EXPRESSION_H

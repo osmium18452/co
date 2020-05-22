@@ -1,6 +1,11 @@
-void hello(int a,int b,int c){
+void hello(int a,int b){
 printf("hello world");
+}
+int rtn_1(){
+return 1;
 }
 void main(){
 int d,e,f;
+hello(rtn_1()+rtn_1(),e);
+
 }

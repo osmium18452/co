@@ -52,7 +52,9 @@ int allocate_a_param_table();
 
 void init_param_table();
 
-void insert_to_para_table(const int para_table_num,const dtype dtype);
+void insert_to_para_table(const int para_table_num,const dtype dtype);\
+
+std::vector<dtype> get_para_table(const int para_table_num);
 
 void print_para_table(std::string &file, int which_table, bool append);
 

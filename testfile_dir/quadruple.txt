@@ -1,12 +1,25 @@
 FUNC void hello 
 PARAM int a 
 PARAM int b 
-PARAM int c 
 PRINT string "hello world" 
+END   
+FUNC int rtn_1 
+RET 1  
 END   
 FUNC void main 
 VAR int d 
 VAR int e 
 VAR int f 
+CALL rtn_1  
+TEMP int $temp_0 
+GETRET $temp_0  
+CALL rtn_1  
+TEMP int $temp_1 
+GETRET $temp_1  
+TEMP int $temp_2 
+ADD $temp_0 $temp_1 $temp_2
+PUSH int $temp_2 
+PUSH int e 
+CALL hello  
 END   
 

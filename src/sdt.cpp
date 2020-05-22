@@ -4,6 +4,7 @@
 #include "../headers/table.h"
 #include "../headers/expression.h"
 #include "../headers/sdt_func_decl.h"
+#include "../headers/utils.h"
 
 int curr_token;
 
@@ -180,7 +181,7 @@ void parse_func_without_return_value() {
 			break;
 	}
 	match();
-	para_table_num=allocate_a_param_table();
+	para_table_num = allocate_a_param_table();
 	entry = {IDN_FUNCTION, dtype, para_table_num, -1};
 	ident_name = tokens[curr_token].stringval;
 	element = {FUNC, tp, ident_name, NONE};
@@ -226,7 +227,7 @@ void parse_para_list(const int para_table_num) {
 		element = {PARAM, tp, para_name, NONE};
 		insert_to_symbol_table(LOCAL, para_name, entry);
 		insert_to_quadruple_list(element);
-		insert_to_para_table(para_table_num,dtype);
+		insert_to_para_table(para_table_num, dtype);
 		match();
 		if (tokens[curr_token].type == TOK_RPARE) {
 			break;
@@ -270,6 +271,9 @@ void parse_single_statement() {
 			break;
 		case TOK_READ:
 			parse_scan_statement();
+			break;
+		case TOK_RETURN:
+			parse_return_statement();
 			break;
 		case TOK_INC:
 		case TOK_DEC:
@@ -446,21 +450,112 @@ void parse_assignment_statement() {
 	}
 }
 
+void parse_argument_list(const std::vector<dtype> &param_list) {
+	std::string temp_var;
+	dtype temp_dtype;
+	int arg_cnt = 0;
+	if (param_list.empty()) {
+		if (tokens[curr_token].type != TOK_RPARE) {
+			cout << "this is a function without params" << endl;
+			return;
+		} else return;
+	}
+	while (true) {
+		expression_without_comma(temp_var, temp_dtype);
+		if (temp_dtype != param_list[arg_cnt]) {
+			cout << "not matched param data type" << endl;
+			return;
+		}
+		if (++arg_cnt > param_list.size()) {
+			cout << "too much args for function emm" << endl;
+			return;
+		}
+		quadruple_element element{PUSH, temp_dtype == DATA_INT ? "int" : "char", temp_var, NONE};
+		insert_to_quadruple_list(element);
+		if (tokens[curr_token].type != TOK_COMMA) break;
+		else match();
+	}
+	if (arg_cnt < param_list.size()) {
+		cout << "too few args for func" << endl;
+	}
+}
+
 void parse_func_call_statement(const std::string &id) {
 	table_entry entry{};
 	if (!query_symbol_table(id, entry)) {
-		cout<<"function "<<id<<" not defined."<<endl;
+		cout << "function " << id << " not defined." << endl;
+		return;
+	}
+	if (entry.itype != IDN_FUNCTION) {
+		cout << "identifier " << id << " is not a function" << endl;
+		return;
+	}
+	match();// identifier
+	match();// (
+	std::vector<dtype> para_list = get_para_table(entry.value);
+	if (!para_list.empty() && tokens[curr_token].type == TOK_RPARE) {
+		cout << "expected args" << endl;
+		return;
+	}
+	parse_argument_list(para_list);
+	match();// )
+	quadruple_element element{CALL, id, NONE, NONE};
+	insert_to_quadruple_list(element);
+	match();// ;
+}
+
+void parse_non_void_func_call(std::string &res, dtype &data_type, const std::string &id) {
+	table_entry entry{};
+	quadruple_element element{};
+	if (!query_symbol_table(id,entry)){
+		cout<<"cannot find identifier "<< id <<endl;
 		return ;
 	}
 	if (entry.itype!=IDN_FUNCTION){
-		cout<<"identifier "<<id<<" is not a function"<<endl;
+		cout<<id<<" is not a function"<<endl;
 		return ;
 	}
+	if (entry.dtype==DATA_VOID){
+		cout<<"function "<<id<<" has no return value"<<endl;
+		return ;
+	}
+	match();// identifier
+	match();// (
+	std::vector<dtype> para_list = get_para_table(entry.value);
+	if (!para_list.empty() && tokens[curr_token].type == TOK_RPARE) {
+		cout << "expected args" << endl;
+		return;
+	}
+	parse_argument_list(para_list);
+	match();// )
+	element={CALL, id, NONE, NONE};
+	insert_to_quadruple_list(element);
+	res=gen_temp_var();
+	data_type=entry.dtype;
+	element={TEMP,data_type==DATA_INT?"int":"char",res,NONE};
+	insert_to_quadruple_list(element);
+	element={GETRET,res,NONE,NONE};
+	insert_to_quadruple_list(element);
+}
+
+void parse_array_read(std::string &res, dtype &dtype, const std::string &id) {
 
 }
 
-void parse_non_void_func_call(std::string &res, dtype &dtype, const std::string &id) {
-
+void parse_return_statement() {
+	match();
+	std::string ret_val;
+	dtype ret_dtype;
+	quadruple_element element;
+	if (tokens[curr_token].type == TOK_SEMICOLON) {
+		element = {RET, NONE, NONE, NONE};
+		insert_to_quadruple_list(element);
+	} else {
+		expression(ret_val,ret_dtype);
+		element={RET,ret_val,NONE,NONE};
+		insert_to_quadruple_list(element);
+	}
+	match();// ;
 }
 
 void parse_if_else_statement() {
@@ -482,7 +577,6 @@ void parse_do_statement() {
 void parse_switch_statement() {
 
 }
-
 
 void parse_ass() {
 
@@ -520,6 +614,3 @@ void parse_array_assign() {
 
 }
 
-void parse_array_read(std::string &res, dtype &dtype, const std::string &id) {
-
-}

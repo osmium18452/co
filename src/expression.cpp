@@ -7,7 +7,10 @@
 
 void expression(std::string &res, dtype &res_dtype) {
 	parse_exp14(res, res_dtype);
-	cout << res << endl;
+}
+
+void expression_without_comma(std::string &res,dtype &res_type){
+	parse_exp13(res,res_type);
 }
 /*factor:   identifier
  *          immediate number
@@ -20,14 +23,36 @@ void parse_factor(std::string &res, dtype &res_dtype) {
 	table_entry entry{};
 	switch (tokens[curr_token].type) {
 		case TOK_IDENT:
-			if (!query_symbol_table(tokens[curr_token].stringval,entry)){
+			id_name=tokens[curr_token].stringval;
+			if (!query_symbol_table(id_name,entry)){
 				cout<<"identifier "<<tokens[curr_token].stringval<<" undefined"<<endl;
 				return ;
+			}
+			switch (entry.itype) {
+				case IDN_FUNCTION:
+					parse_non_void_func_call(res,res_dtype,id_name);
+					break;
+				case IDN_CONST:
+					res_dtype=entry.dtype;
+					if (res_dtype==DATA_INT) res=std::to_string(entry.value);
+					else res="\'"+std::to_string((char)entry.value)+"\'";
+					match();
+					break;
+				case IDN_ARRAY:
+				case IDN_VAR:
+					res=id_name;
+					res_dtype=entry.dtype;
+					match();
+				default:
+					break;
 			}
 			break;
 		case TOK_CHARCONST:
 			break;
 		case TOK_LPARE:
+			match();//(
+			expression(res,res_dtype);
+			match();//)
 			break;
 		default:
 			res = std::to_string(tokens[curr_token].intval);
