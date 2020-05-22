@@ -1,16 +1,10 @@
 int main(){
-    int a;
-    {
-        int d;
-        {
-            int e;
-            {
-                int f;
-                {
-                    int g=a+d+e+f;
-                }
-            }
-        }
+    int cnt=0;
+    int arr[100];
+    for (int i=1;i<50;i++){
+        scanf(arr[i*2]);
+        printf(arr[i*2]);
     }
+    printf("read ",cnt," data");
     return 0;
 }

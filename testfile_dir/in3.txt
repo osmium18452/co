@@ -104,3 +104,33 @@ b++;
 }
 return 0;
 }
+
+int main(){
+    int a;
+    {
+        int d;
+        {
+            int e;
+            {
+                int f;
+                {
+                    int g=a+d+e+f;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+int main(){
+    int cnt=0;
+    int arr[100];
+    for (int i=1;i<100;i++){
+        scanf(arr[i]);
+        cnt++;
+        if (arr[i]==100) break;
+    }
+    printf("read ",cnt," data");
+    return 0;
+}

@@ -1,16 +1,29 @@
 FUNC void main 
-VAR int a 
-VAR int d 
-VAR int e 
-VAR int f 
-VAR int g 
+VAR int cnt 
+ASSIGN 0 cnt 
+VAR int arr 100
+VAR int i 
+ASSIGN 1 i 
+LABEL .label_0  
 TEMP int @temp_0 
-ADD a d @temp_0
-TEMP int @temp_1 
-ADD @temp_0 e @temp_1
+LT i 50 @temp_0
+CMP @temp_0 0 
+JE .label_1  
+SCAN char @temp_1 
 TEMP int @temp_2 
-ADD @temp_1 f @temp_2
-ASSIGN @temp_2 g 
+MUL i 2 @temp_2
+WRARR arr @temp_2 @temp_1
+TEMP int @temp_3 
+MUL i 2 @temp_3
+TEMP int @temp_4 
+RDARR arr @temp_3 @temp_4
+PRINT int @temp_4 
+ADD i 1 i
+JMP .label_0  
+LABEL .label_1  
+PRINT string "read " 
+PRINT int cnt 
+PRINT string "read " data" 
 RET 0  
 END   
 

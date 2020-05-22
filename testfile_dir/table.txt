@@ -1138,3 +1138,45 @@ e IDN_VAR DATA_INT -1 -1
 /***** LOCAL SYMBOL TABLE 2 *****/
 d IDN_VAR DATA_INT -1 -1
 
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+arr IDN_ARRAY DATA_INT 100 -1
+cnt IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+arr IDN_ARRAY DATA_INT 100 -1
+cnt IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+arr IDN_ARRAY DATA_INT 100 -1
+cnt IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+arr IDN_ARRAY DATA_INT 100 -1
+cnt IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+

@@ -360,7 +360,6 @@ void parse_print_statement() {
 						dtp = dtype == DATA_CHAR ? "char" : "int";
 						element = {PRINT, dtp, res, NONE};
 						insert_to_quadruple_list(element);
-						match();
 						break;
 					case IDN_FUNCTION:
 						parse_non_void_func_call(res, dtype, tokens[curr_token].stringval);
@@ -393,6 +392,8 @@ void parse_print_statement() {
 void parse_scan_statement() {
 	quadruple_element element{};
 	table_entry entry{};
+	std::string tmp_var,index,arr_name;
+	dtype index_dtype;
 	match();// scanf
 	match();// (
 	while (true) {
@@ -401,16 +402,23 @@ void parse_scan_statement() {
 			break;
 		} else {
 			query_symbol_table(tokens[curr_token].stringval, entry);
-			switch (entry.dtype) {
-				case DATA_INT:
-					element = {SCAN, "int", tokens[curr_token].stringval, NONE};
+			switch (entry.itype) {
+				case IDN_VAR:
+					element = {SCAN, entry.dtype==DATA_INT?"int":"char", tokens[curr_token].stringval, NONE};
 					insert_to_quadruple_list(element);
 					match();
 					break;
-				case DATA_CHAR:
-					element = {SCAN, "char", tokens[curr_token].stringval, NONE};
+				case IDN_ARRAY:
+					tmp_var=gen_temp_var();
+					element = {SCAN, "char",tmp_var, NONE};
 					insert_to_quadruple_list(element);
+					arr_name=tokens[curr_token].stringval;
 					match();
+					match();// [
+					expression(index, index_dtype);
+					match();// ]
+					element={WRARR,arr_name,index,tmp_var};
+					insert_to_quadruple_list(element);
 					break;
 				default:
 					break;
