@@ -1126,3 +1126,15 @@ a IDN_VAR DATA_INT -1 -1
 
 /***** GLOBAL SYMBOL TABLE *****/
 
+/***** LOCAL SYMBOL TABLE 5 *****/
+g IDN_VAR DATA_INT -1 -1
+
+/***** LOCAL SYMBOL TABLE 4 *****/
+f IDN_VAR DATA_INT -1 -1
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+e IDN_VAR DATA_INT -1 -1
+
+/***** LOCAL SYMBOL TABLE 2 *****/
+d IDN_VAR DATA_INT -1 -1
+

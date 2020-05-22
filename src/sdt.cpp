@@ -746,7 +746,7 @@ void parse_do_statement() {
 	element = {LABEL, end_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
-
+/* SWITCH STATEMENT HAS NOT BEEN SUPPORTED YET. */
 void parse_switch_statement() {
 	std::string label_end_of_switch;
 	std::string res;
@@ -757,7 +757,6 @@ void parse_switch_statement() {
 	match();//(
 	expression(res,res_dtype);
 	match();//)
-
 }
 
 void parse_ass() {
