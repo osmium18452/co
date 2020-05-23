@@ -3,28 +3,29 @@
 
 #include "global.h"
 
-enum instruct{
-GVAR,VAR,
-PARAM,FUNC,
-ASSIGN,
-ADD,SUB,MUL,DIV,MOD,
-CMP,JE,JNE,JMP,
-END,
-PRINT,SCAN,
-COMMA,LABEL,
-LOGIAND,LOGIOR,
-TEMP,
-BITAND,BITOR,BITXOR,
-NE,EQ,
-SHL,SHR,
-LT,LE,GT,GE,
-INC,DEC,NOT,REVERSE,
-PUSH,POP,
-CALL,RET,GETRET,
-RDARR,WRARR,
+enum instruct {
+	GVAR, VAR,
+	PARAM, FUNC,
+	ASSIGN,
+	ADD, SUB, MUL, DIV, MOD,
+	CMP, JE, JNE, JMP, JA, JB,SWJMP,
+	END,
+	PRINT, SCAN,
+	COMMA, LABEL,
+	LOGIAND, LOGIOR,
+	TEMP,
+	BITAND, BITOR, BITXOR,
+	NE, EQ,
+	SHL, SHR,
+	LT, LE, GT, GE,
+	INC, DEC, NOT, REVERSE,
+	PUSH, POP,
+	CALL, RET, GETRET,
+	RDARR, WRARR,
+	KASE_ITEM,
 };
 
-struct quadruple_element{
+struct quadruple_element {
 	instruct instruct;
 	std::string a;
 	std::string b;
@@ -32,6 +33,7 @@ struct quadruple_element{
 };
 
 void insert_to_quadruple_list(quadruple_element &element);
+
 void print_quadruple_list(std::string &file);
 
 extern std::vector<quadruple_element> quadruple_list;

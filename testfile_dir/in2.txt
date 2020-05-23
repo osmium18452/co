@@ -1,10 +1,28 @@
-int main(){
-    int cnt=0;
-    int arr[100];
-    for (int i=1;i<50;i++){
-        scanf(arr[i*2]);
-        printf(arr[i*2]);
-    }
-    printf("read ",cnt," data");
-    return 0;
+void main(){
+    int a,b,c,d;
+    switch (a){
+        case 1:
+            a++;
+            a++;
+            a--;
+            break;
+        case 2:
+            a--;
+            break;
+        case 9:
+        case 4:
+            a+=3;
+            b=a;
+        case 5:
+            a++;
+            break;
+        case 6:
+            a++;
+            b++;
+            c++;
+        default:
+            a++;
+            c+=a;
+            break;
+}
 }

@@ -48,7 +48,7 @@ enum token_type{
 	TOK_PROG_END,
 	TOK_BREAK,      TOK_CONTINUE,
 	TOK_SWITCH,     TOK_CASE,
-	TOK_REVERSE,
+	TOK_REVERSE,    TOK_DEFAULT,
 };
 
 struct token{

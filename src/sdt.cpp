@@ -8,7 +8,7 @@
 
 int curr_token;
 
-std::string break_point,continue_point;
+std::string break_point, continue_point;
 
 /*parse function declaration*/
 
@@ -120,8 +120,8 @@ void parse_var_definition(scope scope) {
 			match();// =
 			std::string res;
 			dtype res_dtype;
-			expression_without_comma(res,res_dtype);
-			element={ASSIGN,res,ident_name,NONE};
+			expression_without_comma(res, res_dtype);
+			element = {ASSIGN, res, ident_name, NONE};
 			insert_to_quadruple_list(element);
 		}
 		if (tokens[curr_token].type == TOK_SEMICOLON) {
@@ -366,7 +366,6 @@ void parse_print_statement() {
 						dtp = dtype == DATA_CHAR ? "char" : "int";
 						element = {PRINT, dtp, res, NONE};
 						insert_to_quadruple_list(element);
-						match();
 						break;
 					case IDN_CONST:
 						res = entry.dtype == DATA_CHAR ? std::to_string((char) (entry.value)) : std::to_string(
@@ -392,7 +391,7 @@ void parse_print_statement() {
 void parse_scan_statement() {
 	quadruple_element element{};
 	table_entry entry{};
-	std::string tmp_var,index,arr_name;
+	std::string tmp_var, index, arr_name;
 	dtype index_dtype;
 	match();// scanf
 	match();// (
@@ -404,20 +403,20 @@ void parse_scan_statement() {
 			query_symbol_table(tokens[curr_token].stringval, entry);
 			switch (entry.itype) {
 				case IDN_VAR:
-					element = {SCAN, entry.dtype==DATA_INT?"int":"char", tokens[curr_token].stringval, NONE};
+					element = {SCAN, entry.dtype == DATA_INT ? "int" : "char", tokens[curr_token].stringval, NONE};
 					insert_to_quadruple_list(element);
 					match();
 					break;
 				case IDN_ARRAY:
-					tmp_var=gen_temp_var();
-					element = {SCAN, "char",tmp_var, NONE};
+					tmp_var = gen_temp_var();
+					element = {SCAN, "char", tmp_var, NONE};
 					insert_to_quadruple_list(element);
-					arr_name=tokens[curr_token].stringval;
+					arr_name = tokens[curr_token].stringval;
 					match();
 					match();// [
 					expression(index, index_dtype);
 					match();// ]
-					element={WRARR,arr_name,index,tmp_var};
+					element = {WRARR, arr_name, index, tmp_var};
 					insert_to_quadruple_list(element);
 					break;
 				default:
@@ -654,7 +653,7 @@ void parse_if_else_statement() {
 }
 
 void parse_for_statement() {
-	std::string start_label,end_label;
+	std::string start_label, end_label;
 	std::string res;
 	dtype res_dtype;
 	quadruple_element element{};
@@ -663,22 +662,22 @@ void parse_for_statement() {
 	create_new_local_table();
 	start_label = gen_temp_label();
 	end_label = gen_temp_label();
-	continue_point=start_label;
-	break_point=end_label;
+	continue_point = start_label;
+	break_point = end_label;
 	match();//for
 	match();//(
 	parse_single_statement();
-	element={LABEL,start_label,NONE,NONE};
+	element = {LABEL, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
-	expression(res,res_dtype);
+	expression(res, res_dtype);
 	match();//;
 	element = {CMP, res, "0", NONE};
 	insert_to_quadruple_list(element);
 	element = {JE, end_label, NONE, NONE};
 	insert_to_quadruple_list(element);
-	quadruple_list_size_b4_stmt3=quadruple_list.size();
-	expression(res,res_dtype);
-	while (quadruple_list.size()>quadruple_list_size_b4_stmt3){
+	quadruple_list_size_b4_stmt3 = quadruple_list.size();
+	expression(res, res_dtype);
+	while (quadruple_list.size() > quadruple_list_size_b4_stmt3) {
 		quadruple_element_for_exp3.push_back(quadruple_list.back());
 		quadruple_list.pop_back();
 	}
@@ -688,13 +687,13 @@ void parse_for_statement() {
 	} else {
 		parse_single_statement();
 	}
-	while (!quadruple_element_for_exp3.empty()){
+	while (!quadruple_element_for_exp3.empty()) {
 		quadruple_list.push_back(quadruple_element_for_exp3.back());
 		quadruple_element_for_exp3.pop_back();
 	}
-	element={JMP,start_label,NONE,NONE};
+	element = {JMP, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
-	element={LABEL,end_label,NONE,NONE};
+	element = {LABEL, end_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 	destroy_current_local_table();
 }
@@ -706,8 +705,8 @@ void parse_while_statement() {
 	quadruple_element element{};
 	start_label = gen_temp_label();
 	end_label = gen_temp_label();
-	continue_point=start_label;
-	break_point=end_label;
+	continue_point = start_label;
+	break_point = end_label;
 	element = {LABEL, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 	match();// while
@@ -736,15 +735,15 @@ void parse_do_statement() {
 	quadruple_element element{};
 	start_label = gen_temp_label();
 	end_label = gen_temp_label();
-	continue_point=start_label;
-	break_point=end_label;
+	continue_point = start_label;
+	break_point = end_label;
 	element = {LABEL, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 	match();//do
 	parse_block();
 	match();//while
 	match();//(
-	expression(res,res_dtype);
+	expression(res, res_dtype);
 	element = {CMP, res, "0", NONE};
 	insert_to_quadruple_list(element);
 	element = {JE, end_label, NONE, NONE};
@@ -754,18 +753,84 @@ void parse_do_statement() {
 	element = {LABEL, end_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
+
 /* SWITCH STATEMENT HAS NOT BEEN SUPPORTED YET. */
 void parse_switch_statement() {
-	std::string label_end_of_switch;
+	std::string label_end_of_switch, label_case, label_default, label_jump_table;
 	std::string res;
 	dtype res_dtype;
-	label_end_of_switch=gen_temp_label();
-	break_point=label_end_of_switch;
+	std::vector<kase_table> case_table;
+	quadruple_element element{};
+	std::vector<quadruple_element> head_of_switch;
+	label_end_of_switch = gen_temp_label("end_of_switch");
+	label_default = gen_temp_label("default");
+	label_jump_table = gen_temp_label("jump_table");
+	break_point = label_end_of_switch;
 	match();//switch
 	match();//(
-	expression(res,res_dtype);
+	expression(res, res_dtype);
+	auto place_recorder = quadruple_list.end() - quadruple_list.begin();
 	match();//)
+	match();//{
+	while (tokens[curr_token].type != TOK_RBRACE) {
+		if (tokens[curr_token].type == TOK_CASE) {
+			match();//case
+			label_case = gen_temp_label("case");
+			element = {LABEL, label_case, NONE, NONE};
+			insert_to_quadruple_list(element);
+			case_table.push_back(kase_table{tokens[curr_token].intval, label_case});
+			match();// const int
+			match();// :
+		} else if (tokens[curr_token].type == TOK_DEFAULT) {
+			match();//default
+			match();//:
+			element = {LABEL, label_default, NONE, NONE};
+			insert_to_quadruple_list(element);
+		} else {
+			parse_single_statement();
+		}
+	}
+	element = {LABEL, label_end_of_switch, NONE, NONE};
+	insert_to_quadruple_list(element);
+	match();//}
+	//generate jump table.
+	std::sort(case_table.begin(), case_table.end());
+	for (const auto &i:case_table) {
+		cout << i.kase_num << " " << i.kase_label << endl;
+	}
+	element = {CMP, res, std::to_string(case_table.begin()->kase_num), NONE};
+	head_of_switch.push_back(element);
+	element = {JB, label_default, NONE, NONE};
+	head_of_switch.push_back(element);
+	element = {CMP, res, std::to_string((case_table.end() - 1)->kase_num), NONE};
+	head_of_switch.push_back(element);
+	element = {JA, label_default, NONE, NONE};
+	head_of_switch.push_back(element);
+	element = {SUB, res, std::to_string(case_table.begin()->kase_num), res};
+	head_of_switch.push_back(element);
+	element = {SWJMP, res, label_jump_table, NONE};
+	head_of_switch.push_back(element);
+	element = {LABEL, label_jump_table, NONE, NONE};
+	head_of_switch.push_back(element);
+	std::vector<std::string> tmp_vec_0;
+	for (int i = case_table.begin()->kase_num; i <= (case_table.end() - 1)->kase_num; i++) {
+		tmp_vec_0.push_back(label_default);
+	}
+	int tmp_num_rec = case_table.begin()->kase_num;
+	for (auto &i:case_table) {
+		i.kase_num -= tmp_num_rec;
+	}
+	for (const auto &i:case_table) {
+		tmp_vec_0[i.kase_num] = i.kase_label;
+	}
+	for (const auto &i:tmp_vec_0) {
+		element = {KASE_ITEM, i, NONE, NONE};
+		head_of_switch.push_back(element);
+	}
+	quadruple_list.insert(quadruple_list.begin() + place_recorder, head_of_switch.begin(), head_of_switch.end());
 }
+//	kase_table min_case_int=*std::min_element(case_table.begin(),case_table.end());
+//	cout<<min_case_int.kase_num<<" "<<min_case_int.kase_label<<endl;
 
 void parse_ass() {
 	std::string id = tokens[curr_token].stringval;
@@ -863,13 +928,17 @@ void parse_shrass() {
 	match();
 }
 
-void parse_break_statement(){
-	quadruple_element element{JMP,break_point,NONE,NONE};
+void parse_break_statement() {
+	quadruple_element element{JMP, break_point, NONE, NONE};
 	insert_to_quadruple_list(element);
+	match();
+	match();
 }
 
-void parse_continue_statement(){
-	quadruple_element element{JMP,continue_point,NONE,NONE};
+void parse_continue_statement() {
+	quadruple_element element{JMP, continue_point, NONE, NONE};
 	insert_to_quadruple_list(element);
+	match();
+	match();
 }
 

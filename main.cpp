@@ -11,7 +11,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-int main() {
+int main(int argc,char **argv) {
 //	freopen("../accessory-files/out2.txt","w",stdout);
 	std::string token_file = "../testfile_dir/tokens.txt";
 	std::string table_file = "../testfile_dir/table.txt";

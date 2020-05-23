@@ -32,6 +32,13 @@ std::string gen_temp_var() {
 	return temp_var;
 }
 
+std::string gen_temp_label(const std::string &name){
+	std::string temp_label = ".label_"+name+"_";
+	temp_label += std::to_string(temp_label_num);
+	temp_label_num++;
+	return temp_label;
+}
+
 std::string gen_temp_label() {
 	std::string temp_label = ".label_";
 	temp_label += std::to_string(temp_label_num);

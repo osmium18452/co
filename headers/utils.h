@@ -8,6 +8,7 @@ void init_temp_label();
 
 std::string gen_temp_var();
 std::string gen_temp_label();
+std::string gen_temp_label(const std::string &name);
 
 bool is_const(const std::string &t, int &val);
 

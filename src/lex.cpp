@@ -41,7 +41,7 @@ std::unordered_map<std::string, token_type> string_to_token({
 	{"if",       TOK_IF},       {"else",     TOK_ELSE},
 	{"switch",   TOK_SWITCH},   {"case",     TOK_CASE},
 	{"for",      TOK_FOR},      {"while",    TOK_WHILE},    {"do",       TOK_DO},
-	{"return",   TOK_RETURN},   {"NULL",     TOK_NIL},
+	{"return",   TOK_RETURN},   {"NULL",     TOK_NIL},      {"default",  TOK_DEFAULT},
 	{",",        TOK_COMMA},
 	{";",        TOK_SEMICOLON},
 	{"(",        TOK_LPARE},    {")",        TOK_RPARE},
@@ -105,7 +105,8 @@ std::string token_convert_table[]={
 		"TOK_MULASS",     "TOK_DIVASS",     "TOK_MODASS",
 		"TOK_PROG_END",
 		"TOK_BREAK",      "TOK_CONTINUE",
-		"TOK_REVERSE",
+		"TOK_SWITCH",     "TOK_CASE",
+		"TOK_REVERSE",    "TOK_DEFAULT",
 };
 
 int get_token(std::string &s, bool use_blank) {

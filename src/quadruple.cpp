@@ -3,31 +3,32 @@
 std::vector<quadruple_element> quadruple_list;
 
 std::string instruct_convert_table[] = {
-		"GVAR","VAR",
-		"PARAM","FUNC",
+		"GVAR", "VAR",
+		"PARAM", "FUNC",
 		"ASSIGN",
-		"ADD", "SUB", "MUL", "DIV","MOD",
-		"CMP", "JE", "JNE","JMP",
+		"ADD", "SUB", "MUL", "DIV", "MOD",
+		"CMP", "JE", "JNE", "JMP", "JA", "JB","SWJMP",
 		"END",
-		"PRINT","SCAN",
-		"COMMA","LABEL",
-		"LOGI_AND","LOGI_OR",
+		"PRINT", "SCAN",
+		"COMMA", "LABEL",
+		"LOGI_AND", "LOGI_OR",
 		"TEMP",
-		"BITAND","BITOR","BITXOR",
-		"NE","EQ",
-		"SHL","SHR",
-		"LT","LE","GT","GE",
-		"INC","DEC","NOT","REVERSE",
-		"PUSH","POP",
-		"CALL","RET","GETRET",
-		"RDARR","WRARR",
+		"BITAND", "BITOR", "BITXOR",
+		"NE", "EQ",
+		"SHL", "SHR",
+		"LT", "LE", "GT", "GE",
+		"INC", "DEC", "NOT", "REVERSE",
+		"PUSH", "POP",
+		"CALL", "RET", "GETRET",
+		"RDARR", "WRARR",
+		"KASE_ITEM",
 };
 
-void insert_to_quadruple_list(quadruple_element &element){
+void insert_to_quadruple_list(quadruple_element &element) {
 	quadruple_list.push_back(element);
 }
 
-void print_quadruple_list(std::string &file){
+void print_quadruple_list(std::string &file) {
 	std::ostream quadruple_stream(NULL);
 	std::filebuf buffer;
 	buffer.open(file, std::ios::out);
