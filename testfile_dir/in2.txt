@@ -1,28 +1,4 @@
-void main(){
-    int a,b,c,d;
-    switch (a){
-        case 1:
-            a++;
-            a++;
-            a--;
-            break;
-        case 2:
-            a--;
-            break;
-        case 9:
-        case 4:
-            a+=3;
-            b=a;
-        case 5:
-            a++;
-            break;
-        case 6:
-            a++;
-            b++;
-            c++;
-        default:
-            a++;
-            c+=a;
-            break;
-}
+int main(){
+int a,b,c,d,e,f,g,h,i,j,k,l,m,n;
+return a+(b-c)*d/e+(f++)^g|h-(++i)/8+j/k%l-m*n;
 }

@@ -3,45 +3,44 @@ VAR int a
 VAR int b 
 VAR int c 
 VAR int d 
-CMP a 1 
-JB .label_default_1  
-CMP a 9 
-JA .label_default_1  
-SUB a 1 a
-SWJMP a .label_jump_table_2 
-LABEL .label_jump_table_2  
-KASE_ITEM .label_case_3  
-KASE_ITEM .label_case_4  
-KASE_ITEM .label_default_1  
-KASE_ITEM .label_case_6  
-KASE_ITEM .label_case_7  
-KASE_ITEM .label_case_8  
-KASE_ITEM .label_default_1  
-KASE_ITEM .label_default_1  
-KASE_ITEM .label_case_5  
-LABEL .label_case_3  
-ADD a 1 a
-ADD a 1 a
-SUB a 1 a
-JMP .label_end_of_switch_0  
-LABEL .label_case_4  
-SUB a 1 a
-JMP .label_end_of_switch_0  
-LABEL .label_case_5  
-LABEL .label_case_6  
-ADD a 3 a
-ASSIGN a b 
-LABEL .label_case_7  
-ADD a 1 a
-JMP .label_end_of_switch_0  
-LABEL .label_case_8  
-ADD a 1 a
-ADD b 1 b
-ADD c 1 c
-LABEL .label_default_1  
-ADD a 1 a
-ADD c a c
-JMP .label_end_of_switch_0  
-LABEL .label_end_of_switch_0  
+VAR int e 
+VAR int f 
+VAR int g 
+VAR int h 
+VAR int i 
+VAR int j 
+VAR int k 
+VAR int l 
+VAR int m 
+VAR int n 
+TEMP int @temp_0 
+SUB b c @temp_0
+TEMP int @temp_1 
+MUL @temp_0 d @temp_1
+TEMP int @temp_2 
+DIV @temp_1 e @temp_2
+TEMP int @temp_3 
+ADD a @temp_2 @temp_3
+INC f  
+TEMP int @temp_4 
+ADD @temp_3 f @temp_4
+TEMP int @temp_5 
+BITXOR @temp_4 g @temp_5
+INC i  
+TEMP int @temp_6 
+DIV i 8 @temp_6
+TEMP int @temp_7 
+SUB h @temp_6 @temp_7
+TEMP int @temp_8 
+DIV j k @temp_8
+TEMP int @temp_9 
+ADD @temp_7 @temp_8 @temp_9
+TEMP int @temp_10 
+BITOR @temp_5 @temp_9 @temp_10
+RET @temp_10  
+TEMP int @temp_11 
+MUL m n @temp_11
+TEMP int @temp_12 
+SUB l @temp_11 @temp_12
 END   
 

@@ -71,10 +71,10 @@ void parse_exp1(std::string &res, dtype &res_dtype) {
 		quadruple_element element{};
 		match();
 		if (instr == DEC) {
-			element = {SUB, res, "1", res};
+			element = {DEC, res, NONE, NONE};
 			insert_to_quadruple_list(element);
 		} else {
-			element = {ADD, res, "1", res};
+			element = {INC, res, NONE, NONE};
 			insert_to_quadruple_list(element);
 		}
 	}

@@ -12,12 +12,12 @@ using std::cin;
 using std::endl;
 
 int main(int argc,char **argv) {
-//	freopen("../accessory-files/out2.txt","w",stdout);
 	std::string token_file = "../testfile_dir/tokens.txt";
 	std::string table_file = "../testfile_dir/table.txt";
 	std::string quadruple_file = "../testfile_dir/quadruple.txt";
 	std::string para_table_file = "../testfile_dir/para_table.txt";
 	std::string file = "../testfile_dir/in2.txt";
+	if (argc>1) file=argv[2];
 	std::ostream token_stream(NULL);
 	std::filebuf token_buffer;
 	token_buffer.open(token_file, std::ios_base::out);
@@ -75,5 +75,7 @@ int main(int argc,char **argv) {
 	print_symbol_table(table_file, 0, true);
 	print_quadruple_list(quadruple_file);
 	cout << "quadruple list size: " << quadruple_list.size() << endl;
+	init_symbol_table();
+
 	return 0;
 }

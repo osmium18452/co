@@ -346,6 +346,14 @@ void parse_print_statement() {
 				insert_to_quadruple_list(element);
 				match();
 				break;
+			case TOK_INTCONST:
+			case TOK_CHARCONST:
+				element = {PRINT, tokens[curr_token].type == TOK_INTCONST ? "int" : "char", std::to_string(
+						tokens[curr_token].type == TOK_INTCONST ? tokens[curr_token].intval
+						                                        : tokens[curr_token].charval), NONE};
+				insert_to_quadruple_list(element);
+				match();
+				break;
 			case TOK_IDENT:
 				query_symbol_table(tokens[curr_token].stringval, entry);
 				switch (entry.itype) {
@@ -408,16 +416,25 @@ void parse_scan_statement() {
 					match();
 					break;
 				case IDN_ARRAY:
-					tmp_var = gen_temp_var();
-					element = {SCAN, "char", tmp_var, NONE};
-					insert_to_quadruple_list(element);
-					arr_name = tokens[curr_token].stringval;
-					match();
-					match();// [
-					expression(index, index_dtype);
-					match();// ]
-					element = {WRARR, arr_name, index, tmp_var};
-					insert_to_quadruple_list(element);
+					if (tokens[curr_token + 1].type == TOK_LBRACKET) {
+						tmp_var = gen_temp_var();
+						element = {SCAN, "char", tmp_var, NONE};
+						insert_to_quadruple_list(element);
+						arr_name = tokens[curr_token].stringval;
+						match();
+						match();// [
+						expression(index, index_dtype);
+						match();// ]
+						element = {WRARR, arr_name, index, tmp_var};
+						insert_to_quadruple_list(element);
+					} else if (entry.dtype == DATA_CHAR) {
+						element = {SCAN, "string", tokens[curr_token].stringval, NONE};
+						insert_to_quadruple_list(element);
+						match();
+					} else {
+						cout << "you can't read an array" << endl;
+						match();
+					}
 					break;
 				default:
 					break;
@@ -754,7 +771,6 @@ void parse_do_statement() {
 	insert_to_quadruple_list(element);
 }
 
-/* SWITCH STATEMENT HAS NOT BEEN SUPPORTED YET. */
 void parse_switch_statement() {
 	std::string label_end_of_switch, label_case, label_default, label_jump_table;
 	std::string res;
@@ -829,8 +845,6 @@ void parse_switch_statement() {
 	}
 	quadruple_list.insert(quadruple_list.begin() + place_recorder, head_of_switch.begin(), head_of_switch.end());
 }
-//	kase_table min_case_int=*std::min_element(case_table.begin(),case_table.end());
-//	cout<<min_case_int.kase_num<<" "<<min_case_int.kase_label<<endl;
 
 void parse_ass() {
 	std::string id = tokens[curr_token].stringval;
