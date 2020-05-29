@@ -23,6 +23,7 @@ enum instruct {
 	CALL, RET, GETRET,
 	RDARR, WRARR,
 	KASE_ITEM,
+	CREATE_TABLE,DESTROY_TABLE,
 };
 
 struct quadruple_element {

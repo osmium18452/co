@@ -1,15 +1,46 @@
-SECTION .data                            ; 数据段
-    msg     db  'Hello World!', 0Ah      ; 创建字符串，0Ah是换行符
+section .data
+msg db 'hello 123 world',0AH,0H
+int_val dd 123456
 
-SECTION .text                            ; 代码段
-global  _start
+section .text
+global _start
+
+$quit:
+    mov ebx,0
+    mov eax,1
+    int 80h
+
+$print_str:
+    push ebx
+    mov ebp,esp
+    mov [ebp-4],ebx
+    call $strlen
+    mov edx,eax
+    mov ecx,ebx
+    mov ebx,1
+    mov eax,4
+    int 80h
+    pop ebx
+    ret
+
+$strlen:
+    push ebx
+    mov eax,ebx
+
+    .nextchar:
+    cmp byte[eax],0
+    jz .finished
+    inc eax
+    jmp .nextchar
+
+    .finished:
+    sub eax,ebx
+    pop ebx
+    ret
+
 _start:
-    mov     edx, 13     ; 字符串长度
-    mov     ecx, msg    ; 字符串地址
-    mov     ebx, 1      ; 写入到标准输出
-    mov     eax, 4      ; SYS_WRITE 中断操作数 4
-    int     80h         ; 调用系统中断
+    mov ebx,msg
+    push ebx
+    call $print_str
+    call $quit
 
-    mov     ebx, 0      ; 返回值
-    mov     eax, 1      ; SYS_EXIT 中断操作数 1
-    int     80h         ; 调用系统中断

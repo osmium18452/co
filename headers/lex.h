@@ -63,6 +63,7 @@ struct token{
 	double doubleval;
 	char charval;
 	std::string stringval;
+	int line_num;
 };
 
 enum state_type{

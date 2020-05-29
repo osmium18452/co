@@ -16,6 +16,7 @@ int main(int argc,char **argv) {
 	std::string table_file = "../testfile_dir/table.txt";
 	std::string quadruple_file = "../testfile_dir/quadruple.txt";
 	std::string para_table_file = "../testfile_dir/para_table.txt";
+	std::string string_file="../testfile_dir/string_table.txt";
 	std::string file = "../testfile_dir/in2.txt";
 	if (argc>1) file=argv[2];
 	std::ostream token_stream(NULL);
@@ -68,14 +69,16 @@ int main(int argc,char **argv) {
 	curr_token = 0;
 	init_symbol_table();
 	init_param_table();
+	init_string_table();
 	init_temp_var();
 	init_temp_label();
 	parse_program();
 	cout << "global symbol table size: " << symbol_table[0].size() << endl;
 	print_symbol_table(table_file, 0, true);
 	print_quadruple_list(quadruple_file);
+	print_string_table(string_file);
 	cout << "quadruple list size: " << quadruple_list.size() << endl;
 	init_symbol_table();
-
+//	printf("a: %x b: %x t: %x v: %x f: %x n: %x r: %x\n",'\a','\b','\t','\v','\f','\n','\r');
 	return 0;
 }

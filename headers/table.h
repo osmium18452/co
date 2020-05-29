@@ -35,6 +35,15 @@ extern std::vector<std::unordered_map<std::string, table_entry>> symbol_table;
 extern std::string itype_convert_table[];
 extern std::string dtype_convert_table[];
 extern int local_symbol_table_level;
+extern std::unordered_map<std::string,std::string> string_table;
+
+void insert_to_string_table(const std::string &s, std::string &slabel);
+
+bool query_string_table(const std::string &s, std::string &label);
+
+void init_string_table();
+
+void print_string_table(const std::string &file);
 
 void init_symbol_table();
 

@@ -45,3 +45,35 @@ std::string gen_temp_label() {
 	temp_label_num++;
 	return temp_label;
 }
+
+std::string process_string(const std::string &s){
+	std::string ret_s="\"";
+	for (const auto &i:s){
+		switch (i) {
+			case '\a':
+				ret_s+="\",07H,\"";
+				break;
+			case '\b':
+				ret_s+="\",08H,\"";
+				break;
+			case '\t':
+				ret_s+="\",09H,\"";
+				break;
+			case '\v':
+				ret_s+="\",0BH,\"";
+				break;
+			case '\f':
+				ret_s+="\",0CH,\"";
+			case '\n':
+				ret_s+="\",0AH,\"";
+				break;
+			case '\r':
+				ret_s+="\",0DH,\"";
+				break;
+			default:
+				ret_s+=i;
+				break;
+		}
+	}
+	return ret_s+"\"";
+}

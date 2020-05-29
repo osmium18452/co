@@ -22,6 +22,7 @@ std::string instruct_convert_table[] = {
 		"CALL", "RET", "GETRET",
 		"RDARR", "WRARR",
 		"KASE_ITEM",
+		"CREATE_TABLE","DESTROY_TABLE",
 };
 
 void insert_to_quadruple_list(quadruple_element &element) {

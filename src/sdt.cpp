@@ -335,14 +335,18 @@ void parse_print_statement() {
 	std::string res;
 	dtype dtype;
 	table_entry entry{};
-	std::string s = "\"";
+	std::string s;
+	std::string slabel;
 	match();// printf
 	match();// (
 	while (true) {
 		switch (tokens[curr_token].type) {
 			case TOK_STRINGCONST:
-				s += tokens[curr_token].stringval + "\"";
-				element = {PRINT, "string", s, NONE};
+				s += tokens[curr_token].stringval;
+				if (!query_string_table(s,slabel)){
+					insert_to_string_table(s,slabel);
+				}
+				element = {PRINT, "string", slabel, NONE};
 				insert_to_quadruple_list(element);
 				match();
 				break;

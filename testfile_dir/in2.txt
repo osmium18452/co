@@ -1,4 +1,7 @@
 int main(){
-int a,b,c,d,e,f,g,h,i,j,k,l,m,n;
-return a+(b-c)*d/e+(f++)^g|h-(++i)/8+j/k%l-m*n;
+printf("hello\nworld");
+printf("nmslnese");
+printf("hello");
+printf("world");
+printf("hello","world");
 }

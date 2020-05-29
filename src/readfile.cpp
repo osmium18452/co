@@ -1,6 +1,6 @@
 #include "../headers/readfile.h"
 
-std::string readfile(std::string file) {
+std::string readfile(const std::string &file) {
 	std::string ret;
 	freopen(file.c_str(), "r", stdin);
 	char c = (char) getchar();

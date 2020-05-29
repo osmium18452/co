@@ -1,10 +1,14 @@
 #include "../headers/global.h"
 #include "../headers/table.h"
+#include "../headers/quadruple.h"
+#include "../headers/utils.h"
 
 std::vector<std::unordered_map<std::string, table_entry>> symbol_table;
 std::vector<std::vector<dtype>> param_table;
+std::unordered_map<std::string, std::string> string_table;
 int local_symbol_table_level;
 int curr_param_table;
+int string_label_num;
 
 std::string itype_convert_table[] = {
 		"IDN_CONST", "IDN_VAR", "IDN_ARRAY", "IDN_FUNCTION"
@@ -14,6 +18,46 @@ std::string dtype_convert_table[] = {
 		"DATA_INT",
 		"DATA_CHAR", "DATA_VOID",
 };
+
+std::string allocate_string_table_label() {
+	return "$string_" + std::to_string(string_label_num++);
+}
+
+void insert_to_string_table(const std::string &s, std::string &slabel) {
+	if (string_table.find(s) == string_table.end()) {
+		slabel=allocate_string_table_label();
+		string_table[s] =slabel;
+	} else {
+		cout << "string " << s << " has already in the table." << endl;
+	}
+}
+
+bool query_string_table(const std::string &s, std::string &label) {
+	if (string_table.find(s) == string_table.end()) {
+		return false;
+	} else {
+		label = string_table[s];
+		return true;
+	}
+}
+
+void print_string_table(const std::string &file){
+	std::ostream string_stream(NULL);
+	std::filebuf buffer;
+	buffer.open(file, std::ios::out);
+	string_stream.rdbuf(&buffer);
+	for (const auto &i:string_table){
+		string_stream<<i.second<<" "<<process_string(i.first)<<endl;
+	}
+}
+
+void init_string_table() {
+	while (!string_table.empty()) {
+		string_table.clear();
+	}
+	string_label_num = 0;
+}
+
 
 int allocate_a_param_table() {
 	std::vector<dtype> empty_table;
@@ -30,7 +74,7 @@ void init_param_table() {
 	curr_param_table = 0;
 }
 
-std::vector<dtype> get_para_table(const int para_table_num){
+std::vector<dtype> get_para_table(const int para_table_num) {
 	return param_table[para_table_num];
 }
 
@@ -46,11 +90,15 @@ void create_new_local_table() {
 	std::unordered_map<std::string, table_entry> empty_table;
 	symbol_table.push_back(empty_table);
 	local_symbol_table_level++;
+	quadruple_element element{CREATE_TABLE, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
 }
 
 void destroy_current_local_table() {
 	symbol_table.pop_back();
 	local_symbol_table_level--;
+	quadruple_element element{DESTROY_TABLE, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
 }
 
 void insert_to_symbol_table(scope gol, std::string &ident, table_entry entry) {
@@ -98,7 +146,7 @@ void print_para_table(std::string &file, int which_table, bool append) {
 	std::filebuf buffer;
 	buffer.open(file, append ? std::ios::app : std::ios::out);
 	table_stream.rdbuf(&buffer);
-	for (const auto &i:param_table[which_table]){
-		table_stream <<dtype_convert_table[i]<<endl;
+	for (const auto &i:param_table[which_table]) {
+		table_stream << dtype_convert_table[i] << endl;
 	}
 }
