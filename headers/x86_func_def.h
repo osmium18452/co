@@ -61,4 +61,6 @@ void translate_wrarr();
 
 void translate_kase_item();
 
+void insert_to_instruction_table(instruct_table_item item);
+
 #endif //CO_X86_FUNC_DEF_H

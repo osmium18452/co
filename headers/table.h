@@ -67,4 +67,6 @@ std::vector<dtype> get_para_table(const int para_table_num);
 
 void print_para_table(std::string &file, int which_table, bool append);
 
+void init_local_symbol_table();
+
 #endif //CO_TABLE_H

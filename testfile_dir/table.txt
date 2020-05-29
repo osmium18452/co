@@ -1519,3 +1519,35 @@ e IDN_VAR DATA_INT -1 -1
 
 /***** GLOBAL SYMBOL TABLE *****/
 
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+

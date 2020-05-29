@@ -5,7 +5,7 @@ std::string readfile(const std::string &file) {
 	freopen(file.c_str(), "r", stdin);
 	char c = (char) getchar();
 	while (c != EOF) {
-		if (c == '\n' || c == '\r') ret += ' ';
+		if (c == '\n' || c == '\r') ret += c=='\n'?c:' ';
 		else ret += c;
 		c = (char) getchar();
 	}

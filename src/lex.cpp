@@ -109,7 +109,9 @@ std::string token_convert_table[]={
 		"TOK_REVERSE",    "TOK_DEFAULT",
 };
 
+
 int get_token(std::string &s, bool use_blank) {
+	int line_num = 0;
 	int left = 0, right = 0;
 	state_type state = STAT_START;
 	int len = s.length();
@@ -135,7 +137,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_STR1;
 				} else if (blank_set.find(s[right]) != blank_set.end()) {  //blank
 					left = right;
-					right++;
+//					right++;
 					state = STAT_BLANK;
 				} else if (symbol_set.find(s[right]) != symbol_set.end()) {           //symbols
 					state = STAT_SMBL;
@@ -150,10 +152,14 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_BLANK:
 				if (blank_set.find(s[right]) != blank_set.end()) {
+					if (s[right] == '\n') {
+						line_num++;
+					}
 					right++;
 					state = STAT_BLANK;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_BLANK;
 					if (use_blank) {
 						tokens.push_back(tmp);
@@ -169,6 +175,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_IDENT;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.stringval = s.substr(left, right - left);
 					if (string_to_token.find(tmp.stringval) == string_to_token.end()) {
 						tmp.type = TOK_IDENT;
@@ -200,6 +207,7 @@ int get_token(std::string &s, bool use_blank) {
 				} else if (s[right] == 'f') {
 					right++;
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_FLOATCONST;
 					tmp.floatval = (float) atof(s.substr(left, right - left - 1).c_str());
 					tokens.push_back(tmp);
@@ -208,6 +216,7 @@ int get_token(std::string &s, bool use_blank) {
 				} else if (s[right] == 'd') {
 					right++;
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_DOUBLECONST;
 					tmp.doubleval = atof(s.substr(left, right - left - 1).c_str());
 					tokens.push_back(tmp);
@@ -215,6 +224,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_START;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_INTCONST;
 					tmp.intval = atoi(s.substr(left, right - left).c_str());
 					tokens.push_back(tmp);
@@ -231,6 +241,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_USHORT;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_UINTCONST;
 					tmp.uintval = (unsigned int) atoll(s.substr(left, right - left - 1).c_str());
 					tokens.push_back(tmp);
@@ -240,6 +251,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_ULONG: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_ULONGCONST;
 				tmp.ullval = strtoull(s.substr(left, right - left - 2).c_str(), nullptr, 10);
 				tokens.push_back(tmp);
@@ -249,6 +261,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_LONG: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_LONGCONST;
 				tmp.llval = strtoll(s.substr(left, right - left - 1).c_str(), nullptr, 10);
 				tokens.push_back(tmp);
@@ -258,6 +271,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_SHORT: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_SHORTCONST;
 				tmp.shortval = (short) strtoll(s.substr(left, right - left - 1).c_str(), nullptr, 10);
 				tokens.push_back(tmp);
@@ -267,6 +281,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_USHORT: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_USHORTCONST;
 				tmp.ushortval = (unsigned short) strtoll(s.substr(left, right - left - 2).c_str(), NULL, 10);
 				tokens.push_back(tmp);
@@ -283,6 +298,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_FLT;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_DOUBLECONST;
 					tmp.doubleval = atof(s.substr(left, right - left).c_str());
 					tokens.push_back(tmp);
@@ -292,6 +308,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_FLT: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_FLOATCONST;
 				tmp.floatval = (float) atof(s.substr(left, right - left - 1).c_str());
 				tokens.push_back(tmp);
@@ -311,6 +328,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_CHAR2: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_CHARCONST;
 				tmp.charval = s[right];
 				tokens.push_back(tmp);
@@ -330,12 +348,14 @@ int get_token(std::string &s, bool use_blank) {
 			case STAT_CHAR5:
 				if (convert_table.find(s[right - 1]) == convert_table.end()) {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_CHARCONST;
 					tmp.charval = s[right - 1];
 					tokens.push_back(tmp);
 					token_num++;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_CHARCONST;
 					tmp.charval = convert_table[s[right - 1]];
 					tokens.push_back(tmp);
@@ -360,6 +380,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_STR3: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_STRINGCONST;
 				std::string tmps;
 				for (int i = left + 1; i < right - 1; i++) {
@@ -491,6 +512,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_ADDASS;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_PLUS;
 					tokens.push_back(tmp);
 					token_num++;
@@ -499,6 +521,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_INCR: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_INC;
 				tokens.push_back(tmp);
 				token_num++;
@@ -507,6 +530,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_ADDASS: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_ADDASS;
 				tokens.push_back(tmp);
 				token_num++;
@@ -523,6 +547,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_SUBASS;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_SUB;
 					tokens.push_back(tmp);
 					token_num++;
@@ -531,6 +556,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_DECR: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_DEC;
 				tokens.push_back(tmp);
 				token_num++;
@@ -539,6 +565,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_SUBASS: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_SUBASS;
 				tokens.push_back(tmp);
 				token_num++;
@@ -552,6 +579,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_AND;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_BITAND;
 					tokens.push_back(tmp);
 					token_num++;
@@ -560,6 +588,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_AND: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_LOGIAND;
 				tokens.push_back(tmp);
 				token_num++;
@@ -573,6 +602,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_OR;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_BITOR;
 					tokens.push_back(tmp);
 					token_num++;
@@ -581,6 +611,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_OR: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_LOGIOR;
 				tokens.push_back(tmp);
 				token_num++;
@@ -589,6 +620,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_REVERSE: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_REVERSE;
 				tokens.push_back(tmp);
 				token_num++;
@@ -602,6 +634,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_NE;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_LOGINOT;
 					tokens.push_back(tmp);
 					token_num++;
@@ -610,6 +643,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_NE: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_NE;
 				tokens.push_back(tmp);
 				token_num++;
@@ -623,6 +657,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_EQ;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_ASSIGN;
 					tokens.push_back(tmp);
 					token_num++;
@@ -631,6 +666,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_EQ: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_EQ;
 				tokens.push_back(tmp);
 				token_num++;
@@ -644,6 +680,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_MULASS;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_MUL;
 					tokens.push_back(tmp);
 					token_num++;
@@ -656,6 +693,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_DIVASS;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_DIV;
 					tokens.push_back(tmp);
 					token_num++;
@@ -668,6 +706,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_MODASS;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_MOD;
 					tokens.push_back(tmp);
 					token_num++;
@@ -676,6 +715,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_MULASS: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_MULASS;
 				tokens.push_back(tmp);
 				token_num++;
@@ -684,6 +724,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_DIVASS: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_DIVASS;
 				tokens.push_back(tmp);
 				token_num++;
@@ -692,6 +733,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_MODASS: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_MODASS;
 				tokens.push_back(tmp);
 				token_num++;
@@ -708,6 +750,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_GE;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_GT;
 					tokens.push_back(tmp);
 					token_num++;
@@ -720,6 +763,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_SHRASS;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_SHR;
 					tokens.push_back(tmp);
 					token_num++;
@@ -728,6 +772,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_SHRASS: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_SHRASS;
 				tokens.push_back(tmp);
 				token_num++;
@@ -736,6 +781,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_GE: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_GE;
 				tokens.push_back(tmp);
 				token_num++;
@@ -752,6 +798,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_LE;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_LT;
 					tokens.push_back(tmp);
 					token_num++;
@@ -764,6 +811,7 @@ int get_token(std::string &s, bool use_blank) {
 					state = STAT_SHLASS;
 				} else {
 					token tmp;
+					tmp.line_num = line_num;
 					tmp.type = TOK_SHL;
 					tokens.push_back(tmp);
 					token_num++;
@@ -772,6 +820,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_SHLASS: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_SHLASS;
 				tokens.push_back(tmp);
 				token_num++;
@@ -780,6 +829,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_LE: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_LE;
 				tokens.push_back(tmp);
 				token_num++;
@@ -788,6 +838,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_COMMA: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_COMMA;
 				tokens.push_back(tmp);
 				token_num++;
@@ -796,6 +847,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_SEMICOLON: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_SEMICOLON;
 				tokens.push_back(tmp);
 				token_num++;
@@ -804,6 +856,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_LPARE: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_LPARE;
 				tokens.push_back(tmp);
 				token_num++;
@@ -812,6 +865,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_RPARE: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_RPARE;
 				tokens.push_back(tmp);
 				token_num++;
@@ -820,6 +874,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_LBRACKET: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_LBRACKET;
 				tokens.push_back(tmp);
 				token_num++;
@@ -828,6 +883,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_RBRACKET: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_RBRACKET;
 				tokens.push_back(tmp);
 				token_num++;
@@ -836,6 +892,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_LBRACE: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_LBRACE;
 				tokens.push_back(tmp);
 				token_num++;
@@ -844,6 +901,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_RBRACE: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_RBRACE;
 				tokens.push_back(tmp);
 				token_num++;
@@ -852,6 +910,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_XOR: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_BITXOR;
 				tokens.push_back(tmp);
 				token_num++;
@@ -860,6 +919,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_QM: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_QM;
 				tokens.push_back(tmp);
 				token_num++;
@@ -868,6 +928,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_COLON: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_COLON;
 				tokens.push_back(tmp);
 				token_num++;
@@ -876,6 +937,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_BITNOT: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_BITNOT;
 				tokens.push_back(tmp);
 				token_num++;
@@ -884,6 +946,7 @@ int get_token(std::string &s, bool use_blank) {
 				break;
 			case STAT_LOGINOT: {
 				token tmp;
+				tmp.line_num = line_num;
 				tmp.type = TOK_LOGINOT;
 				tokens.push_back(tmp);
 				token_num++;

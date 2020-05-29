@@ -25,8 +25,8 @@ std::string allocate_string_table_label() {
 
 void insert_to_string_table(const std::string &s, std::string &slabel) {
 	if (string_table.find(s) == string_table.end()) {
-		slabel=allocate_string_table_label();
-		string_table[s] =slabel;
+		slabel = allocate_string_table_label();
+		string_table[s] = slabel;
 	} else {
 		cout << "string " << s << " has already in the table." << endl;
 	}
@@ -41,13 +41,13 @@ bool query_string_table(const std::string &s, std::string &label) {
 	}
 }
 
-void print_string_table(const std::string &file){
+void print_string_table(const std::string &file) {
 	std::ostream string_stream(NULL);
 	std::filebuf buffer;
 	buffer.open(file, std::ios::out);
 	string_stream.rdbuf(&buffer);
-	for (const auto &i:string_table){
-		string_stream<<i.second<<" "<<process_string(i.first)<<endl;
+	for (const auto &i:string_table) {
+		string_stream << i.second << " " << process_string(i.first) << endl;
 	}
 }
 
@@ -149,4 +149,11 @@ void print_para_table(std::string &file, int which_table, bool append) {
 	for (const auto &i:param_table[which_table]) {
 		table_stream << dtype_convert_table[i] << endl;
 	}
+}
+
+void init_local_symbol_table() {
+	while (symbol_table.size() > 1) {
+		symbol_table.pop_back();
+	}
+	local_symbol_table_level=0;
 }
