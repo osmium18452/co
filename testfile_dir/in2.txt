@@ -1,7 +1,8 @@
+int add(int a,int b){
+return a+b;
+}
 int main(){
-printf("hello\nworld");
-printf("nmslnese");
-printf("hello");
-printf("world");
-printf("hello","world");
+int a[100],b,c;
+c=add(b,b);
+printf(c,"hahaha");
 }

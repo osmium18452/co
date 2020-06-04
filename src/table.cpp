@@ -47,7 +47,7 @@ void print_string_table(const std::string &file) {
 	buffer.open(file, std::ios::out);
 	string_stream.rdbuf(&buffer);
 	for (const auto &i:string_table) {
-		string_stream << i.second << " " << process_string(i.first) << endl;
+		string_stream << i.second << " " << process_string(i.first) <<",00h"<< endl;
 	}
 }
 

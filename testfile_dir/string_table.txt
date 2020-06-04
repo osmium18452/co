@@ -1,5 +1,1 @@
-$string_3 "world"
-$string_2 "hello"
-$string_4 "helloworld"
-$string_0 "hello",0AH,"world"
-$string_1 "nmslnese"
+$string_0 "hahaha",00h

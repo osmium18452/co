@@ -5,7 +5,8 @@
 std::vector<instruct_table_item> instruct_table;
 
 void translate_to_x86() {
-	for (const auto &i : quadruple_list) {
+
+	/*for (const auto &i : quadruple_list) {
 		switch (i.instruct) {
 			case VAR:
 			case PARAM:
@@ -59,7 +60,7 @@ void translate_to_x86() {
 			default:
 				break;
 		}
-	}
+	}*/
 }
 
 void insert_to_instruction_table(const instruct_table_item &item) {

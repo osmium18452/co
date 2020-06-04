@@ -6,6 +6,7 @@
 #include "headers/sdt.h"
 #include "headers/expression.h"
 #include "headers/utils.h"
+#include "headers/x86.h"
 
 using std::cout;
 using std::cin;
@@ -89,6 +90,7 @@ int main(int argc, char **argv) {
 	print_quadruple_list(quadruple_file);
 	print_string_table(string_file);
 	cout << "quadruple list size: " << quadruple_list.size() << endl;
-	init_symbol_table();
+	init_local_symbol_table();
+	translate_to_x86();
 	return 0;
 }

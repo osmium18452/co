@@ -1,11 +1,27 @@
+FUNC int add 
+CREATE_TABLE   
+PARAM int a 
+PARAM int b 
+CREATE_TABLE   
+TEMP int @temp_0 
+ADD a b @temp_0
+RET @temp_0  
+DESTROY_TABLE   
+END   
+DESTROY_TABLE   
 FUNC void main 
 CREATE_TABLE   
+VAR int a 100
+VAR int b 
+VAR int c 
+PUSH int b 
+PUSH int b 
+CALL add  
+TEMP int @temp_1 
+GETRET @temp_1  
+ASSIGN @temp_1 c 
+PRINT int c 
 PRINT string $string_0 
-PRINT string $string_1 
-PRINT string $string_2 
-PRINT string $string_3 
-PRINT string $string_2 
-PRINT string $string_4 
 DESTROY_TABLE   
 END   
 
