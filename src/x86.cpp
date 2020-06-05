@@ -1,11 +1,32 @@
 #include "../headers/x86.h"
 #include "../headers/x86_func_def.h"
 #include "../headers/quadruple.h"
+#include "../headers/table.h"
+#include "../headers/utils.h"
 
-std::vector<instruct_table_item> instruct_table;
+std::vector<std::string> instruct_table;
+int ident;
+
+void inc_ident(){
+	ident+=4;
+}
+
+void dec_ident(){
+	ident-=4;
+}
+
+void insert_into_x86_table(const std::string &s){
+	std::string instr;
+	for (auto i=1;i<ident;i++){
+		instr+=" ";
+	}
+	instruct_table.push_back(instr+s);
+}
 
 void translate_to_x86() {
-
+	ident=0;
+	insert_into_x86_table("%include io.asm");
+	gen_data_section();
 	/*for (const auto &i : quadruple_list) {
 		switch (i.instruct) {
 			case VAR:
@@ -63,7 +84,39 @@ void translate_to_x86() {
 	}*/
 }
 
-void insert_to_instruction_table(const instruct_table_item &item) {
-	instruct_table.push_back(item);
+void gen_data_section(){
+	insert_into_x86_table("section .data");
+	inc_ident();
+	gen_string_table();
+	gen_global_table();
+	dec_ident();
+	gen_start_code();
 }
 
+void gen_string_table(){
+	for (const auto &i:string_table){
+		insert_into_x86_table(i.second+" db "+process_string(i.first)+",00h");
+	}
+}
+
+void print_x86_table(const std::string &file){
+	std::ostream x86_stream(NULL);
+	std::filebuf buffer;
+	buffer.open(file,std::ios::out);
+	x86_stream.rdbuf(&buffer);
+	for (const auto &i:instruct_table){
+		x86_stream<<i<<endl;
+	}
+}
+
+void gen_start_code(){
+	insert_into_x86_table("global _start");
+	insert_into_x86_table("_start:");
+	inc_ident();
+	insert_into_x86_table("jmp main");
+	dec_ident();
+}
+
+void gen_global_table(){
+
+}

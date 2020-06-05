@@ -20,7 +20,7 @@ std::string dtype_convert_table[] = {
 };
 
 std::string allocate_string_table_label() {
-	return "$string_" + std::to_string(string_label_num++);
+	return "?string_" + std::to_string(string_label_num++);
 }
 
 void insert_to_string_table(const std::string &s, std::string &slabel) {

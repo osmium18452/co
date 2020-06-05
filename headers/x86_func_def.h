@@ -5,6 +5,19 @@
 
 void build_symbol_table();
 
+void inc_ident();
+void dec_ident();
+
+void insert_into_x86_table(const std::string &s);
+
+void gen_data_section();
+void gen_text_section();
+void gen_bss_section();
+
+void gen_global_table();
+void gen_string_table();
+void gen_start_code();
+
 void translate_assign();
 
 void translate_add();
@@ -60,7 +73,5 @@ void translate_rdarr();
 void translate_wrarr();
 
 void translate_kase_item();
-
-void insert_to_instruction_table(instruct_table_item item);
 
 #endif //CO_X86_FUNC_DEF_H
