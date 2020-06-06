@@ -195,7 +195,8 @@ $print_space:
 	popa
 	ret
 
-$scan_str:
+$scan:
+	xor edi,edi
 	push ebx
 	mov edx,4095
 	mov ecx, ?res_read
@@ -205,6 +206,93 @@ $scan_str:
 	pop ebx
 	ret
 
+$scan_string:
+	cmp byte [esi+edi],0ah
+	jne .pass
+	call $scan
+	.pass:
+	lea eax,[esi+edi]
+	dec edi
+	.not_0ah:
+	inc edi
+	cmp byte [esi+edi], 0ah
+	jne .not_0ah
+	mov byte [esi+edi],00h
+	ret
+
+$scan_char:
+	cmp byte [esi+edi],0ah
+	jne .pass
+	call $scan
+	.pass:
+	xor eax,eax
+	mov al,[esi+edi]
+	inc edi
+	ret
+
+$scan_int:
+	cmp byte [esi+edi],0ah
+	jne .pass
+	call $scan
+	.pass:
+	call $stoi_for_scan
+	ret
+
+
+$stoi_for_scan:
+	push ebp
+	mov ebp,esp
+	push ebx
+;call $print_hello
+	mov eax,0
+	xor ebx,ebx
+	mov ecx,10
+	dec edi
+
+	.consume_non_num_chars:
+		inc edi
+		cmp byte [esi+edi],'-'
+		je .end_of_consume
+		cmp byte [esi+edi],'0'
+		jb .consume_non_num_chars
+		cmp byte[esi+edi],'9'
+		ja .consume_non_num_chars
+	.end_of_consume:
+;	push eax
+;	push ecx
+;	push edx
+;	push edi
+;	call $print_int
+;	call $print_rtn
+;	pop edi
+;	pop edx
+;	pop ecx
+;	pop eax
+	cmp byte [esi+edi],'-'
+	jne .notdash
+	inc edi
+	inc ebx
+	.notdash:
+	.loop1:
+		xor edx,edx
+		mov dl,[esi+edi]
+		cmp dl,'0'
+		jb .end_of_int
+		cmp dl,'9'
+		ja .end_of_int
+		imul eax,ecx
+		sub edx,'0'
+		add eax,edx
+		inc edi
+		jmp .loop1
+	.end_of_int:
+	cmp ebx,0
+	je .non_neg
+	neg eax
+	.non_neg:
+	pop ebx
+	leave
+	ret
 
 
 $stoi:

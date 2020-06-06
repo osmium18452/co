@@ -25,10 +25,11 @@ main:
 ;	call $print_hex
 ;	call $print_rtn
 ;	call $quit
-	mov eax,msg3
+	mov esi,?res_read
+	mov edi,0
+	mov byte [?res_read],0ah
+	call $scan_string
 	push eax
-	call $stoi
-	push eax
-	call $print_int
+	call $print_str
 	call $print_rtn
     call $quit
