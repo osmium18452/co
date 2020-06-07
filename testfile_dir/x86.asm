@@ -7,8 +7,23 @@ section .data
    g_dhhh dd 10 dup (0)
    g_bb dd 0
 section .bss
-?res resb 64
-?res_read resb 4096
+   ?res resb 64
+   ?res_read resb 4096
 global _start
 _start:
-   jmp main
+   call main
+   call $quit
+add:
+   push ebp
+   mov ebp,esp
+   push ebx
+   pop ebx
+   leave
+   ret
+main:
+   push ebp
+   mov ebp,esp
+   push ebx
+   pop ebx
+   leave
+   ret

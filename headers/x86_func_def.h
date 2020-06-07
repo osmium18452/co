@@ -2,6 +2,7 @@
 #define CO_X86_FUNC_DEF_H
 
 #include "global.h"
+#include "quadruple.h"
 
 void build_symbol_table();
 
@@ -17,6 +18,11 @@ void gen_bss_section();
 void gen_global_table();
 void gen_string_table();
 void gen_start_code();
+
+void translate_func(const std::vector<quadruple_element>::iterator &iter);
+void gen_func_head(const std::vector<quadruple_element>::iterator &iter);
+void rebuild_symbol_table(const std::vector<quadruple_element>::iterator &iter);
+void gen_func_tail();
 
 void translate_assign();
 

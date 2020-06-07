@@ -59,7 +59,8 @@ void gen_start_code() {
 	insert_into_x86_table("global _start");
 	insert_into_x86_table("_start:");
 	inc_ident();
-	insert_into_x86_table("jmp main");
+	insert_into_x86_table("call main");
+	insert_into_x86_table("call $quit");
 	dec_ident();
 }
 
@@ -79,34 +80,75 @@ void gen_global_table() {
 }
 
 void gen_text_section() {
-	int para_loc = 8;
-	int temp_size;
-	std::string name__;
-	table_entry entry{};
 	gen_start_code();
-	for (const auto &i : quadruple_list) {
-		switch (i.instruct) {
+	for (auto iter=quadruple_list.begin();iter<quadruple_list.end();iter++) {
+		switch (iter->instruct) {
 			case VAR:
-				temp_size = i.c == NONE ? 1 : atoi(i.c.c_str());
-				entry = {i.c == NONE ? IDN_VAR : IDN_ARRAY, i.a == "int" ? DATA_INT : DATA_CHAR, temp_size,
-						 temp_size * (-INT_SIZE)};
-				name__ = i.b;
-				insert_to_symbol_table(scope::LOCAL, name__, entry);
-				break;
 			case TEMP:
 			case PARAM:
-				entry = {i.c == NONE ? IDN_VAR : IDN_ARRAY, i.a == "int" ? DATA_INT : DATA_CHAR, 0, para_loc+INT_SIZE};
-				para_loc+=4;
-				name__ = i.b;
-				insert_to_symbol_table(scope::LOCAL, name__, entry);
+				continue;
+			case FUNC:
+				translate_func(iter);
 				break;
-
+			case END:
+				gen_func_tail();
+			default:
+				break;
 		}
 	}
 }
 
 void gen_bss_section() {
 	insert_into_x86_table("section .bss");
+	inc_ident();
 	insert_into_x86_table("?res resb 64");
 	insert_into_x86_table("?res_read resb 4096");
+	dec_ident();
 }
+
+void translate_func(const std::vector<quadruple_element>::iterator &iter){
+	gen_func_head(iter);
+	create_new_local_table();
+	rebuild_symbol_table(iter);
+	destroy_current_local_table();//todo: should not be here. move it to END.
+}
+
+void gen_func_head(const std::vector<quadruple_element>::iterator &iter){
+	insert_into_x86_table(iter->b+":");
+	inc_ident();
+	insert_into_x86_table("push ebp");
+	insert_into_x86_table("mov ebp,esp");
+	insert_into_x86_table("push ebx");
+}
+
+void rebuild_symbol_table(const std::vector<quadruple_element>::iterator &iter){
+	int num_of_var=0;
+	for (auto i=iter;i->instruct!=END;i++){
+		if (i->instruct==TEMP||i->instruct==VAR){
+			if (!i->c.empty()){
+				num_of_var+=stoi(i->c);
+			} else {
+				num_of_var++;
+			}
+		}
+	}
+}
+
+void gen_func_tail(){
+	insert_into_x86_table("pop ebx");
+	insert_into_x86_table("leave");
+	insert_into_x86_table("ret");
+	dec_ident();
+}
+
+/*temp_size = i.c == NONE ? 1 : atoi(i.c.c_str());
+				entry = {i.c == NONE ? IDN_VAR : IDN_ARRAY, i.a == "int" ? DATA_INT : DATA_CHAR, temp_size,
+						 temp_size * (-INT_SIZE)};
+				name__ = i.b;
+				insert_to_symbol_table(scope::LOCAL, name__, entry);
+				break;*/
+/*entry = {i.c == NONE ? IDN_VAR : IDN_ARRAY, i.a == "int" ? DATA_INT : DATA_CHAR, 0, para_loc};
+				para_loc+=INT_SIZE;
+				name__ = i.b;
+				insert_to_symbol_table(scope::LOCAL, name__, entry);
+				break;*/

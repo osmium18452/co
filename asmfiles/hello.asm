@@ -17,19 +17,15 @@ section .text
 global _start
 
 _start:
-    jmp main
+    call main
+    call $print_hello
+    call $print_hello
+    call $quit
 
 main:
-;	mov eax,123abch
-;	push eax
-;	call $print_hex
-;	call $print_rtn
-;	call $quit
-	mov esi,?res_read
-	mov edi,0
-	mov byte [?res_read],0ah
-	call $scan_string
-	push eax
-	call $print_str
-	call $print_rtn
-    call $quit
+	push ebp
+    mov ebp,esp
+    push ebx
+    pop ebx
+    leave
+    ret
