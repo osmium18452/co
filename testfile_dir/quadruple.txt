@@ -1,11 +1,19 @@
+GVAR int aa 
+GVAR int bb 
+GVAR int cc 
+GVAR int dhhh 10
+GVAR int dd 
 FUNC int add 
 CREATE_TABLE   
 PARAM int a 
 PARAM int b 
+PARAM int c 
 CREATE_TABLE   
 TEMP int ?temp_0 
 ADD a b ?temp_0
-RET ?temp_0  
+TEMP int ?temp_1 
+ADD ?temp_0 c ?temp_1
+RET ?temp_1  
 DESTROY_TABLE   
 END   
 DESTROY_TABLE   
@@ -14,12 +22,13 @@ CREATE_TABLE
 VAR int a 100
 VAR int b 
 VAR int c 
-PUSH int b 
-PUSH int b 
+PUSH int cc 
+PUSH int bb 
+PUSH int aa 
 CALL add  
-TEMP int ?temp_1 
-GETRET ?temp_1  
-ASSIGN ?temp_1 c 
+TEMP int ?temp_2 
+GETRET ?temp_2  
+ASSIGN ?temp_2 c 
 PRINT int c 
 PRINT string ?string_0 
 DESTROY_TABLE   

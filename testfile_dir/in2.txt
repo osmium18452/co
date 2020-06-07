@@ -1,8 +1,11 @@
-int add(int a,int b){
-return a+b;
+int aa,bb,cc;
+int dhhh[10];
+int dd;
+int add(int a,int b,int c){
+return a+b+c;
 }
 int main(){
 int a[100],b,c;
-c=add(b,b);
+c=add(aa,bb,cc);
 printf(c,"hahaha");
 }

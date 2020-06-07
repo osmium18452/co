@@ -24,12 +24,18 @@ enum scope {
  * value stand for the size of the array or the value of constant
  * address is used to assign an memory address for each variable,only used in the quadruple to x86 process
  */
+enum table_level{
+	g,l,
+};
+
 struct table_entry {
 	itype itype;
 	dtype dtype;
 	int value;
 	int address;
+	table_level table_level;
 };
+
 
 extern std::vector<std::unordered_map<std::string, table_entry>> symbol_table;
 extern std::string itype_convert_table[];
@@ -51,7 +57,7 @@ void create_new_local_table();
 
 void destroy_current_local_table();
 
-void insert_to_symbol_table(scope gol, std::string &ident, table_entry entry);
+void insert_to_symbol_table(scope gol, std::string &ident, table_entry &entry);
 
 bool query_symbol_table(const std::string &ident,table_entry &entry);
 
@@ -61,12 +67,13 @@ int allocate_a_param_table();
 
 void init_param_table();
 
-void insert_to_para_table(const int para_table_num,const dtype dtype);\
+void insert_to_para_table(const int para_table_num,const dtype dtype);
 
 std::vector<dtype> get_para_table(const int para_table_num);
 
 void print_para_table(std::string &file, int which_table, bool append);
 
 void init_local_symbol_table();
+
 
 #endif //CO_TABLE_H

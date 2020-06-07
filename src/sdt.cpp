@@ -106,13 +106,13 @@ void parse_var_definition(scope scope) {
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name,
 			           std::to_string(array_size)};
 			insert_to_quadruple_list(element);
-			entry = {IDN_ARRAY, data_type, array_size, -1};
+			entry = {IDN_ARRAY, data_type, array_size, -1,scope==GLOBAL?g:l};
 			insert_to_symbol_table(scope, ident_name, entry);
 			match();
 		} else {
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name, NONE};
 			insert_to_quadruple_list(element);
-			entry = {IDN_VAR, data_type, -1, -1};
+			entry = {IDN_VAR, data_type, -1, -1,scope==GLOBAL?g:l};
 			insert_to_symbol_table(scope, ident_name, entry);
 			match();
 		}
@@ -492,6 +492,7 @@ void parse_argument_list(const std::vector<dtype> &param_list) {
 			return;
 		} else return;
 	}
+	auto iter=quadruple_list.end();
 	while (true) {
 		expression_without_comma(temp_var, temp_dtype);
 		if (temp_dtype != param_list[arg_cnt]) {
@@ -507,6 +508,7 @@ void parse_argument_list(const std::vector<dtype> &param_list) {
 		if (tokens[curr_token].type != TOK_COMMA) break;
 		else match();
 	}
+	std::reverse(iter,quadruple_list.end());
 	if (arg_cnt < param_list.size()) {
 		cout << "too few args for func" << endl;
 	}

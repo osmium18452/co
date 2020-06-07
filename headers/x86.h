@@ -1,6 +1,7 @@
 #ifndef CO_X86_H
 #define CO_X86_H
 #include "global.h"
+#define INT_SIZE 4
 
 /*struct instruct_table_item{
 	std::string instr;

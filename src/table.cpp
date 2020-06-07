@@ -101,7 +101,7 @@ void destroy_current_local_table() {
 	insert_to_quadruple_list(element);
 }
 
-void insert_to_symbol_table(scope gol, std::string &ident, table_entry entry) {
+void insert_to_symbol_table(scope gol, std::string &ident, table_entry &entry) {
 	int table_level = gol == GLOBAL ? 0 : local_symbol_table_level;
 	if (symbol_table[table_level].find(ident) == symbol_table[table_level].end()) {
 		symbol_table[table_level][ident] = entry;
