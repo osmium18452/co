@@ -24,4 +24,5 @@ add_executable(co main.cpp
 		src/sdt.cpp
 		src/quadruple.cpp
 		src/expression.cpp
-		src/x86.cpp)
+		src/x86.cpp
+		src/regs.cpp headers/reg_func_def.h)
