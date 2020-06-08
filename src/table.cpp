@@ -94,11 +94,22 @@ void create_new_local_table() {
 	insert_to_quadruple_list(element);
 }
 
+void create_new_local_table_2() {
+	std::unordered_map<std::string, table_entry> empty_table;
+	symbol_table.push_back(empty_table);
+	local_symbol_table_level++;
+}
+
 void destroy_current_local_table() {
 	symbol_table.pop_back();
 	local_symbol_table_level--;
 	quadruple_element element{DESTROY_TABLE, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
+}
+
+void destroy_current_local_table_2() {
+	symbol_table.pop_back();
+	local_symbol_table_level--;
 }
 
 void insert_to_symbol_table(scope gol, std::string &ident, table_entry &entry) {

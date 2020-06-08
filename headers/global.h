@@ -13,6 +13,7 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <stack>
 
 using std::cout;
 using std::cin;

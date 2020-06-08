@@ -24,6 +24,8 @@ enum instruct {
 	RDARR, WRARR,
 	KASE_ITEM,
 	CREATE_TABLE,DESTROY_TABLE,
+	SAVE_REG,RESTORE_REG,
+	RESTORE_STACK,
 };
 
 struct quadruple_element {

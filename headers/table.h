@@ -55,7 +55,11 @@ void init_symbol_table();
 
 void create_new_local_table();
 
+void create_new_local_table_2();
+
 void destroy_current_local_table();
+
+void destroy_current_local_table_2();
 
 void insert_to_symbol_table(scope gol, std::string &ident, table_entry &entry);
 

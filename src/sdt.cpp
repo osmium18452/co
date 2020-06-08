@@ -24,7 +24,7 @@ void parse_program() {
 		} else if (tokens[curr_token].type == TOK_VOID || tokens[curr_token + 2].type == TOK_LPARE) {
 			parse_func_declaration();
 		} else if (tokens[curr_token + 2].type == TOK_COMMA || tokens[curr_token + 2].type == TOK_SEMICOLON ||
-		           tokens[curr_token + 2].type == TOK_ASSIGN || tokens[curr_token + 2].type == TOK_LBRACKET) {
+				   tokens[curr_token + 2].type == TOK_ASSIGN || tokens[curr_token + 2].type == TOK_LBRACKET) {
 			parse_var_declaration(GLOBAL);
 		}
 	}
@@ -104,15 +104,15 @@ void parse_var_definition(scope scope) {
 			int array_size = tokens[curr_token].intval;
 			match();
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name,
-			           std::to_string(array_size)};
-			insert_to_quadruple_list(element);
-			entry = {IDN_ARRAY, data_type, array_size, -1,scope==GLOBAL?g:l};
+					   std::to_string(array_size)};
+			if (element.instruct == VAR) insert_to_quadruple_list(element);
+			entry = {IDN_ARRAY, data_type, array_size, -1, scope == GLOBAL ? g : l};
 			insert_to_symbol_table(scope, ident_name, entry);
 			match();
 		} else {
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name, NONE};
-			insert_to_quadruple_list(element);
-			entry = {IDN_VAR, data_type, -1, -1,scope==GLOBAL?g:l};
+			if (element.instruct == VAR) insert_to_quadruple_list(element);
+			entry = {IDN_VAR, data_type, -1, -1, scope == GLOBAL ? g : l};
 			insert_to_symbol_table(scope, ident_name, entry);
 			match();
 		}
@@ -195,9 +195,9 @@ void parse_func_without_return_value() {
 	}
 	match();//right parenthesis
 	parse_block();
+	destroy_current_local_table();
 	element = {END, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
-	destroy_current_local_table();
 }
 
 void parse_para_list(const int para_table_num) {
@@ -343,8 +343,8 @@ void parse_print_statement() {
 		switch (tokens[curr_token].type) {
 			case TOK_STRINGCONST:
 				s += tokens[curr_token].stringval;
-				if (!query_string_table(s,slabel)){
-					insert_to_string_table(s,slabel);
+				if (!query_string_table(s, slabel)) {
+					insert_to_string_table(s, slabel);
 				}
 				element = {PRINT, "string", slabel, NONE};
 				insert_to_quadruple_list(element);
@@ -354,7 +354,7 @@ void parse_print_statement() {
 			case TOK_CHARCONST:
 				element = {PRINT, tokens[curr_token].type == TOK_INTCONST ? "int" : "char", std::to_string(
 						tokens[curr_token].type == TOK_INTCONST ? tokens[curr_token].intval
-						                                        : tokens[curr_token].charval), NONE};
+																: tokens[curr_token].charval), NONE};
 				insert_to_quadruple_list(element);
 				match();
 				break;
@@ -483,6 +483,7 @@ void parse_assignment_statement() {
 }
 
 void parse_argument_list(const std::vector<dtype> &param_list) {
+	std::stack<quadruple_element> temp_quadruple_stack;
 	std::string temp_var;
 	dtype temp_dtype;
 	int arg_cnt = 0;
@@ -492,7 +493,7 @@ void parse_argument_list(const std::vector<dtype> &param_list) {
 			return;
 		} else return;
 	}
-	auto iter=quadruple_list.end();
+	auto iter = quadruple_list.end();
 	while (true) {
 		expression_without_comma(temp_var, temp_dtype);
 		if (temp_dtype != param_list[arg_cnt]) {
@@ -504,11 +505,15 @@ void parse_argument_list(const std::vector<dtype> &param_list) {
 			return;
 		}
 		quadruple_element element{PUSH, temp_dtype == DATA_INT ? "int" : "char", temp_var, NONE};
-		insert_to_quadruple_list(element);
+		temp_quadruple_stack.push(element);
 		if (tokens[curr_token].type != TOK_COMMA) break;
 		else match();
 	}
-	std::reverse(iter,quadruple_list.end());
+	while (!temp_quadruple_stack.empty()) {
+		insert_to_quadruple_list(temp_quadruple_stack.top());
+		temp_quadruple_stack.pop();
+	}
+//	std::reverse(iter,quadruple_list.end());
 	if (arg_cnt < param_list.size()) {
 		cout << "too few args for func" << endl;
 	}
@@ -531,9 +536,16 @@ void parse_func_call_statement(const std::string &id) {
 		cout << "expected args" << endl;
 		return;
 	}
+	quadruple_element element{};
+	element = {SAVE_REG, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
 	parse_argument_list(para_list);
 	match();// )
-	quadruple_element element{CALL, id, NONE, NONE};
+	element = {CALL, id, NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {RESTORE_STACK, std::to_string(para_list.size()), NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {RESTORE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 	match();// ;
 }
@@ -560,7 +572,11 @@ void parse_non_void_func_call(std::string &res, dtype &data_type, const std::str
 		cout << "expected args" << endl;
 		return;
 	}
+	element = {SAVE_REG, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
+
 	parse_argument_list(para_list);
+
 	match();// )
 	element = {CALL, id, NONE, NONE};
 	insert_to_quadruple_list(element);
@@ -569,6 +585,10 @@ void parse_non_void_func_call(std::string &res, dtype &data_type, const std::str
 	element = {TEMP, data_type == DATA_INT ? "int" : "char", res, NONE};
 	insert_to_quadruple_list(element);
 	element = {GETRET, res, NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {RESTORE_STACK, std::to_string(para_list.size()), NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {RESTORE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
 

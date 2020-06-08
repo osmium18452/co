@@ -92,6 +92,7 @@ int main(int argc, char **argv) {
 	print_string_table(string_file);
 	cout << "quadruple list size: " << quadruple_list.size() << endl;
 	init_local_symbol_table();
+	cout<<"symbol table size "<<symbol_table.size()<<endl;
 	translate_to_x86();
 	print_x86_table(x86_file);
 	return 0;

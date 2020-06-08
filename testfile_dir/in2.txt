@@ -2,10 +2,16 @@ int aa,bb,cc;
 int dhhh[10];
 int dd;
 int add(int a,int b,int c){
-return a+b+c;
+	int a,b,c;
+	for (int i=1;i<9;i++){
+		int a,b,c;
+	}
 }
 int main(){
 int a[100],b,c;
-c=add(aa,bb,cc);
-printf(c,"hahaha");
+c=add(dhhh[2],bb,cc);
+
+if (c>b) printf(c,"hahaha");
+else printf(b,"yingyingying");
+return 0;
 }

@@ -1,36 +1,61 @@
-GVAR int aa 
-GVAR int bb 
-GVAR int cc 
-GVAR int dhhh 10
-GVAR int dd 
 FUNC int add 
 CREATE_TABLE   
 PARAM int a 
 PARAM int b 
 PARAM int c 
 CREATE_TABLE   
+VAR int a 
+VAR int b 
+VAR int c 
+CREATE_TABLE   
+VAR int i 
+ASSIGN 1 i 
+LABEL .label_0  
 TEMP int ?temp_0 
-ADD a b ?temp_0
-TEMP int ?temp_1 
-ADD ?temp_0 c ?temp_1
-RET ?temp_1  
+LT i 9 ?temp_0
+CMP ?temp_0 0 
+JE .label_1  
+CREATE_TABLE   
+VAR int a 
+VAR int b 
+VAR int c 
+DESTROY_TABLE   
+INC i  
+JMP .label_0  
+LABEL .label_1  
+DESTROY_TABLE   
+DESTROY_TABLE   
 DESTROY_TABLE   
 END   
-DESTROY_TABLE   
 FUNC void main 
 CREATE_TABLE   
 VAR int a 100
 VAR int b 
 VAR int c 
+SAVE_REG   
+TEMP int ?temp_1 
+RDARR dhhh 2 ?temp_1
 PUSH int cc 
 PUSH int bb 
-PUSH int aa 
+PUSH int ?temp_1 
 CALL add  
 TEMP int ?temp_2 
 GETRET ?temp_2  
+RESTORE_STACK 3  
+RESTORE_REG   
 ASSIGN ?temp_2 c 
+TEMP int ?temp_3 
+GT c b ?temp_3
+CMP ?temp_3 0 
+JE .label_2  
 PRINT int c 
 PRINT string ?string_0 
+JMP .label_3  
+LABEL .label_2  
+PRINT int b 
+PRINT string ?string_1 
+LABEL .label_3  
+RET 0  
 DESTROY_TABLE   
 END   
 

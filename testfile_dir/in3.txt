@@ -28,6 +28,26 @@ const int h=1,i=2,j=3;
 }
 
 
+int aa,bb,cc;
+int dhhh[10];
+int dd;
+int add(int a,int b,int c){
+	int a,b,c;
+	for (int i=1;i<9;i++){
+		int a,b,c;
+	}
+}
+int main(){
+int a[100],b,c;
+c=add(aa,bb,cc);
+
+if (c>b) printf(c,"hahaha");
+else printf(b,"yingyingying");
+return 0;
+}
+
+
+
 int e,f,g;
 int h=1,i=2,j=3;
 const int a=1,b=2;

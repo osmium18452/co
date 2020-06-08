@@ -6,6 +6,7 @@
 
 std::vector<std::string> instruct_table;
 int ident;
+std::vector<quadruple_element>::iterator it;
 
 void inc_ident() {
 	ident += 4;
@@ -81,7 +82,11 @@ void gen_global_table() {
 
 void gen_text_section() {
 	gen_start_code();
-	for (auto iter=quadruple_list.begin();iter<quadruple_list.end();iter++) {
+	it = quadruple_list.begin();
+	while (it != quadruple_list.end()) {
+		translate_func();
+	}
+	/*for (auto iter = quadruple_list.begin(); iter < quadruple_list.end(); iter++) {
 		switch (iter->instruct) {
 			case VAR:
 			case TEMP:
@@ -92,10 +97,68 @@ void gen_text_section() {
 				break;
 			case END:
 				gen_func_tail();
+				break;
+			case RESTORE_STACK:
+				translate_restore_stack(iter);
+				break;
+			case SAVE_REG:
+				translate_save_reg();
+				break;
+			case RESTORE_REG:
+				translate_restore_reg();
+				break;
+			case CALL:
+				cout << "call " << iter->a << endl;
+				translate_call(iter);
+				break;
+			case LABEL:
+				translate_label(iter);
+				break;
+			case PUSH:
+				translate_push(iter);
+				break;
 			default:
 				break;
 		}
-	}
+	}*/
+}
+
+std::string give_me_the_address(const std::string &var) {
+	table_entry entry{};
+	std::string ret = "[ebp";
+	query_symbol_table(var, entry);
+	ret += entry.address < 0 ? std::to_string(entry.address) + "]" : "+" + std::to_string(entry.address) + "]";
+	return ret;
+}
+
+void translate_push() {
+	insert_into_x86_table("mov eax," + give_me_the_address(it->b));
+	insert_into_x86_table("push eax");
+}
+
+void translate_label() {
+	insert_into_x86_table(it->a + ":");
+}
+
+void translate_call() {
+	insert_into_x86_table("call " + it->a);
+}
+
+void translate_restore_reg() {
+	insert_into_x86_table("pop eax");
+	insert_into_x86_table("pop ecx");
+	insert_into_x86_table("pop edx");
+}
+
+void translate_save_reg() {
+	insert_into_x86_table("push edx");
+	insert_into_x86_table("push ecx");
+	insert_into_x86_table("push eax");
+}
+
+void translate_restore_stack() {
+//	cout<<iter->a<<endl;
+	insert_into_x86_table("add esp," + std::to_string(std::stoi(it->a) * INT_SIZE));
 }
 
 void gen_bss_section() {
@@ -106,49 +169,95 @@ void gen_bss_section() {
 	dec_ident();
 }
 
-void translate_func(const std::vector<quadruple_element>::iterator &iter){
-	gen_func_head(iter);
-	create_new_local_table();
-	rebuild_symbol_table(iter);
-	destroy_current_local_table();//todo: should not be here. move it to END.
+void translate_func() {
+	int curr_var_num = 0;
+	int curr_param_num = 0;
+	gen_func_head();
+	calc_func_stack_size();
+	while (it->instruct != END) {
+//		cout<<it-quadruple_list.begin()<<" "<<instruct_convert_table[it->instruct]<<endl;
+		switch (it->instruct) {
+			case PARAM:
+				translate_param(&curr_param_num);
+				break;
+			case VAR:
+			case TEMP:
+				translate_var_def(&curr_var_num);
+				break;
+			case CREATE_TABLE:
+				create_new_local_table_2();
+				break;
+			case DESTROY_TABLE:
+				destroy_current_local_table_2();
+				break;
+			case RESTORE_REG:
+				translate_restore_reg();
+				break;
+			case SAVE_REG:
+				translate_save_reg();
+				break;
+			case RESTORE_STACK:
+				translate_restore_stack();
+				break;
+			case CALL:
+				translate_call();
+				break;
+			case LABEL:
+				translate_label();
+				break;
+			case PUSH:
+				translate_push();
+				break;
+			default:
+				break;
+		}
+		it++;
+	}
+	gen_func_tail();
 }
 
-void gen_func_head(const std::vector<quadruple_element>::iterator &iter){
-	insert_into_x86_table(iter->b+":");
+void translate_param(int *curr_param_num) {
+	(*curr_param_num)++;
+	table_entry entry{IDN_VAR, it->a == "int" ? DATA_INT : DATA_CHAR, 0, -(*curr_param_num) * INT_SIZE};
+	insert_to_symbol_table(LOCAL, it->b, entry);
+}
+
+void translate_var_def(int *curr_var_num) {
+	if (it->c.empty())(*curr_var_num)++;
+	else curr_var_num += std::stoi(it->c);
+	table_entry entry{it->c.empty() ? IDN_VAR : IDN_ARRAY, it->a == "int" ? DATA_INT : DATA_CHAR, 0,
+					  -(*curr_var_num) * INT_SIZE};
+	insert_to_symbol_table(LOCAL, it->b, entry);
+	cout << entry.address << " haha" << endl;
+}
+
+void gen_func_head() {
+	insert_into_x86_table(it->b + ":");
+	it++;
 	inc_ident();
 	insert_into_x86_table("push ebp");
 	insert_into_x86_table("mov ebp,esp");
 	insert_into_x86_table("push ebx");
 }
 
-void rebuild_symbol_table(const std::vector<quadruple_element>::iterator &iter){
-	int num_of_var=0;
-	for (auto i=iter;i->instruct!=END;i++){
-		if (i->instruct==TEMP||i->instruct==VAR){
-			if (!i->c.empty()){
-				num_of_var+=stoi(i->c);
+void calc_func_stack_size() {
+	int num_of_var = 0;
+	for (auto i = it; i->instruct != END; i++) {
+		if (i->instruct == TEMP || i->instruct == VAR) {
+			if (!i->c.empty()) {
+				num_of_var += stoi(i->c);
 			} else {
 				num_of_var++;
 			}
 		}
 	}
+	insert_into_x86_table("sub esp," + std::to_string(num_of_var * INT_SIZE));
 }
 
-void gen_func_tail(){
+void gen_func_tail() {
 	insert_into_x86_table("pop ebx");
 	insert_into_x86_table("leave");
 	insert_into_x86_table("ret");
+	it++;
 	dec_ident();
 }
-
-/*temp_size = i.c == NONE ? 1 : atoi(i.c.c_str());
-				entry = {i.c == NONE ? IDN_VAR : IDN_ARRAY, i.a == "int" ? DATA_INT : DATA_CHAR, temp_size,
-						 temp_size * (-INT_SIZE)};
-				name__ = i.b;
-				insert_to_symbol_table(scope::LOCAL, name__, entry);
-				break;*/
-/*entry = {i.c == NONE ? IDN_VAR : IDN_ARRAY, i.a == "int" ? DATA_INT : DATA_CHAR, 0, para_loc};
-				para_loc+=INT_SIZE;
-				name__ = i.b;
-				insert_to_symbol_table(scope::LOCAL, name__, entry);
-				break;*/
