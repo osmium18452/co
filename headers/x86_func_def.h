@@ -120,6 +120,4 @@ void translate_wrarr();
 
 void translate_kase_item();
 
-std::string give_me_the_address(const std::string &var);
-
 #endif //CO_X86_FUNC_DEF_H

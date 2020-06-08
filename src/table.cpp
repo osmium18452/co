@@ -2,6 +2,7 @@
 #include "../headers/table.h"
 #include "../headers/quadruple.h"
 #include "../headers/utils.h"
+#include "../headers/reg.h"
 
 std::vector<std::unordered_map<std::string, table_entry>> symbol_table;
 std::vector<std::vector<dtype>> param_table;
@@ -108,6 +109,7 @@ void destroy_current_local_table() {
 }
 
 void destroy_current_local_table_2() {
+	flush_the_regs();
 	symbol_table.pop_back();
 	local_symbol_table_level--;
 }

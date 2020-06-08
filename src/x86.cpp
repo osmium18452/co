@@ -2,6 +2,7 @@
 #include "../headers/x86_func_def.h"
 #include "../headers/quadruple.h"
 #include "../headers/table.h"
+#include "../headers/reg.h"
 #include "../headers/utils.h"
 
 std::vector<std::string> instruct_table;
@@ -123,18 +124,8 @@ void gen_text_section() {
 	}*/
 }
 
-std::string give_me_the_address(const std::string &var) {
-	table_entry entry{};
-	std::string ret;
-	query_symbol_table(var, entry);
-	if (entry.table_level == l)
-		ret = "[ebp" + (entry.address < 0 ? std::to_string(entry.address) + "]" : "+" + std::to_string(entry.address) + "]");
-	else ret = var;
-	return ret;
-}
-
 void translate_push() {
-	insert_into_x86_table("mov eax," + give_me_the_address(it->b));
+	insert_into_x86_table("mov eax," + tell_me_the_address(it->b));
 	insert_into_x86_table("push eax");
 }
 
@@ -251,7 +242,7 @@ void translate_jb(){
 }
 
 void translate_getret() {
-//	insert_into_x86_table("mov " + give_me_the_address(it->a) + ", eax");
+	insert_into_x86_table("mov " + where_to_write_the_var(it->a) + ", eax");
 }
 
 void translate_param(int *curr_param_num) {
