@@ -125,9 +125,11 @@ void gen_text_section() {
 
 std::string give_me_the_address(const std::string &var) {
 	table_entry entry{};
-	std::string ret = "[ebp";
+	std::string ret;
 	query_symbol_table(var, entry);
-	ret += entry.address < 0 ? std::to_string(entry.address) + "]" : "+" + std::to_string(entry.address) + "]";
+	if (entry.table_level == l)
+		ret = "[ebp" + (entry.address < 0 ? std::to_string(entry.address) + "]" : "+" + std::to_string(entry.address) + "]");
+	else ret = var;
 	return ret;
 }
 
@@ -208,6 +210,22 @@ void translate_func() {
 			case PUSH:
 				translate_push();
 				break;
+			case GETRET:
+				translate_getret();
+				break;
+			case JE:
+				translate_je();
+				break;
+			case JA:
+				translate_ja();
+				break;
+			case JB:
+				translate_jb();
+				break;
+			case JMP:
+				translate_jmp();
+				break;
+				/*notice: in our compiler, we don't support unsigned numbers. so the ja and jb here stand for the jg and jl*/
 			default:
 				break;
 		}
@@ -216,19 +234,38 @@ void translate_func() {
 	gen_func_tail();
 }
 
+void translate_je(){
+	insert_into_x86_table("je "+it->a);
+}
+
+void translate_jmp(){
+	insert_into_x86_table("jmp "+it->a);
+}
+
+void translate_ja(){
+	insert_into_x86_table("jg "+it->a);
+}
+
+void translate_jb(){
+	insert_into_x86_table("jl "+it->a);
+}
+
+void translate_getret() {
+//	insert_into_x86_table("mov " + give_me_the_address(it->a) + ", eax");
+}
+
 void translate_param(int *curr_param_num) {
 	(*curr_param_num)++;
-	table_entry entry{IDN_VAR, it->a == "int" ? DATA_INT : DATA_CHAR, 0, -(*curr_param_num) * INT_SIZE};
+	table_entry entry{IDN_VAR, it->a == "int" ? DATA_INT : DATA_CHAR, 0, -(*curr_param_num) * INT_SIZE, l};
 	insert_to_symbol_table(LOCAL, it->b, entry);
 }
 
 void translate_var_def(int *curr_var_num) {
 	if (it->c.empty())(*curr_var_num)++;
-	else curr_var_num += std::stoi(it->c);
+	else (*curr_var_num) += std::stoi(it->c);
 	table_entry entry{it->c.empty() ? IDN_VAR : IDN_ARRAY, it->a == "int" ? DATA_INT : DATA_CHAR, 0,
-					  -(*curr_var_num) * INT_SIZE};
-	insert_to_symbol_table(LOCAL, it->b, entry);
-	cout << entry.address << " haha" << endl;
+					  -(*curr_var_num) * INT_SIZE, l};
+	insert_to_symbol_table(LOCAL, it->b, entry);;
 }
 
 void gen_func_head() {

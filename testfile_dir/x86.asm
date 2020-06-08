@@ -20,6 +20,8 @@ add:
    push ebx
    sub esp,32
    .label_0:
+   je .label_1
+   jmp .label_0
    .label_1:
    pop ebx
    leave
@@ -28,21 +30,39 @@ main:
    push ebp
    mov ebp,esp
    push ebx
-   sub esp,420
+   sub esp,424
    push edx
    push ecx
    push eax
-   mov eax,[ebp-1]
+   mov eax,cc
    push eax
-   mov eax,[ebp-1]
+   mov eax,bb
    push eax
-   mov eax,[ebp-12]
+   mov eax,aa
    push eax
    call add
+   mov [ebp-412], eax
    add esp,12
    pop eax
    pop ecx
    pop edx
+   push edx
+   push ecx
+   push eax
+   mov eax,[ebp-408]
+   push eax
+   mov eax,[ebp-404]
+   push eax
+   mov eax,[ebp-416]
+   push eax
+   call add
+   mov [ebp-420], eax
+   add esp,12
+   pop eax
+   pop ecx
+   pop edx
+   je .label_2
+   jmp .label_3
    .label_2:
    .label_3:
    pop ebx

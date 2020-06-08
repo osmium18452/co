@@ -33,20 +33,30 @@ VAR int a 100
 VAR int b 
 VAR int c 
 SAVE_REG   
-TEMP int ?temp_1 
-RDARR dhhh 2 ?temp_1
 PUSH int cc 
 PUSH int bb 
-PUSH int ?temp_1 
+PUSH int aa 
 CALL add  
-TEMP int ?temp_2 
-GETRET ?temp_2  
+TEMP int ?temp_1 
+GETRET ?temp_1  
 RESTORE_STACK 3  
 RESTORE_REG   
-ASSIGN ?temp_2 c 
+ASSIGN ?temp_1 c 
+SAVE_REG   
+TEMP int ?temp_2 
+RDARR a 1 ?temp_2
+PUSH int c 
+PUSH int b 
+PUSH int ?temp_2 
+CALL add  
 TEMP int ?temp_3 
-GT c b ?temp_3
-CMP ?temp_3 0 
+GETRET ?temp_3  
+RESTORE_STACK 3  
+RESTORE_REG   
+ASSIGN ?temp_3 b 
+TEMP int ?temp_4 
+GT c b ?temp_4
+CMP ?temp_4 0 
 JE .label_2  
 PRINT int c 
 PRINT string ?string_0 

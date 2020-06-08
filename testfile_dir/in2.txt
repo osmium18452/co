@@ -9,8 +9,8 @@ int add(int a,int b,int c){
 }
 int main(){
 int a[100],b,c;
-c=add(dhhh[2],bb,cc);
-
+c=add(aa,bb,cc);
+b=add(a[1],b,c);
 if (c>b) printf(c,"hahaha");
 else printf(b,"yingyingying");
 return 0;
