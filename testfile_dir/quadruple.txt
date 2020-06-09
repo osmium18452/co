@@ -7,8 +7,17 @@ ASSIGN 4 b
 VAR int c 
 TEMP int ?temp_0 
 ADD 2 a ?temp_0
-ASSIGN ?temp_0 c 
-PRINT char 99 
+TEMP int ?temp_1 
+SUB ?temp_0 b ?temp_1
+ASSIGN ?temp_1 c 
+PRINT int c 
+PRINT char 10 
+TEMP int ?temp_2 
+ADD 2 a ?temp_2
+TEMP int ?temp_3 
+ADD ?temp_2 b ?temp_3
+ASSIGN ?temp_3 c 
+PRINT int c 
 PRINT char 10 
 DESTROY_TABLE   
 END   
