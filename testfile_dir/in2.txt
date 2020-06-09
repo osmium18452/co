@@ -1,5 +1,5 @@
 int main(){
-	int a=3,b,c;
-	b=a;
-	c=a;
+	int a=3,b=4,c;
+	c=2+a;
+	printf('c','\n');
 }

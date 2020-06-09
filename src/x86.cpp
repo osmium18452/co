@@ -42,6 +42,8 @@ void gen_data_section() {
 }
 
 void gen_string_table() {
+	insert_into_x86_table("msg db \"hello world\",0ah,00h");
+	insert_into_x86_table("rtn db 0ah,00h");
 	for (const auto &i:string_table) {
 		insert_into_x86_table(i.second + " db " + process_string(i.first) + ",00h");
 	}
@@ -58,6 +60,7 @@ void print_x86_table(const std::string &file) {
 }
 
 void gen_start_code() {
+	insert_into_x86_table("section .text");
 	insert_into_x86_table("global _start");
 	insert_into_x86_table("_start:");
 	inc_ident();
@@ -87,41 +90,6 @@ void gen_text_section() {
 	while (it != quadruple_list.end()) {
 		translate_func();
 	}
-	/*for (auto iter = quadruple_list.begin(); iter < quadruple_list.end(); iter++) {
-		switch (iter->instruct) {
-			case VAR:
-			case TEMP:
-			case PARAM:
-				continue;
-			case FUNC:
-				translate_func(iter);
-				break;
-			case END:
-				gen_func_tail();
-				break;
-			case RESTORE_STACK:
-				translate_restore_stack(iter);
-				break;
-			case SAVE_REG:
-				translate_save_reg();
-				break;
-			case RESTORE_REG:
-				translate_restore_reg();
-				break;
-			case CALL:
-				cout << "call " << iter->a << endl;
-				translate_call(iter);
-				break;
-			case LABEL:
-				translate_label(iter);
-				break;
-			case PUSH:
-				translate_push(iter);
-				break;
-			default:
-				break;
-		}
-	}*/
 }
 
 void translate_push() {
@@ -217,10 +185,25 @@ void translate_func() {
 			case JMP:
 				translate_jmp();
 				break;
+				/*notice: in our compiler, we don't support unsigned numbers. so the ja and jb here stand for the jg and jl*/
 			case ASSIGN:
 				translate_assign();
 				break;
-				/*notice: in our compiler, we don't support unsigned numbers. so the ja and jb here stand for the jg and jl*/
+			case ADD:
+				translate_add();
+				break;
+			case SUB:
+				translate_sub();
+				break;
+			case MUL:
+				translate_mul();
+				break;
+			case DIV:
+				translate_div();
+				break;
+			case PRINT:
+				translate_print();
+				break;
 			default:
 				break;
 		}
@@ -229,32 +212,90 @@ void translate_func() {
 	gen_func_tail();
 }
 
-void translate_assign(){
-	regs var1,var2;
-	if (is_num(it->a)){
-		insert_into_x86_table("mov "+where_to_write_the_var(it->b)+","+it->a);
+void translate_print(){
+	insert_into_x86_table("push eax");
+	insert_into_x86_table("push ecx");
+	insert_into_x86_table("push edx");
+	if (it->a=="int"){
+		insert_into_x86_table("mov eax,"+where_is_the_var(it->b));
+		insert_into_x86_table("push eax");
+		insert_into_x86_table("call $print_int");
+	} else if (it->a=="char"){
+		insert_into_x86_table("mov eax,"+(it->b[0]=='\''?it->b:where_is_the_var(it->b)));
+		insert_into_x86_table("push eax");
+		insert_into_x86_table("call $print_char");
+	} else if (it->a=="string"){
+
+	}
+	insert_into_x86_table("pop eax");
+	insert_into_x86_table("pop edx");
+	insert_into_x86_table("pop ecx");
+	insert_into_x86_table("pop eax");
+}
+
+void translate_sub(){
+	regs varc,reg;
+	varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		reg=varc;
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
 	} else {
-		var1=where_is_the_var_2(it->a);
-		var2=where_is_the_var_2(it->b);
-		if (var1==MEM&&var2==MEM) insert_into_x86_table("mov "+give_me_a_reg(it->a)+","+tell_me_the_address(it->a));
-		insert_into_x86_table("mov "+where_to_write_the_var(it->b)+","+where_is_the_var(it->a));
+		reg = allocate_a_reg();
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+		change_reg_table_unit(reg, it->c);
+	}
+	insert_into_x86_table("sub "+regs_convert_table[reg]+","+where_is_the_var(it->b));
+}
+
+void translate_mul(){
+
+}
+
+void translate_div(){
+
+}
+
+void translate_add() {
+	regs varc,reg;
+	varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		reg=varc;
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+	} else {
+		reg = allocate_a_reg();
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+		change_reg_table_unit(reg, it->c);
+	}
+	insert_into_x86_table("add "+regs_convert_table[reg]+","+where_is_the_var(it->b));
+}
+
+void translate_assign() {
+	regs var1, var2;
+	if (is_num(it->a)) {
+		insert_into_x86_table("mov " + where_to_write_the_var(it->b) + ",dword " + it->a);
+	} else {
+		var1 = where_is_the_var_2(it->a);
+		var2 = where_is_the_var_2(it->b);
+		if (var1 == MEM && var2 == MEM)
+			insert_into_x86_table("mov " + give_me_a_reg(it->a) + "," + tell_me_the_address(it->a));
+		insert_into_x86_table("mov " + where_to_write_the_var(it->b) + "," + where_is_the_var(it->a));
 	}
 }
 
-void translate_je(){
-	insert_into_x86_table("je "+it->a);
+void translate_je() {
+	insert_into_x86_table("je " + it->a);
 }
 
-void translate_jmp(){
-	insert_into_x86_table("jmp "+it->a);
+void translate_jmp() {
+	insert_into_x86_table("jmp " + it->a);
 }
 
-void translate_ja(){
-	insert_into_x86_table("jg "+it->a);
+void translate_ja() {
+	insert_into_x86_table("jg " + it->a);
 }
 
-void translate_jb(){
-	insert_into_x86_table("jl "+it->a);
+void translate_jb() {
+	insert_into_x86_table("jl " + it->a);
 }
 
 void translate_getret() {

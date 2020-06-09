@@ -3,9 +3,13 @@ CREATE_TABLE
 VAR int a 
 ASSIGN 3 a 
 VAR int b 
+ASSIGN 4 b 
 VAR int c 
-ASSIGN a b 
-ASSIGN a c 
+TEMP int ?temp_0 
+ADD 2 a ?temp_0
+ASSIGN ?temp_0 c 
+PRINT char 99 
+PRINT char 10 
 DESTROY_TABLE   
 END   
 
