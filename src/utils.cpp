@@ -77,3 +77,10 @@ std::string process_string(const std::string &s){
 	}
 	return ret_s+"\"";
 }
+
+bool is_num(const std::string &var){
+	for (auto i:var){
+		if (!isdigit(i)) return false;
+	}
+	return true;
+}

@@ -21,5 +21,6 @@ using std::endl;
 
 #define LL long long
 #define NONE ""
+#define INF 0x3fffffff
 
 #endif //CO_GLOBAL_H

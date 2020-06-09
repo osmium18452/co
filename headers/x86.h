@@ -12,6 +12,7 @@
 
 void translate_to_x86();
 void print_x86_table(const std::string &file);
+void insert_into_x86_table(const std::string &s);
 
 
 #endif //CO_X86_H

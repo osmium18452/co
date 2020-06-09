@@ -14,8 +14,10 @@ struct reg_table_unit{
 
 std::string where_to_write_the_var(const std::string &var);
 std::string where_is_the_var(const std::string &var);
-std::string give_me_a_reg();
+std::string give_me_a_reg(const std::string &var);
 std::string where_to_put_it_in(const std::string &var);
 std::string tell_me_the_address(const std::string &var);
+regs where_is_the_var_2(const std::string &var);
 void flush_the_regs();
+void init_reg_table();
 #endif //CO_REG_H

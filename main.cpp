@@ -7,6 +7,7 @@
 #include "headers/expression.h"
 #include "headers/utils.h"
 #include "headers/x86.h"
+#include "headers/reg.h"
 
 using std::cout;
 using std::cin;
@@ -92,7 +93,8 @@ int main(int argc, char **argv) {
 	print_string_table(string_file);
 	cout << "quadruple list size: " << quadruple_list.size() << endl;
 	init_local_symbol_table();
-	cout<<"symbol table size "<<symbol_table.size()<<endl;
+	init_reg_table();
+	cout<<"symbol table size :"<<symbol_table.size()<<endl;
 	translate_to_x86();
 	print_x86_table(x86_file);
 	return 0;

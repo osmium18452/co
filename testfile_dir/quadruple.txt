@@ -1,71 +1,11 @@
-FUNC int add 
-CREATE_TABLE   
-PARAM int a 
-PARAM int b 
-PARAM int c 
-CREATE_TABLE   
-VAR int a 
-VAR int b 
-VAR int c 
-CREATE_TABLE   
-VAR int i 
-ASSIGN 1 i 
-LABEL .label_0  
-TEMP int ?temp_0 
-LT i 9 ?temp_0
-CMP ?temp_0 0 
-JE .label_1  
-CREATE_TABLE   
-VAR int a 
-VAR int b 
-VAR int c 
-DESTROY_TABLE   
-INC i  
-JMP .label_0  
-LABEL .label_1  
-DESTROY_TABLE   
-DESTROY_TABLE   
-DESTROY_TABLE   
-END   
 FUNC void main 
 CREATE_TABLE   
-VAR int a 100
+VAR int a 
+ASSIGN 3 a 
 VAR int b 
 VAR int c 
-SAVE_REG   
-PUSH int cc 
-PUSH int bb 
-PUSH int aa 
-CALL add  
-TEMP int ?temp_1 
-GETRET ?temp_1  
-RESTORE_STACK 3  
-RESTORE_REG   
-ASSIGN ?temp_1 c 
-SAVE_REG   
-TEMP int ?temp_2 
-RDARR a 1 ?temp_2
-PUSH int c 
-PUSH int b 
-PUSH int ?temp_2 
-CALL add  
-TEMP int ?temp_3 
-GETRET ?temp_3  
-RESTORE_STACK 3  
-RESTORE_REG   
-ASSIGN ?temp_3 b 
-TEMP int ?temp_4 
-GT c b ?temp_4
-CMP ?temp_4 0 
-JE .label_2  
-PRINT int c 
-PRINT string ?string_0 
-JMP .label_3  
-LABEL .label_2  
-PRINT int b 
-PRINT string ?string_1 
-LABEL .label_3  
-RET 0  
+ASSIGN a b 
+ASSIGN a c 
 DESTROY_TABLE   
 END   
 

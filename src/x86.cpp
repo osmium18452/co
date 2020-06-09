@@ -181,6 +181,7 @@ void translate_func() {
 				create_new_local_table_2();
 				break;
 			case DESTROY_TABLE:
+				flush_the_regs();
 				destroy_current_local_table_2();
 				break;
 			case RESTORE_REG:
@@ -216,6 +217,9 @@ void translate_func() {
 			case JMP:
 				translate_jmp();
 				break;
+			case ASSIGN:
+				translate_assign();
+				break;
 				/*notice: in our compiler, we don't support unsigned numbers. so the ja and jb here stand for the jg and jl*/
 			default:
 				break;
@@ -223,6 +227,18 @@ void translate_func() {
 		it++;
 	}
 	gen_func_tail();
+}
+
+void translate_assign(){
+	regs var1,var2;
+	if (is_num(it->a)){
+		insert_into_x86_table("mov "+where_to_write_the_var(it->b)+","+it->a);
+	} else {
+		var1=where_is_the_var_2(it->a);
+		var2=where_is_the_var_2(it->b);
+		if (var1==MEM&&var2==MEM) insert_into_x86_table("mov "+give_me_a_reg(it->a)+","+tell_me_the_address(it->a));
+		insert_into_x86_table("mov "+where_to_write_the_var(it->b)+","+where_is_the_var(it->a));
+	}
 }
 
 void translate_je(){

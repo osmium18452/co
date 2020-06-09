@@ -10,8 +10,6 @@ void inc_ident();
 
 void dec_ident();
 
-void insert_into_x86_table(const std::string &s);
-
 void gen_data_section();
 
 void gen_text_section();
