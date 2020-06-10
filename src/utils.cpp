@@ -79,7 +79,12 @@ std::string process_string(const std::string &s){
 }
 
 bool is_num(const std::string &var){
-	for (auto i:var){
+	if (var[0]=='-'){
+		for (int i=1;i<var.length();i++) {
+			if (!isdigit(var[i])) return false;
+		}
+	}
+	else for (auto i:var){
 		if (!isdigit(i)) return false;
 	}
 	return true;

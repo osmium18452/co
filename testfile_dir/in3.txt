@@ -183,3 +183,29 @@ c+=a;
 break;
 }
 }
+
+int hello;
+int add(int a,int b,int c){
+    return a+b*c;
+}
+int return1(){
+	return 1;
+}
+int add2(int a,int b){
+	return a+b;
+}
+int main(){
+	int a=9,b=3,c,d=5;
+	hello=555;
+	char hh[10];
+	hh[0]='n';
+	hh[1]='u';
+	hh[2]=0;
+	printf(hh);
+	printf("hello world\n");
+	printf(hello,'\n');
+	c=a%3+2*d++;
+	printf(c,'\n');
+	printf(add2(return1(),return1()*d),' ',a,' ',b,' ',c,' ',d,'\n');
+	return 0;
+}

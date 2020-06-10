@@ -77,6 +77,7 @@ void translate_bitand();
 void translate_bitor();
 
 void translate_bitxor();
+void translate_bitnot();
 
 void translate_ne();
 

@@ -6,10 +6,12 @@
 #include "../headers/quadruple.h"
 
 void expression(std::string &res, dtype &res_dtype) {
+//	cout<<"hello world"<<endl;
 	parse_exp14(res, res_dtype);
 }
 
 void expression_without_comma(std::string &res, dtype &res_type) {
+//	cout<<"hello world"<<endl;
 	parse_exp13(res, res_type);
 }
 
@@ -85,6 +87,71 @@ void parse_exp2(std::string &res, dtype &res_dtype) {
 	quadruple_element element{};
 	bool flag = false;
 	if (tokens[curr_token].type == TOK_INC || tokens[curr_token].type == TOK_DEC ||
+		tokens[curr_token].type == TOK_SUB || tokens[curr_token].type == TOK_LOGINOT) {
+		flag = true;
+		switch (tokens[curr_token].type) {
+			case TOK_INC:
+				instr = INC;
+				break;
+			case TOK_DEC:
+				instr = DEC;
+				break;
+			case TOK_SUB:
+				instr = REVERSE;
+				break;
+			case TOK_LOGINOT:
+				instr = NOT;
+				break;
+			default:
+				break;
+		}
+		match();
+	}
+	parse_exp1(res, res_dtype);
+	if (flag && (instr == REVERSE || instr == INC || instr == DEC || instr == NOT)) {
+		int t1;
+		switch (instr) {
+			case INC:
+				if (is_const(res, t1)) {
+					res = std::to_string(t1 + 1);
+				} else {
+					element = {INC, res, NONE, NONE};
+					insert_to_quadruple_list(element);
+				}
+				break;
+			case DEC:
+				if (is_const(res, t1)) {
+					res = std::to_string(t1 - 1);
+				} else {
+					element = {DEC, res, NONE, NONE};
+					insert_to_quadruple_list(element);
+				}
+				break;
+			case REVERSE:
+				if (is_const(res, t1)) {
+					res = std::to_string(-t1);
+				} else {
+					element = {SUB, "0", res, res};
+					insert_to_quadruple_list(element);
+				}
+				break;
+			case NOT:
+				if (is_const(res, t1)) {
+					res = std::to_string(t1 ? 0 : 1);
+				} else {
+					element = {NOT, res, NONE, NONE};
+					insert_to_quadruple_list(element);
+				}
+				break;
+		}
+	}
+}/* (frontward) ++ -- $ ! */
+/*void parse_exp2(std::string &res, dtype &res_dtype) {
+	std::string temp_var;
+	instruct instr;
+	quadruple_element element{};
+	bool flag = false;
+	if (tokens[curr_token].type == TOK_INC || tokens[curr_token].type == TOK_DEC ||
 		tokens[curr_token].type == TOK_REVERSE || tokens[curr_token].type == TOK_LOGINOT) {
 		flag = true;
 		switch (tokens[curr_token].type) {
@@ -145,7 +212,7 @@ void parse_exp2(std::string &res, dtype &res_dtype) {
 				break;
 		}
 	}
-}/* (frontward) ++ -- $ ! */
+}*//* (frontward) ++ -- $ ! */
 void parse_exp3(std::string &res, dtype &res_dtype) {
 	std::string temp_var;
 	dtype temp_dtype;
@@ -303,11 +370,34 @@ void parse_exp7(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* == != */
+
+void parse_exp85(std::string &res,dtype &res_dtype) {
+	std::string temp_var;
+	instruct instr;
+	quadruple_element element{};
+	bool flag = false;
+	if (tokens[curr_token].type == TOK_BITNOT) {
+		flag = true;
+		instr=BITNOT;
+		match();
+	}
+	parse_exp7(res, res_dtype);
+	if (flag) {
+		int t1;
+		if (is_const(res, t1)) {
+			res = std::to_string(!t1);
+		} else {
+			element = {instr, res, NONE, NONE};
+			insert_to_quadruple_list(element);
+		}
+	}
+}
+
 void parse_exp8(std::string &res, dtype &res_dtype) {
 	std::string temp_var;
 	dtype temp_dtype;
 	quadruple_element element{};
-	parse_exp7(res, res_dtype);
+	parse_exp85(res, res_dtype);
 	while (tokens[curr_token].type == TOK_BITAND) {
 		match();
 		parse_exp7(temp_var, temp_dtype);

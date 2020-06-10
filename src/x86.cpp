@@ -214,12 +214,75 @@ void translate_func() {
 			case DEC:
 				translate_dec();
 				break;
+			case BITAND:
+				translate_bitand();
+				break;
+			case BITOR:
+				translate_bitor();
+				break;
+			case BITXOR:
+				translate_bitxor();
+				break;
+			case BITNOT:
+				translate_bitnot();
+				break;
+			case CMP:
+				translate_cmp();
+				break;
 			default:
 				break;
 		}
 		it++;
 	}
 	gen_func_tail();
+}
+
+void translate_cmp(){
+	insert_into_x86_table("cmp "+where_is_the_var(it->a)+","+where_is_the_var(it->b));
+}
+
+void translate_bitnot(){
+	insert_into_x86_table("not "+where_is_the_var(it->a));
+}
+
+void translate_bitand(){
+	regs varc, reg;
+	varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		reg = varc;
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+	} else {
+		reg = allocate_a_reg();
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("and " + regs_convert_table[reg] + "," + where_is_the_var(it->b));
+	change_reg_table_unit(reg, it->c);
+}
+void translate_bitor(){
+	regs varc, reg;
+	varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		reg = varc;
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+	} else {
+		reg = allocate_a_reg();
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("or " + regs_convert_table[reg] + "," + where_is_the_var(it->b));
+	change_reg_table_unit(reg, it->c);
+}
+void translate_bitxor(){
+	regs varc, reg;
+	varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		reg = varc;
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+	} else {
+		reg = allocate_a_reg();
+		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("xor " + regs_convert_table[reg] + "," + where_is_the_var(it->b));
+	change_reg_table_unit(reg, it->c);
 }
 
 void translate_inc(){
@@ -244,7 +307,9 @@ void translate_print() {
 		insert_into_x86_table("push eax");
 		insert_into_x86_table("call $print_char");
 	} else if (it->a == "string") {
-
+		insert_into_x86_table("mov eax," + it->b);
+		insert_into_x86_table("push eax");
+		insert_into_x86_table("call $print_str");
 	}
 	insert_into_x86_table("pop eax");
 }
@@ -258,9 +323,9 @@ void translate_sub() {
 	} else {
 		reg = allocate_a_reg();
 		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
-		change_reg_table_unit(reg, it->c);
 	}
 	insert_into_x86_table("sub " + regs_convert_table[reg] + "," + where_is_the_var(it->b));
+	change_reg_table_unit(reg, it->c);
 }
 
 void translate_mul() {
@@ -272,9 +337,9 @@ void translate_mul() {
 	} else {
 		reg = allocate_a_reg();
 		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
-		change_reg_table_unit(reg, it->c);
 	}
 	insert_into_x86_table("imul " + regs_convert_table[reg] + "," + where_is_the_var(it->b));
+	change_reg_table_unit(reg, it->c);
 }
 
 void translate_div_mod() {
@@ -290,6 +355,7 @@ void translate_div_mod() {
 	}
 	write_the_reg_back(EAX);
 	write_the_reg_back(EDX);
+	insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 	if (it->instruct == DIV) {
 		change_reg_table_unit(EAX, it->c);
 		change_reg_table_unit(EDX, NONE);
@@ -297,11 +363,10 @@ void translate_div_mod() {
 		change_reg_table_unit(EAX, NONE);
 		change_reg_table_unit(EDX, it->c);
 	}
-	insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 	insert_into_x86_table("cdq");
-	std::string dword=varb>3?"dword ":"";
+//	std::string dword=varb>3?"dword ":"";
 	if (varb==IMM) insert_into_x86_table("idiv ecx");
-	else insert_into_x86_table("idiv " + dword + where_is_the_var(it->b));
+	else insert_into_x86_table("idiv " + where_is_the_var(it->b));
 }
 
 void translate_add() {
@@ -313,9 +378,9 @@ void translate_add() {
 	} else {
 		reg = allocate_a_reg();
 		insert_into_x86_table("mov " + regs_convert_table[reg] + "," + where_is_the_var(it->a));
-		change_reg_table_unit(reg, it->c);
 	}
 	insert_into_x86_table("add " + regs_convert_table[reg] + "," + where_is_the_var(it->b));
+	change_reg_table_unit(reg, it->c);
 }
 
 void translate_assign() {

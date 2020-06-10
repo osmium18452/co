@@ -13,7 +13,7 @@ std::string instruct_convert_table[] = {
 		"COMMA", "LABEL",
 		"LOGI_AND", "LOGI_OR",
 		"TEMP",
-		"BITAND", "BITOR", "BITXOR",
+		"BITAND", "BITOR", "BITXOR","BITNOT",
 		"NE", "EQ",
 		"SHL", "SHR",
 		"LT", "LE", "GT", "GE",

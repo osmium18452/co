@@ -20,6 +20,7 @@ void parse_exp4(std::string &res, dtype &res_dtype);/* + - */
 void parse_exp5(std::string &res, dtype &res_dtype);/* << >> */
 void parse_exp6(std::string &res, dtype &res_dtype);/* > < >= <= */
 void parse_exp7(std::string &res, dtype &res_dtype);/* == != */
+void parse_exp85(std::string &res,dtype &res_dtype);/* ~ */
 void parse_exp8(std::string &res, dtype &res_dtype);/* & */
 void parse_exp9(std::string &res, dtype &res_dtype);/* ^ */
 void parse_exp10(std::string &res, dtype &res_dtype);/* | */

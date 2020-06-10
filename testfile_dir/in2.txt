@@ -1,16 +1,8 @@
-int add(int a,int b,int c){
-    return a+b*c;
-}
-int return1(){
-	return 1;
-}
-int add2(int a,int b){
-	return a+b;
-}
 int main(){
-	int a=9,b=3,c,d=5;
-	c=a%3+2*d++;
-	printf(c,'\n');
-	printf(add2(return1(),return1()*d),' ',a,' ',b,' ',c,' ',d,'\n');
-	return 0;
+int d=0,a=65535,b=4294901760,c;
+if (d){
+	c=a|b;
+} else c=a&b;
+printf(c,'\n');
+return 0;
 }

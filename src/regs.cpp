@@ -27,7 +27,7 @@ std::string tell_me_the_address(const std::string &var) {
 	query_symbol_table(var, entry);
 	if (entry.table_level == l)
 		ret = "[ebp" + (entry.address < 0 ? std::to_string(entry.address) + "]" : "+" + std::to_string(entry.address) + "]");
-	else ret = var;
+	else ret = "[g_"+var+"]";
 	return ret;
 }
 std::string where_to_write_the_var(const std::string &var){
