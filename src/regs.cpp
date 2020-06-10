@@ -49,6 +49,16 @@ std::string where_is_the_var(const std::string &var){
 		return regs_convert_table[reg];
 	}
 }
+std::string lea_where_is_the_var(const std::string &var){
+	if(is_num(var)) return "dword "+var;
+	std::string ret;
+	regs reg=where_is_the_var_2(var);
+	if (reg==MEM) return tell_me_the_address(var);
+	else {
+		reg_table[reg].time_stamp=++time_stamp;
+		return regs_convert_table[reg];
+	}
+}
 std::string give_me_a_reg(const std::string &var){
 	regs reg=where_is_the_var_2(var);
 	if (reg < 4) return regs_convert_table[reg];

@@ -71,4 +71,8 @@ void parse_break_statement();
 
 void parse_continue_statement();
 
+void parse_bitorass();
+void parse_bitandass();
+void parse_bitxorass();
+
 #endif //CO_SDT_FUNC_DECL_H

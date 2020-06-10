@@ -295,7 +295,9 @@ void parse_single_statement() {
 				case TOK_MULASS:
 				case TOK_DIVASS:
 				case TOK_ADDASS:
-				case TOK_SUBASS:
+				case TOK_BITANDASS:
+				case TOK_BITORASS:
+				case TOK_BITXORASS:
 					parse_assignment_statement();
 					break;
 				case TOK_LPARE:
@@ -364,17 +366,18 @@ void parse_print_statement() {
 				query_symbol_table(tokens[curr_token].stringval, entry);
 				switch (entry.itype) {
 					case IDN_VAR:
-						dtp = entry.dtype == DATA_CHAR ? "char" : "int";
-						element = {PRINT, dtp, tokens[curr_token].stringval, NONE};
-						insert_to_quadruple_list(element);
-						match();
-						break;
 					case IDN_ARRAY:
-						parse_array_read(res, dtype, tokens[curr_token].stringval);
+						expression_without_comma(res, dtype);
+						dtp = entry.dtype == DATA_CHAR ? "char" : "int";
+						element = {PRINT, dtp, res, NONE};
+						insert_to_quadruple_list(element);
+//						match();
+						break;
+						/*parse_array_read(res, dtype, tokens[curr_token].stringval);
 						dtp = dtype == DATA_CHAR ? "char" : "int";
 						element = {PRINT, dtp, res, NONE};
 						insert_to_quadruple_list(element);
-						break;
+						break;*/
 					case IDN_FUNCTION:
 						parse_non_void_func_call(res, dtype, tokens[curr_token].stringval);
 						dtp = dtype == DATA_CHAR ? "char" : "int";
@@ -481,9 +484,52 @@ void parse_assignment_statement() {
 		case TOK_SUBASS:
 			parse_subass();
 			break;
+		case TOK_BITANDASS:
+			parse_bitandass();
+			break;
+		case TOK_BITORASS:
+			parse_bitorass();
+			break;
+		case TOK_BITXORASS:
+			parse_bitxorass();
+			break;
 		default:
 			break;
 	}
+}
+
+void parse_bitorass(){
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{BITOR, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
+}
+void parse_bitandass(){
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{BITAND, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
+}
+void parse_bitxorass(){
+	std::string id = tokens[curr_token].stringval;
+	match();
+	match();
+	std::string res;
+	dtype res_dtype;
+	expression(res, res_dtype);
+	quadruple_element element{BITXOR, id, res, id};
+	insert_to_quadruple_list(element);
+	match();
 }
 
 void parse_argument_list(const std::vector<dtype> &param_list) {

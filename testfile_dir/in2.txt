@@ -1,8 +1,12 @@
 int main(){
-int d=0,a=65535,b=4294901760,c;
-if (d){
-	c=a|b;
-} else c=a&b;
-printf(c,'\n');
+int a[10],b;
+a[0]=1;
+a[1]=2;
+a[2]=3;
+int ff=a[0]+a[1]+a[2];
+printf(ff,'\n');
+int d=1,e=1;
+printf(d+e,'\n');
+printf(a[0]+a[1],' ',a[1],' ',a[2],'\n');
 return 0;
 }

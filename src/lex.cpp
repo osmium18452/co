@@ -107,6 +107,7 @@ std::string token_convert_table[]={
 		"TOK_BREAK",      "TOK_CONTINUE",
 		"TOK_SWITCH",     "TOK_CASE",
 		"TOK_REVERSE",    "TOK_DEFAULT",
+		"TOK_BITANDASS",  "TOK_BITORASS",   "TOK_BITXORASS",
 };
 
 
@@ -577,6 +578,9 @@ int get_token(std::string &s, bool use_blank) {
 				if (s[right] == '&') {
 					right++;
 					state = STAT_AND;
+				} else if (s[right] == '=') {
+					right++;
+					state = STAT_BITANDASS;
 				} else {
 					token tmp;
 					tmp.line_num = line_num;
@@ -585,6 +589,15 @@ int get_token(std::string &s, bool use_blank) {
 					token_num++;
 					state = STAT_START;
 				}
+				break;
+			case STAT_BITANDASS: {
+				token tmp;
+				tmp.line_num = line_num;
+				tmp.type = TOK_BITANDASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
 			case STAT_AND: {
 				token tmp;
@@ -600,6 +613,9 @@ int get_token(std::string &s, bool use_blank) {
 				if (s[right] == '|') {
 					right++;
 					state = STAT_OR;
+				} else if (s[right] == '=') {
+					right++;
+					state = STAT_BITORASS;
 				} else {
 					token tmp;
 					tmp.line_num = line_num;
@@ -608,6 +624,15 @@ int get_token(std::string &s, bool use_blank) {
 					token_num++;
 					state = STAT_START;
 				}
+				break;
+			case STAT_BITORASS:{
+				token tmp;
+				tmp.line_num = line_num;
+				tmp.type = TOK_BITORASS;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
 				break;
 			case STAT_OR: {
 				token tmp;
@@ -908,10 +933,23 @@ int get_token(std::string &s, bool use_blank) {
 				state = STAT_START;
 			}
 				break;
-			case STAT_XOR: {
+			case STAT_XOR:
+				if (s[right]=='='){
+					state=STAT_BITXORASS;
+					right++;
+				}else {
 				token tmp;
 				tmp.line_num = line_num;
 				tmp.type = TOK_BITXOR;
+				tokens.push_back(tmp);
+				token_num++;
+				state = STAT_START;
+			}
+				break;
+			case STAT_BITXORASS:{
+				token tmp;
+				tmp.line_num = line_num;
+				tmp.type = TOK_BITXORASS;
 				tokens.push_back(tmp);
 				token_num++;
 				state = STAT_START;

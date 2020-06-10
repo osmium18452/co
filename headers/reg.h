@@ -26,4 +26,5 @@ void i_need_reg(regs reg,const std::string &var);
 void write_the_reg_back(regs regs);
 regs allocate_a_reg();
 void change_reg_table_unit(regs regs,const std::string &var);
+std::string lea_where_is_the_var(const std::string &var);
 #endif //CO_REG_H

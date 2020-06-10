@@ -209,3 +209,16 @@ int main(){
 	printf(add2(return1(),return1()*d),' ',a,' ',b,' ',c,' ',d,'\n');
 	return 0;
 }
+
+int main(){
+int a[10],b;
+a[0]=1;
+a[1]=2;
+a[2]=3;
+int ff=a[0]+a[1]+a[2];
+printf(ff,'\n');
+int d=1,e=1;
+printf(d+e,'\n');
+printf(a[0]+a[1],' ',a[1],' ',a[2],'\n');
+return 0;
+}

@@ -1,27 +1,52 @@
 FUNC void main 
 CREATE_TABLE   
-VAR int d 
-ASSIGN 0 d 
-VAR int a 
-ASSIGN 65535 a 
+VAR int a 10
 VAR int b 
-ASSIGN -65536 b 
-VAR int c 
-CMP d 0 
-JE .label_0  
-CREATE_TABLE   
+WRARR a 0 1
+WRARR a 1 2
+WRARR a 2 3
+VAR int ff 
 TEMP int ?temp_0 
-BITOR a b ?temp_0
-ASSIGN ?temp_0 c 
-DESTROY_TABLE   
-JMP .label_1  
-LABEL .label_0  
+RDARR a 0 ?temp_0
 TEMP int ?temp_1 
-BITAND a b ?temp_1
-ASSIGN ?temp_1 c 
-LABEL .label_1  
+RDARR a 1 ?temp_1
+TEMP int ?temp_2 
+ADD ?temp_0 ?temp_1 ?temp_2
+TEMP int ?temp_3 
+RDARR a 2 ?temp_3
+TEMP int ?temp_4 
+ADD ?temp_2 ?temp_3 ?temp_4
+ASSIGN ?temp_4 ff 
 SAVE_REG   
-PRINT int c 
+PRINT int ff 
+PRINT char 10 
+RESTORE_REG   
+VAR int d 
+ASSIGN 1 d 
+VAR int e 
+ASSIGN 1 e 
+SAVE_REG   
+TEMP int ?temp_5 
+ADD d e ?temp_5
+PRINT int ?temp_5 
+PRINT char 10 
+RESTORE_REG   
+SAVE_REG   
+TEMP int ?temp_6 
+RDARR a 0 ?temp_6
+TEMP int ?temp_7 
+RDARR a 1 ?temp_7
+TEMP int ?temp_8 
+ADD ?temp_6 ?temp_7 ?temp_8
+PRINT int ?temp_8 
+PRINT char 32 
+TEMP int ?temp_9 
+RDARR a 1 ?temp_9
+PRINT int ?temp_9 
+PRINT char 32 
+TEMP int ?temp_10 
+RDARR a 2 ?temp_10
+PRINT int ?temp_10 
 PRINT char 10 
 RESTORE_REG   
 RET 0  
