@@ -1,24 +1,91 @@
+FUNC int add 
+CREATE_TABLE   
+PARAM int a 
+PARAM int b 
+PARAM int c 
+CREATE_TABLE   
+TEMP int ?temp_0 
+MUL b c ?temp_0
+TEMP int ?temp_1 
+ADD a ?temp_0 ?temp_1
+RET ?temp_1  
+DESTROY_TABLE   
+DESTROY_TABLE   
+END   
+FUNC int return1 
+CREATE_TABLE   
+CREATE_TABLE   
+RET 1  
+DESTROY_TABLE   
+DESTROY_TABLE   
+END   
+FUNC int add2 
+CREATE_TABLE   
+PARAM int a 
+PARAM int b 
+CREATE_TABLE   
+TEMP int ?temp_2 
+ADD a b ?temp_2
+RET ?temp_2  
+DESTROY_TABLE   
+DESTROY_TABLE   
+END   
 FUNC void main 
 CREATE_TABLE   
 VAR int a 
-ASSIGN 3 a 
+ASSIGN 9 a 
 VAR int b 
-ASSIGN 4 b 
+ASSIGN 3 b 
 VAR int c 
-TEMP int ?temp_0 
-ADD 2 a ?temp_0
-TEMP int ?temp_1 
-SUB ?temp_0 b ?temp_1
-ASSIGN ?temp_1 c 
-PRINT int c 
-PRINT char 10 
-TEMP int ?temp_2 
-ADD 2 a ?temp_2
+VAR int d 
+ASSIGN 5 d 
 TEMP int ?temp_3 
-ADD ?temp_2 b ?temp_3
-ASSIGN ?temp_3 c 
+MOD a 3 ?temp_3
+INC d  
+TEMP int ?temp_4 
+MUL 2 d ?temp_4
+TEMP int ?temp_5 
+ADD ?temp_3 ?temp_4 ?temp_5
+ASSIGN ?temp_5 c 
+SAVE_REG   
 PRINT int c 
 PRINT char 10 
+RESTORE_REG   
+SAVE_REG   
+SAVE_REG   
+SAVE_REG   
+CALL return1  
+TEMP int ?temp_6 
+GETRET ?temp_6  
+RESTORE_STACK 0  
+RESTORE_REG   
+SAVE_REG   
+CALL return1  
+TEMP int ?temp_7 
+GETRET ?temp_7  
+RESTORE_STACK 0  
+RESTORE_REG   
+TEMP int ?temp_8 
+MUL ?temp_7 d ?temp_8
+PUSH int ?temp_8 
+PUSH int ?temp_6 
+CALL add2  
+TEMP int ?temp_9 
+GETRET ?temp_9  
+RESTORE_STACK 2  
+RESTORE_REG   
+PRINT int ?temp_9 
+PRINT char 32 
+PRINT int a 
+PRINT char 32 
+PRINT int b 
+PRINT char 32 
+PRINT int c 
+PRINT char 32 
+PRINT int d 
+PRINT char 10 
+RESTORE_REG   
+RET 0  
 DESTROY_TABLE   
 END   
 

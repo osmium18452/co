@@ -15,12 +15,13 @@ void init_reg_table(){
 	}
 }
 
-std::string regs_convert_table[5]={
-		"eax","ebx","ecx","edx","mem"
+std::string regs_convert_table[6]={
+		"eax","ebx","ecx","edx","mem","imm",
 };
 
 
 std::string tell_me_the_address(const std::string &var) {
+	if (is_num(var)) return var;
 	table_entry entry{};
 	std::string ret;
 	query_symbol_table(var, entry);
@@ -42,7 +43,7 @@ std::string where_is_the_var(const std::string &var){
 	if(is_num(var)) return "dword "+var;
 	std::string ret;
 	regs reg=where_is_the_var_2(var);
-	if (reg==MEM) return tell_me_the_address(var);
+	if (reg==MEM) return "dword "+tell_me_the_address(var);
 	else {
 		reg_table[reg].time_stamp=++time_stamp;
 		return regs_convert_table[reg];
@@ -99,6 +100,7 @@ void flush_the_regs(){
 }
 
 regs where_is_the_var_2(const std::string &var){
+	if (is_num(var)) return IMM;
 	for (int i=0;i<4;i++){
 		if (reg_table[i].var==var) return static_cast<regs>(i);
 	}

@@ -10,67 +10,158 @@ global _start
 _start:
    call main
    call $quit
+add:
+   push ebp
+   mov ebp,esp
+   push ebx
+   sub esp,8
+   mov eax,dword [ebp+12]
+   imul eax,dword [ebp+16]
+   mov ebx,dword [ebp+8]
+   add ebx,eax
+   mov eax,ebx
+   mov [ebp-4],eax
+   mov [ebp-8],ebx
+   pop ebx
+   leave
+   ret
+return1:
+   push ebp
+   mov ebp,esp
+   push ebx
+   sub esp,0
+   mov eax,dword 1
+   pop ebx
+   leave
+   ret
+add2:
+   push ebp
+   mov ebp,esp
+   push ebx
+   sub esp,4
+   mov eax,dword [ebp+8]
+   add eax,dword [ebp+12]
+   mov eax,eax
+   mov [ebp-4],eax
+   pop ebx
+   leave
+   ret
 main:
    push ebp
    mov ebp,esp
    push ebx
-   sub esp,28
-   mov [ebp-4],dword 3
-   mov [ebp-8],dword 4
+   sub esp,44
+   mov [ebp-4],dword 9
+   mov [ebp-8],dword 3
+   mov [ebp-16],dword 5
+   mov ecx,3
+   mov eax,dword [ebp-4]
+   cdq
+   idiv ecx
+   inc dword [ebp-16]
    mov eax,dword 2
-   add eax,[ebp-4]
-   mov ebx,eax
-   sub ebx,[ebp-8]
+   imul eax,dword [ebp-16]
+   mov ebx,edx
+   add ebx,eax
    mov [ebp-12],ebx
-   push eax
-   push ecx
    push edx
-   mov eax,[ebp-12]
+   push ecx
+   push eax
+   mov eax,dword [ebp-12]
    push eax
    call $print_int
    pop eax
-   pop edx
-   pop ecx
-   pop eax
-   push eax
-   push ecx
-   push edx
    mov eax,dword 10
    push eax
    call $print_char
    pop eax
-   pop edx
-   pop ecx
    pop eax
-   mov ecx,dword 2
-   add ecx,[ebp-4]
-   mov edx,ecx
-   add edx,[ebp-8]
-   mov [ebp-12],edx
-   push eax
-   push ecx
+   pop ecx
+   pop edx
    push edx
-   mov eax,[ebp-12]
+   push ecx
+   push eax
+   push edx
+   push ecx
+   push eax
+   push edx
+   push ecx
+   push eax
+   call return1
+   mov [ebp-32], eax
+   add esp,0
+   pop eax
+   pop ecx
+   pop edx
+   push edx
+   push ecx
+   push eax
+   call return1
+   mov [ebp-36], eax
+   add esp,0
+   pop eax
+   pop ecx
+   pop edx
+   mov ecx,dword [ebp-36]
+   imul ecx,dword [ebp-16]
+   mov eax,ecx
+   push eax
+   mov eax,dword [ebp-32]
+   push eax
+   call add2
+   mov [ebp-44], eax
+   add esp,8
+   pop eax
+   pop ecx
+   pop edx
+   mov eax,dword [ebp-44]
    push eax
    call $print_int
    pop eax
-   pop edx
-   pop ecx
-   pop eax
+   mov eax,dword 32
    push eax
-   push ecx
-   push edx
+   call $print_char
+   pop eax
+   mov eax,dword [ebp-4]
+   push eax
+   call $print_int
+   pop eax
+   mov eax,dword 32
+   push eax
+   call $print_char
+   pop eax
+   mov eax,dword [ebp-8]
+   push eax
+   call $print_int
+   pop eax
+   mov eax,dword 32
+   push eax
+   call $print_char
+   pop eax
+   mov eax,dword [ebp-12]
+   push eax
+   call $print_int
+   pop eax
+   mov eax,dword 32
+   push eax
+   call $print_char
+   pop eax
+   mov eax,dword [ebp-16]
+   push eax
+   call $print_int
+   pop eax
    mov eax,dword 10
    push eax
    call $print_char
    pop eax
-   pop edx
-   pop ecx
    pop eax
-   mov [ebp-16],eax
-   mov [ebp-20],ebx
-   mov [ebp-24],ecx
-   mov [ebp-28],edx
+   pop ecx
+   pop edx
+   mov eax,dword 0
+   mov [ebp-24],eax
+   mov [ebp-28],ebx
+   mov [ebp-40],ecx
+   mov [ebp-20],edx
    pop ebx
    leave
    ret

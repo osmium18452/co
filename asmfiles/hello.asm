@@ -1,78 +1,38 @@
-;%include "io.asm"
-;
-;section .data
-;msg db "hello world",0ah,00h
-;msg2 db "12345678955555",0ah,00h
-;msg3 db "-0",00h
-;negative db "negative num",00h
-;positive db "positive num",00h
-;rtn db 0ah,00h
-;int_val dd 123456
-;
-;section .bss
-;?res resb 64
-;?res_read resb 4096
-;
-;section .text
-;global _start
-;
-;_start:
-;    call main
-;    call $quit
-;
-;main:
-;	push ebp
-;    mov ebp,esp
-;    push ebx
-;    mov eax,msg2
-;    push eax
-;    call $print_str
-;    pop ebx
-;    leave
-;    ret
 %include "io.asm"
+
 section .data
-   msg db "hello world",0ah,00h
-   rtn db 0ah,00h
+msg db "hello world",0ah,00h
+msg2 db "12345678955555",0ah,00h
+msg3 db "-0",00h
+negative db "negative num",00h
+positive db "positive num",00h
+rtn db 0ah,00h
+int_val dd 123456
+
 section .bss
-   ?res resb 64
-   ?res_read resb 4096
+?res resb 64
+?res_read resb 4096
+
 section .text
 global _start
+
 _start:
-   call main
-   call $quit
+    call main
+    call $quit
+
 main:
-   push ebp
-   mov ebp,esp
-   push ebx
-   sub esp,16
-   mov [ebp-4],dword 3
-   mov [ebp-8],dword 4
-   mov eax,dword 2
-   add eax,[ebp-4]
-   mov [ebp-12],eax
-   push eax
-   push ecx
-   push edx
-   mov eax,dword 99
-   push eax
-   call $print_char
-   pop eax
-   pop edx
-   pop ecx
-   pop eax
-   push eax
-   push ecx
-   push edx
-   mov eax,dword 10
-   push eax
-   call $print_char
-   pop eax
-   pop edx
-   pop ecx
-   pop eax
-   mov [ebp-16],eax
-   pop ebx
-   leave
-   ret
+	push ebp
+    mov ebp,esp
+    push ebx
+    mov edx,0
+    mov ecx,0
+    mov eax,10000h
+    push eax
+    mov eax,23333h
+    imul eax,[esp]
+    push eax
+    call $print_hex
+    call $print_rtn
+    pop ebx
+    leave
+    ret

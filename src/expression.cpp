@@ -85,7 +85,7 @@ void parse_exp2(std::string &res, dtype &res_dtype) {
 	quadruple_element element{};
 	bool flag = false;
 	if (tokens[curr_token].type == TOK_INC || tokens[curr_token].type == TOK_DEC ||
-	    tokens[curr_token].type == TOK_REVERSE || tokens[curr_token].type == TOK_LOGINOT) {
+		tokens[curr_token].type == TOK_REVERSE || tokens[curr_token].type == TOK_LOGINOT) {
 		flag = true;
 		switch (tokens[curr_token].type) {
 			case TOK_INC:
@@ -152,13 +152,14 @@ void parse_exp3(std::string &res, dtype &res_dtype) {
 	quadruple_element element{};
 	instruct instr;
 	parse_exp2(res, res_dtype);
-	while (tokens[curr_token].type == TOK_MUL || tokens[curr_token].type == TOK_DIV) {
-		instr = tokens[curr_token].type == TOK_MUL ? MUL : DIV;
+	while (tokens[curr_token].type == TOK_MUL || tokens[curr_token].type == TOK_DIV ||
+		   tokens[curr_token].type == TOK_MOD) {
+		instr = tokens[curr_token].type == TOK_MUL ? MUL : tokens[curr_token].type == TOK_DIV ? DIV : MOD;
 		match();
 		parse_exp2(temp_var, temp_dtype);
 		int t1, t2;
 		if (is_const(res, t1) && is_const(temp_var, t2)) {
-			res = std::to_string(instr == MUL ? t1 * t2 : t1 / t2);
+			res = std::to_string(instr == MUL ? t1 * t2 : instr == DIV ? t1 / t2 : t1 % t2);
 			res_dtype = DATA_INT;
 		} else {
 			std::string new_res = gen_temp_var();
@@ -228,7 +229,7 @@ void parse_exp6(std::string &res, dtype &res_dtype) {
 	instruct instr;
 	parse_exp5(res, res_dtype);
 	while (tokens[curr_token].type == TOK_GT || tokens[curr_token].type == TOK_GE ||
-	       tokens[curr_token].type == TOK_LT || tokens[curr_token].type == TOK_LE) {
+		   tokens[curr_token].type == TOK_LT || tokens[curr_token].type == TOK_LE) {
 		switch (tokens[curr_token].type) {
 			case TOK_GT:
 				instr = GT;

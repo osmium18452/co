@@ -4,7 +4,7 @@
 #include "global.h"
 
 enum regs{
-	EAX,EBX,ECX,EDX,MEM,
+	EAX,EBX,ECX,EDX,MEM,IMM,
 };
 
 struct reg_table_unit{
@@ -12,7 +12,7 @@ struct reg_table_unit{
 	int time_stamp;
 };
 
-extern std::string regs_convert_table[5];
+extern std::string regs_convert_table[6];
 
 std::string where_to_write_the_var(const std::string &var);
 std::string where_is_the_var(const std::string &var);

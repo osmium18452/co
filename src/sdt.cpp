@@ -339,6 +339,8 @@ void parse_print_statement() {
 	std::string slabel;
 	match();// printf
 	match();// (
+	element={SAVE_REG,NONE,NONE,NONE};
+	insert_to_quadruple_list(element);
 	while (true) {
 		switch (tokens[curr_token].type) {
 			case TOK_STRINGCONST:
@@ -398,6 +400,8 @@ void parse_print_statement() {
 	}
 	match();// )
 	match();// ;
+	element={RESTORE_REG,NONE,NONE,NONE};
+	insert_to_quadruple_list(element);
 }
 
 void parse_scan_statement() {

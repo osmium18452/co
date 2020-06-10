@@ -44,11 +44,9 @@ void translate_add();
 
 void translate_sub();
 
-void translate_mod();
-
 void translate_mul();
 
-void translate_div();
+void translate_div_mod();
 
 void translate_cmp();
 
