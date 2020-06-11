@@ -26,6 +26,7 @@ enum instruct {
 	CREATE_TABLE,DESTROY_TABLE,
 	SAVE_REG,RESTORE_REG,
 	RESTORE_STACK,
+	FLUSH_REG,FLUSH_REGTABLE,
 };
 
 struct quadruple_element {

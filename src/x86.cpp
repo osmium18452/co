@@ -64,6 +64,9 @@ void gen_start_code() {
 	insert_into_x86_table("global _start");
 	insert_into_x86_table("_start:");
 	inc_ident();
+	insert_into_x86_table("mov esi,?res_read");
+	insert_into_x86_table("xor edi,edi");
+	insert_into_x86_table("mov byte [esi+edi],0ah");
 	insert_into_x86_table("call main");
 	insert_into_x86_table("call $quit");
 	dec_ident();
@@ -109,12 +112,20 @@ void translate_restore_reg() {
 	insert_into_x86_table("pop eax");
 	insert_into_x86_table("pop ecx");
 	insert_into_x86_table("pop edx");
+	reg_table[EAX].var = save_reg_table_var_table[EAX];
+	reg_table[EBX].var = save_reg_table_var_table[EBX];
+	reg_table[ECX].var = save_reg_table_var_table[ECX];
+	reg_table[EDX].var = save_reg_table_var_table[EDX];
 }
 
 void translate_save_reg() {
 	insert_into_x86_table("push edx");
 	insert_into_x86_table("push ecx");
 	insert_into_x86_table("push eax");
+	save_reg_table_var_table[EAX] = reg_table[EAX].var;
+	save_reg_table_var_table[EBX] = reg_table[EBX].var;
+	save_reg_table_var_table[ECX] = reg_table[ECX].var;
+	save_reg_table_var_table[EDX] = reg_table[EDX].var;
 }
 
 void translate_restore_stack() {
@@ -241,6 +252,15 @@ void translate_func() {
 			case WRARR:
 				translate_wrarr();
 				break;
+			case FLUSH_REGTABLE:
+				flush_reg_table();
+				break;
+			case FLUSH_REG:
+				flush_the_regs();
+				break;
+			case SCAN:
+				translate_scan();
+				break;
 			default:
 				break;
 		}
@@ -249,17 +269,32 @@ void translate_func() {
 	gen_func_tail();
 }
 
+void translate_scan(){
+	if (it->a=="int"){
+		insert_into_x86_table("call $scan_int");
+		insert_into_x86_table("mov "+tell_me_the_address(it->b)+",eax");
+	} else if (it->a=="char"){
+		insert_into_x86_table("call $scan_char");
+		insert_into_x86_table("mov "+tell_me_the_address(it->b)+",eax");
+	} else if (it->a=="string"){
+		insert_into_x86_table("lea eax, "+tell_me_the_address(it->b));
+		insert_into_x86_table("push eax");
+		insert_into_x86_table("call $scan_string");
+		insert_into_x86_table("pop eax");
+	}
+}
+
 void translate_rdarr() {
 	insert_into_x86_table("push esi");
 	insert_into_x86_table("push edi");
 	insert_into_x86_table("lea esi," + lea_where_is_the_var(it->a));
 	insert_into_x86_table("mov edi," + where_is_the_var(it->b));
 	insert_into_x86_table("imul edi,4");
-	regs varc=where_is_the_var_2(it->c);
-	if (varc<4){
-		insert_into_x86_table("mov "+regs_convert_table[varc]+",[esi+edi]");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		insert_into_x86_table("mov " + regs_convert_table[varc] + ",[esi+edi]");
 	} else {
-		insert_into_x86_table("mov "+give_me_a_reg(it->c)+",[esi+edi]");
+		insert_into_x86_table("mov " + give_me_a_reg(it->c) + ",[esi+edi]");
 	}
 	insert_into_x86_table("pop edi");
 	insert_into_x86_table("pop esi");
@@ -271,13 +306,13 @@ void translate_wrarr() {
 	insert_into_x86_table("lea esi," + lea_where_is_the_var(it->a));
 	insert_into_x86_table("mov edi," + where_is_the_var(it->b));
 	insert_into_x86_table("imul edi,4");
-	regs varc=where_is_the_var_2(it->c);
-	if (varc<4){
-		insert_into_x86_table("mov [esi+edi],"+regs_convert_table[varc]);
-	} else if (varc==IMM){
-		insert_into_x86_table("mov dword [esi+edi],"+it->c);
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		insert_into_x86_table("mov [esi+edi]," + regs_convert_table[varc]);
+	} else if (varc == IMM) {
+		insert_into_x86_table("mov dword [esi+edi]," + it->c);
 	} else {
-		insert_into_x86_table("mov [esi+edi],"+give_me_a_reg(it->c));
+		insert_into_x86_table("mov [esi+edi]," + give_me_a_reg(it->c));
 	}
 	insert_into_x86_table("pop edi");
 	insert_into_x86_table("pop esi");
@@ -395,7 +430,12 @@ void translate_print() {
 		insert_into_x86_table("push eax");
 		insert_into_x86_table("call $print_char");
 	} else if (it->a == "string") {
-		insert_into_x86_table("mov eax," + it->b);
+		std::string itbadd;
+		bool has_bracket=true;
+		if (it->b[0]=='?') itbadd=it->b,has_bracket= false;
+		else itbadd=tell_me_the_address(it->b);
+		if (has_bracket) insert_into_x86_table("lea eax," + itbadd);
+		else insert_into_x86_table("mov eax," + itbadd);
 		insert_into_x86_table("push eax");
 		insert_into_x86_table("call $print_str");
 	}

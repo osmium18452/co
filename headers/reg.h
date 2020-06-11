@@ -13,6 +13,8 @@ struct reg_table_unit{
 };
 
 extern std::string regs_convert_table[6];
+extern std::string save_reg_table_var_table[4];
+extern reg_table_unit reg_table[4];
 
 std::string where_to_write_the_var(const std::string &var);
 std::string where_is_the_var(const std::string &var);
@@ -27,4 +29,5 @@ void write_the_reg_back(regs regs);
 regs allocate_a_reg();
 void change_reg_table_unit(regs regs,const std::string &var);
 std::string lea_where_is_the_var(const std::string &var);
+void flush_reg_table();
 #endif //CO_REG_H

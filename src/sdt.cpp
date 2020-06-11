@@ -341,7 +341,7 @@ void parse_print_statement() {
 	std::string slabel;
 	match();// printf
 	match();// (
-	element={SAVE_REG,NONE,NONE,NONE};
+	element = {SAVE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 	while (true) {
 		switch (tokens[curr_token].type) {
@@ -367,10 +367,15 @@ void parse_print_statement() {
 				switch (entry.itype) {
 					case IDN_VAR:
 					case IDN_ARRAY:
-						expression_without_comma(res, dtype);
-						dtp = entry.dtype == DATA_CHAR ? "char" : "int";
-						element = {PRINT, dtp, res, NONE};
-						insert_to_quadruple_list(element);
+						if (entry.itype==IDN_ARRAY&&entry.dtype==DATA_CHAR&&tokens[curr_token+1].type!=TOK_LBRACKET){
+							element={PRINT,"string",tokens[curr_token].stringval,NONE};
+							insert_to_quadruple_list(element);
+						} else {
+							expression_without_comma(res, dtype);
+							dtp = entry.dtype == DATA_CHAR ? "char" : "int";
+							element = {PRINT, dtp, res, NONE};
+							insert_to_quadruple_list(element);
+						}
 //						match();
 						break;
 						/*parse_array_read(res, dtype, tokens[curr_token].stringval);
@@ -403,7 +408,7 @@ void parse_print_statement() {
 	}
 	match();// )
 	match();// ;
-	element={RESTORE_REG,NONE,NONE,NONE};
+	element = {RESTORE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
 
@@ -414,6 +419,8 @@ void parse_scan_statement() {
 	dtype index_dtype;
 	match();// scanf
 	match();// (
+	element = {FLUSH_REG, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
 	while (true) {
 		if (tokens[curr_token].type != TOK_IDENT) {
 			cout << "error" << endl;
@@ -429,7 +436,7 @@ void parse_scan_statement() {
 				case IDN_ARRAY:
 					if (tokens[curr_token + 1].type == TOK_LBRACKET) {
 						tmp_var = gen_temp_var();
-						element = {SCAN, "char", tmp_var, NONE};
+						element = {SCAN, entry.dtype == DATA_INT ? "int" : "char", tmp_var, NONE};
 						insert_to_quadruple_list(element);
 						arr_name = tokens[curr_token].stringval;
 						match();
@@ -456,6 +463,8 @@ void parse_scan_statement() {
 	}
 	match();
 	match();
+	element = {FLUSH_REGTABLE, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
 }
 
 void parse_assignment_statement() {
@@ -498,7 +507,7 @@ void parse_assignment_statement() {
 	}
 }
 
-void parse_bitorass(){
+void parse_bitorass() {
 	std::string id = tokens[curr_token].stringval;
 	match();
 	match();
@@ -509,7 +518,8 @@ void parse_bitorass(){
 	insert_to_quadruple_list(element);
 	match();
 }
-void parse_bitandass(){
+
+void parse_bitandass() {
 	std::string id = tokens[curr_token].stringval;
 	match();
 	match();
@@ -520,7 +530,8 @@ void parse_bitandass(){
 	insert_to_quadruple_list(element);
 	match();
 }
-void parse_bitxorass(){
+
+void parse_bitxorass() {
 	std::string id = tokens[curr_token].stringval;
 	match();
 	match();

@@ -1,53 +1,15 @@
 FUNC void main 
 CREATE_TABLE   
-VAR int a 10
-VAR int b 
-WRARR a 0 1
-WRARR a 1 2
-WRARR a 2 3
-VAR int ff 
-TEMP int ?temp_0 
-RDARR a 0 ?temp_0
-TEMP int ?temp_1 
-RDARR a 1 ?temp_1
-TEMP int ?temp_2 
-ADD ?temp_0 ?temp_1 ?temp_2
-TEMP int ?temp_3 
-RDARR a 2 ?temp_3
-TEMP int ?temp_4 
-ADD ?temp_2 ?temp_3 ?temp_4
-ASSIGN ?temp_4 ff 
+VAR int a 
+VAR char b 
+FLUSH_REG   
+SCAN int a 
+SCAN char b 
+FLUSH_REGTABLE   
 SAVE_REG   
-PRINT int ff 
-PRINT char 10 
-RESTORE_REG   
-VAR int d 
-ASSIGN 1 d 
-VAR int e 
-ASSIGN 1 e 
-SAVE_REG   
-TEMP int ?temp_5 
-ADD d e ?temp_5
-PRINT int ?temp_5 
-PRINT char 10 
-RESTORE_REG   
-SAVE_REG   
-TEMP int ?temp_6 
-RDARR a 0 ?temp_6
-TEMP int ?temp_7 
-RDARR a 1 ?temp_7
-TEMP int ?temp_8 
-ADD ?temp_6 ?temp_7 ?temp_8
-PRINT int ?temp_8 
+PRINT int a 
 PRINT char 32 
-TEMP int ?temp_9 
-RDARR a 1 ?temp_9
-PRINT int ?temp_9 
-PRINT char 32 
-TEMP int ?temp_10 
-RDARR a 2 ?temp_10
-PRINT int ?temp_10 
-PRINT char 10 
+PRINT char b 
 RESTORE_REG   
 RET 0  
 DESTROY_TABLE   

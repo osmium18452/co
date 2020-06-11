@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 	std::string para_table_file = "../testfile_dir/para_table.txt";
 	std::string string_file = "../testfile_dir/string_table.txt";
 	std::string x86_file="../testfile_dir/x86.asm";
-	std::string file = "../testfile_dir/in2.txt";
+	std::string file = "../testfile_dir/in2.c";
 	if (argc > 1) file = argv[2];
 	std::ostream token_stream(NULL);
 	std::filebuf token_buffer;

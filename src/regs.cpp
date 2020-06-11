@@ -6,6 +6,7 @@
 
 int time_stamp;
 reg_table_unit reg_table[4];
+std::string save_reg_table_var_table[4];
 
 void init_reg_table(){
 	time_stamp=0;
@@ -92,7 +93,7 @@ void change_reg_table_unit(regs regs,const std::string &var){
 }
 
 void write_the_reg_back(regs regs){
-	if (reg_table[regs].var==NONE) return;
+	if (reg_table[regs].var.empty()) return;
 	insert_into_x86_table("mov "+tell_me_the_address(reg_table[regs].var)+","+regs_convert_table[regs]);
 }
 
@@ -106,6 +107,12 @@ void flush_the_regs(){
 		write_the_reg_back(static_cast<regs>(i));
 		reg_table[i].var=NONE;
 		reg_table[i].time_stamp=++time_stamp;
+	}
+}
+
+void flush_reg_table(){
+	for (auto & i : reg_table){
+		i.var=NONE;
 	}
 }
 

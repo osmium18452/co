@@ -24,15 +24,19 @@ main:
 	push ebp
     mov ebp,esp
     push ebx
-    mov edx,0
-    mov ecx,0
-    mov eax,10000h
+    mov esi,?res_read
+    xor edi,edi
+    mov byte [esi+edi],0ah
+    sub esp,100
+    lea eax,[ebp-80]
     push eax
-    mov eax,23333h
-    imul eax,[esp]
+    call $scan_string
+    pop eax
+    lea eax,[ebp-80]
     push eax
-    call $print_hex
+    call $print_str
     call $print_rtn
+    pop eax
     pop ebx
     leave
     ret

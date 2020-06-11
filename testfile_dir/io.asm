@@ -207,17 +207,27 @@ $scan:
 	ret
 
 $scan_string:
+	push ebp
+	mov ebp,esp
+	push ebx
 	cmp byte [esi+edi],0ah
 	jne .pass
 	call $scan
 	.pass:
-	lea eax,[esi+edi]
+	mov eax,[ebp+8]
 	dec edi
 	.not_0ah:
 	inc edi
+	mov cl,byte [esi+edi]
+	mov byte [eax+edi],cl
+;	call $print_hello
 	cmp byte [esi+edi], 0ah
 	jne .not_0ah
-	mov byte [esi+edi],00h
+	mov byte [eax+edi],00h
+	xor edi,edi
+	mov byte [esi+edi],0ah
+	pop ebx
+	leave
 	ret
 
 $scan_char:

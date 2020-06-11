@@ -25,6 +25,7 @@ std::string instruct_convert_table[] = {
 		"CREATE_TABLE","DESTROY_TABLE",
 		"SAVE_REG","RESTORE_REG",
 		"RESTORE_STACK",
+		"FLUSH_REG","FLUSH_REGTABLE",
 };
 
 void insert_to_quadruple_list(quadruple_element &element) {
