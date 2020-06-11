@@ -909,9 +909,12 @@ void parse_switch_statement() {
 	head_of_switch.push_back(element);
 	element = {JA, label_default, NONE, NONE};
 	head_of_switch.push_back(element);
-	element = {SUB, res, std::to_string(case_table.begin()->kase_num), res};
+	std::string tmp_var=gen_temp_var();
+	element={TEMP,"int",tmp_var,NONE};
 	head_of_switch.push_back(element);
-	element = {SWJMP, res, label_jump_table, NONE};
+	element = {SUB, res, std::to_string(case_table.begin()->kase_num), tmp_var};
+	head_of_switch.push_back(element);
+	element = {SWJMP, tmp_var, label_jump_table, NONE};
 	head_of_switch.push_back(element);
 	element = {LABEL, label_jump_table, NONE, NONE};
 	head_of_switch.push_back(element);

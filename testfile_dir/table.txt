@@ -8586,3 +8586,116 @@ a IDN_VAR DATA_INT -1 -1
 
 /***** GLOBAL SYMBOL TABLE *****/
 
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+b IDN_VAR DATA_INT -1 -1
+a IDN_ARRAY DATA_INT 10 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+b IDN_VAR DATA_INT -1 -1
+a IDN_ARRAY DATA_INT 10 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+b IDN_VAR DATA_INT -1 -1
+a IDN_ARRAY DATA_INT 10 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+b IDN_VAR DATA_INT -1 -1
+a IDN_ARRAY DATA_INT 10 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+a IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+
+/***** GLOBAL SYMBOL TABLE *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+n IDN_VAR DATA_INT -1 -1
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 2 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+n IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+fib IDN_FUNCTION DATA_INT 0 -1
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+n IDN_VAR DATA_INT -1 -1
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 2 *****/
+
+/***** LOCAL SYMBOL TABLE 3 *****/
+
+/***** LOCAL SYMBOL TABLE 1 *****/
+n IDN_VAR DATA_INT -1 -1
+
+/***** GLOBAL SYMBOL TABLE *****/
+fib IDN_FUNCTION DATA_INT 0 -1
+

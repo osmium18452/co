@@ -1,127 +1,90 @@
-FUNC void main 
+FUNC int fib 
 CREATE_TABLE   
-VAR int a 
-VAR int b 
-ASSIGN 1 a 
-ASSIGN 0 b 
+PARAM int n 
+CREATE_TABLE   
 TEMP int ?temp_0 
-LOGI_AND a b ?temp_0
+EQ n 0 ?temp_0
 CMP ?temp_0 0 
 JE .label_0  
-SAVE_REG   
-PRINT string ?string_0 
-RESTORE_REG   
+CREATE_TABLE   
+RET 1  
+DESTROY_TABLE   
 JMP .label_1  
 LABEL .label_0  
-SAVE_REG   
-PRINT string ?string_1 
-RESTORE_REG   
-LABEL .label_1  
-ASSIGN 1 a 
-ASSIGN 1 b 
 TEMP int ?temp_1 
-LOGI_AND a b ?temp_1
+EQ n 1 ?temp_1
 CMP ?temp_1 0 
 JE .label_2  
-SAVE_REG   
-PRINT string ?string_0 
-RESTORE_REG   
+CREATE_TABLE   
+RET 1  
+DESTROY_TABLE   
 JMP .label_3  
 LABEL .label_2  
+CREATE_TABLE   
 SAVE_REG   
-PRINT string ?string_1 
-RESTORE_REG   
-LABEL .label_3  
-ASSIGN 0 a 
-ASSIGN 1 b 
 TEMP int ?temp_2 
-LOGI_AND a b ?temp_2
-CMP ?temp_2 0 
-JE .label_4  
-SAVE_REG   
-PRINT string ?string_0 
-RESTORE_REG   
-JMP .label_5  
-LABEL .label_4  
-SAVE_REG   
-PRINT string ?string_1 
-RESTORE_REG   
-LABEL .label_5  
-ASSIGN 0 a 
-ASSIGN 0 b 
+SUB n 1 ?temp_2
+PUSH int ?temp_2 
+CALL fib  
 TEMP int ?temp_3 
-LOGI_AND a b ?temp_3
-CMP ?temp_3 0 
-JE .label_6  
-SAVE_REG   
-PRINT string ?string_0 
+GETRET ?temp_3  
+RESTORE_STACK 1  
 RESTORE_REG   
-JMP .label_7  
-LABEL .label_6  
 SAVE_REG   
-PRINT string ?string_1 
-RESTORE_REG   
-LABEL .label_7  
-ASSIGN 1 a 
-ASSIGN 0 b 
 TEMP int ?temp_4 
-LOGI_OR a b ?temp_4
-CMP ?temp_4 0 
-JE .label_8  
-SAVE_REG   
-PRINT string ?string_0 
-RESTORE_REG   
-JMP .label_9  
-LABEL .label_8  
-SAVE_REG   
-PRINT string ?string_1 
-RESTORE_REG   
-LABEL .label_9  
-ASSIGN 1 a 
-ASSIGN 1 b 
+SUB n 2 ?temp_4
+PUSH int ?temp_4 
+CALL fib  
 TEMP int ?temp_5 
-LOGI_OR a b ?temp_5
-CMP ?temp_5 0 
-JE .label_10  
-SAVE_REG   
-PRINT string ?string_0 
+GETRET ?temp_5  
+RESTORE_STACK 1  
 RESTORE_REG   
-JMP .label_11  
-LABEL .label_10  
-SAVE_REG   
-PRINT string ?string_1 
-RESTORE_REG   
-LABEL .label_11  
-ASSIGN 0 a 
-ASSIGN 1 b 
 TEMP int ?temp_6 
-LOGI_OR a b ?temp_6
-CMP ?temp_6 0 
-JE .label_12  
+ADD ?temp_3 ?temp_5 ?temp_6
+RET ?temp_6  
+DESTROY_TABLE   
+LABEL .label_3  
+LABEL .label_1  
+DESTROY_TABLE   
+DESTROY_TABLE   
+END   
+FUNC void main 
+CREATE_TABLE   
+VAR int n 
 SAVE_REG   
 PRINT string ?string_0 
 RESTORE_REG   
-JMP .label_13  
-LABEL .label_12  
-SAVE_REG   
-PRINT string ?string_1 
-RESTORE_REG   
-LABEL .label_13  
-ASSIGN 0 a 
-ASSIGN 0 b 
+FLUSH_REG   
+SCAN int n 
+FLUSH_REGTABLE   
+CREATE_TABLE   
+VAR int i 
+ASSIGN 0 i 
+LABEL .label_4  
 TEMP int ?temp_7 
-LOGI_OR a b ?temp_7
+LT i n ?temp_7
 CMP ?temp_7 0 
-JE .label_14  
+JE .label_5  
+CREATE_TABLE   
 SAVE_REG   
-PRINT string ?string_0 
+SAVE_REG   
+PUSH int i 
+CALL fib  
+TEMP int ?temp_8 
+GETRET ?temp_8  
+RESTORE_STACK 1  
 RESTORE_REG   
-JMP .label_15  
-LABEL .label_14  
-SAVE_REG   
+PRINT int ?temp_8 
 PRINT string ?string_1 
 RESTORE_REG   
-LABEL .label_15  
+DESTROY_TABLE   
+INC i  
+JMP .label_4  
+LABEL .label_5  
+DESTROY_TABLE   
+SAVE_REG   
+PRINT string ?string_2 
+RESTORE_REG   
 DESTROY_TABLE   
 END   
 

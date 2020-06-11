@@ -1,27 +1,21 @@
-void main(){
-	int a,b;
-	a=1;b=0;
-	if (a&&b) printf("true\n");
-	else printf("false\n");
-	a=1;b=1;
-	if (a&&b) printf("true\n");
-	else printf("false\n");
-	a=0;b=1;
-	if (a&&b) printf("true\n");
-	else printf("false\n");
-	a=0;b=0;
-	if (a&&b) printf("true\n");
-	else printf("false\n");
-	a=1;b=0;
-	if (a||b) printf("true\n");
-	else printf("false\n");
-	a=1;b=1;
-	if (a||b) printf("true\n");
-	else printf("false\n");
-	a=0;b=1;
-	if (a||b) printf("true\n");
-	else printf("false\n");
-	a=0;b=0;
-	if (a||b) printf("true\n");
-	else printf("false\n");
+int fib(int n)
+{
+	if (n == 0) {
+		return(1);
+	} else if (n == 1) {
+		return(1);
+	} else {
+		return(fib(n - 1) + fib(n - 2));
+	}
+}
+
+void main()
+{
+	int n;
+	printf("Please input: ");
+	scanf(n);
+	for (int i=0;i<n;i++){
+		printf(fib(i)," ");
+	}
+	printf("\n");
 }

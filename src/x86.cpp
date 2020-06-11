@@ -287,12 +287,32 @@ void translate_func() {
 				break;
 			case NOT:
 				translate_not();
+				break;
+			case KASE_ITEM:
+				translate_kase_item();
+				break;
+			case SWJMP:
+				translate_swjmp();
+				break;
 			default:
 				break;
 		}
 		it++;
 	}
 	gen_func_tail();
+}
+
+void translate_kase_item() {
+	insert_into_x86_table("dd " + it->a);
+}
+
+void translate_swjmp() {
+	regs vara = where_is_the_var_2(it->a);
+	if (vara > 4) {
+		std::string rega = give_me_a_reg(it->a);
+		insert_into_x86_table("mov "+rega+","+tell_me_the_address(it->a));
+		insert_into_x86_table("jmp ["+rega+"*4"+"+"+it->b+"]");
+	} else insert_into_x86_table("jmp ["+regs_convert_table[vara]+"*4"+"+"+it->b+"]");
 }
 
 /***********************************************************/
@@ -315,7 +335,7 @@ void translate_logiand() {
 	insert_into_x86_table("jmp " + end_label);
 	insert_into_x86_table(false_label + ":");
 	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table(end_label + ":" );
+	insert_into_x86_table(end_label + ":");
 	change_reg_table_unit(EAX, it->c);
 }
 
@@ -493,13 +513,13 @@ void translate_not() {
 		change_reg_table_unit(varc, NONE);
 	}
 	change_reg_table_unit(EAX, NONE);
-	insert_into_x86_table("cmp "+where_is_the_var(it->a)+",0");
-	insert_into_x86_table("je "+equal_label);
+	insert_into_x86_table("cmp " + where_is_the_var(it->a) + ",0");
+	insert_into_x86_table("je " + equal_label);
 	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table("jmp "+equal_label);
-	insert_into_x86_table(equal_label+":");
+	insert_into_x86_table("jmp " + equal_label);
+	insert_into_x86_table(equal_label + ":");
 	insert_into_x86_table("mov eax,1");
-	insert_into_x86_table(end_label+":");
+	insert_into_x86_table(end_label + ":");
 	change_reg_table_unit(EAX, it->b);
 }
 
@@ -548,6 +568,8 @@ void translate_wrarr() {
 	} else if (varc == IMM) {
 		insert_into_x86_table("mov dword [esi+edi]," + it->c);
 	} else {
+		std::string addressofc=give_me_a_reg(it->c);
+		insert_into_x86_table("mov "+addressofc+","+tell_me_the_address(it->c));
 		insert_into_x86_table("mov [esi+edi]," + give_me_a_reg(it->c));
 	}
 	insert_into_x86_table("pop edi");
