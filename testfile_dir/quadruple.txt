@@ -1,17 +1,127 @@
 FUNC void main 
 CREATE_TABLE   
 VAR int a 
-VAR char b 
-FLUSH_REG   
-SCAN int a 
-SCAN char b 
-FLUSH_REGTABLE   
+VAR int b 
+ASSIGN 1 a 
+ASSIGN 0 b 
+TEMP int ?temp_0 
+LOGI_AND a b ?temp_0
+CMP ?temp_0 0 
+JE .label_0  
 SAVE_REG   
-PRINT int a 
-PRINT char 32 
-PRINT char b 
+PRINT string ?string_0 
 RESTORE_REG   
-RET 0  
+JMP .label_1  
+LABEL .label_0  
+SAVE_REG   
+PRINT string ?string_1 
+RESTORE_REG   
+LABEL .label_1  
+ASSIGN 1 a 
+ASSIGN 1 b 
+TEMP int ?temp_1 
+LOGI_AND a b ?temp_1
+CMP ?temp_1 0 
+JE .label_2  
+SAVE_REG   
+PRINT string ?string_0 
+RESTORE_REG   
+JMP .label_3  
+LABEL .label_2  
+SAVE_REG   
+PRINT string ?string_1 
+RESTORE_REG   
+LABEL .label_3  
+ASSIGN 0 a 
+ASSIGN 1 b 
+TEMP int ?temp_2 
+LOGI_AND a b ?temp_2
+CMP ?temp_2 0 
+JE .label_4  
+SAVE_REG   
+PRINT string ?string_0 
+RESTORE_REG   
+JMP .label_5  
+LABEL .label_4  
+SAVE_REG   
+PRINT string ?string_1 
+RESTORE_REG   
+LABEL .label_5  
+ASSIGN 0 a 
+ASSIGN 0 b 
+TEMP int ?temp_3 
+LOGI_AND a b ?temp_3
+CMP ?temp_3 0 
+JE .label_6  
+SAVE_REG   
+PRINT string ?string_0 
+RESTORE_REG   
+JMP .label_7  
+LABEL .label_6  
+SAVE_REG   
+PRINT string ?string_1 
+RESTORE_REG   
+LABEL .label_7  
+ASSIGN 1 a 
+ASSIGN 0 b 
+TEMP int ?temp_4 
+LOGI_OR a b ?temp_4
+CMP ?temp_4 0 
+JE .label_8  
+SAVE_REG   
+PRINT string ?string_0 
+RESTORE_REG   
+JMP .label_9  
+LABEL .label_8  
+SAVE_REG   
+PRINT string ?string_1 
+RESTORE_REG   
+LABEL .label_9  
+ASSIGN 1 a 
+ASSIGN 1 b 
+TEMP int ?temp_5 
+LOGI_OR a b ?temp_5
+CMP ?temp_5 0 
+JE .label_10  
+SAVE_REG   
+PRINT string ?string_0 
+RESTORE_REG   
+JMP .label_11  
+LABEL .label_10  
+SAVE_REG   
+PRINT string ?string_1 
+RESTORE_REG   
+LABEL .label_11  
+ASSIGN 0 a 
+ASSIGN 1 b 
+TEMP int ?temp_6 
+LOGI_OR a b ?temp_6
+CMP ?temp_6 0 
+JE .label_12  
+SAVE_REG   
+PRINT string ?string_0 
+RESTORE_REG   
+JMP .label_13  
+LABEL .label_12  
+SAVE_REG   
+PRINT string ?string_1 
+RESTORE_REG   
+LABEL .label_13  
+ASSIGN 0 a 
+ASSIGN 0 b 
+TEMP int ?temp_7 
+LOGI_OR a b ?temp_7
+CMP ?temp_7 0 
+JE .label_14  
+SAVE_REG   
+PRINT string ?string_0 
+RESTORE_REG   
+JMP .label_15  
+LABEL .label_14  
+SAVE_REG   
+PRINT string ?string_1 
+RESTORE_REG   
+LABEL .label_15  
 DESTROY_TABLE   
 END   
 

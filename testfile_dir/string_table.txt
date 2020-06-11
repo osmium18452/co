@@ -1,0 +1,2 @@
+?string_1 "false",0AH,"",00h
+?string_0 "true",0AH,"",00h

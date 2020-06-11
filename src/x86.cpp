@@ -261,6 +261,32 @@ void translate_func() {
 			case SCAN:
 				translate_scan();
 				break;
+			case LOGIAND:
+				translate_logiand();
+				break;
+			case LOGIOR:
+				translate_logior();
+				break;
+			case GE:
+				translate_ge();
+				break;
+			case GT:
+				translate_gt();
+				break;
+			case LE:
+				translate_le();
+				break;
+			case LT:
+				translate_lt();
+				break;
+			case EQ:
+				translate_eq();
+				break;
+			case NE:
+				translate_ne();
+				break;
+			case NOT:
+				translate_not();
 			default:
 				break;
 		}
@@ -269,15 +295,225 @@ void translate_func() {
 	gen_func_tail();
 }
 
-void translate_scan(){
-	if (it->a=="int"){
+/***********************************************************/
+
+void translate_logiand() {
+	std::string true_label = gen_temp_label("x86_true_logiand");
+	std::string false_label = gen_temp_label("x86_false_logiand");
+	std::string end_label = gen_temp_label("x86_end_logiand");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	insert_into_x86_table("cmp " + where_is_the_var(it->a) + ",0");
+	insert_into_x86_table("je " + false_label);
+	insert_into_x86_table("cmp " + where_is_the_var(it->b) + ",0");
+	insert_into_x86_table("je " + false_label);
+	insert_into_x86_table(true_label + ":");
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table("jmp " + end_label);
+	insert_into_x86_table(false_label + ":");
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table(end_label + ":" );
+	change_reg_table_unit(EAX, it->c);
+}
+
+void translate_logior() {
+	std::string true_label = gen_temp_label("x86_true_logioir");
+	std::string false_label = gen_temp_label("x86_false_logioir");
+	std::string end_label = gen_temp_label("x86_end_logioir");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	insert_into_x86_table("cmp " + where_is_the_var(it->a) + ",0");
+	insert_into_x86_table("ja " + true_label);
+	insert_into_x86_table("cmp " + where_is_the_var(it->b) + ",0");
+	insert_into_x86_table("ja " + true_label);
+	insert_into_x86_table(false_label + ":");
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table("jmp " + end_label);
+	insert_into_x86_table(true_label + ":");
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table(end_label + ":");
+	change_reg_table_unit(EAX, it->c);
+}
+
+void translate_ne() {
+	std::string equal_label = gen_temp_label("x86_ne_equal");
+	std::string end_label = gen_temp_label("x86_ne_end");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
+	bool flag = false;
+	if (vara == MEM && varb == MEM) {
+		flag = true;
+		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
+	insert_into_x86_table("je " + equal_label);
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table("jmp " + end_label);
+	insert_into_x86_table(equal_label + ":");
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table(end_label + ":");
+	change_reg_table_unit(EAX, it->c);
+}
+
+void translate_eq() {
+	std::string equal_label = gen_temp_label("x86_ne_equal");
+	std::string end_label = gen_temp_label("x86_ne_end");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
+	bool flag = false;
+	if (vara == MEM && varb == MEM) {
+		flag = true;
+		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
+	insert_into_x86_table("je " + equal_label);
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table("jmp " + end_label);
+	insert_into_x86_table(equal_label + ":");
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table(end_label + ":");
+	change_reg_table_unit(EAX, it->c);
+}
+
+void translate_le() {
+	std::string true_label = gen_temp_label("x86_true_le");
+	std::string end_label = gen_temp_label("x86_end_le");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
+	bool flag = false;
+	if (vara == MEM && varb == MEM) {
+		flag = true;
+		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
+	insert_into_x86_table("jbe " + true_label);
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table("jmp " + end_label);
+	insert_into_x86_table(true_label + ":");
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table(end_label + ":");
+	change_reg_table_unit(EAX, it->c);
+}
+
+void translate_lt() {
+	std::string true_label = gen_temp_label("x86_true_lt");
+	std::string end_label = gen_temp_label("x86_end_lt");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
+	bool flag = false;
+	if (vara == MEM && varb == MEM) {
+		flag = true;
+		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
+	insert_into_x86_table("jb " + true_label);
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table("jmp " + end_label);
+	insert_into_x86_table(true_label + ":");
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table(end_label + ":");
+	change_reg_table_unit(EAX, it->c);
+}
+
+void translate_gt() {
+	std::string true_label = gen_temp_label("x86_true_gt");
+	std::string end_label = gen_temp_label("x86_end_gt");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
+	bool flag = false;
+	if (vara == MEM && varb == MEM) {
+		flag = true;
+		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
+	insert_into_x86_table("jg " + true_label);
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table("jmp " + end_label);
+	insert_into_x86_table(true_label + ":");
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table(end_label + ":");
+	change_reg_table_unit(EAX, it->c);
+}
+
+void translate_ge() {
+	std::string true_label = gen_temp_label("x86_true_ge");
+	std::string end_label = gen_temp_label("x86_end_ge");
+	regs varc = where_is_the_var_2(it->c);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
+	bool flag = false;
+	if (vara == MEM && varb == MEM) {
+		flag = true;
+		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
+	}
+	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
+	insert_into_x86_table("jge " + true_label);
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table("jmp " + end_label);
+	insert_into_x86_table(true_label + ":");
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table(end_label + ":");
+	change_reg_table_unit(EAX, it->c);
+}
+
+void translate_not() {
+	std::string equal_label = gen_temp_label("x86_not_equal");
+	std::string end_label = gen_temp_label("x86_not_end");
+	regs varc = where_is_the_var_2(it->b);
+	if (varc < 4) {
+		change_reg_table_unit(varc, NONE);
+	}
+	change_reg_table_unit(EAX, NONE);
+	insert_into_x86_table("cmp "+where_is_the_var(it->a)+",0");
+	insert_into_x86_table("je "+equal_label);
+	insert_into_x86_table("xor eax,eax");
+	insert_into_x86_table("jmp "+equal_label);
+	insert_into_x86_table(equal_label+":");
+	insert_into_x86_table("mov eax,1");
+	insert_into_x86_table(end_label+":");
+	change_reg_table_unit(EAX, it->b);
+}
+
+/*******************************************************/
+
+void translate_scan() {
+	if (it->a == "int") {
 		insert_into_x86_table("call $scan_int");
-		insert_into_x86_table("mov "+tell_me_the_address(it->b)+",eax");
-	} else if (it->a=="char"){
+		insert_into_x86_table("mov " + tell_me_the_address(it->b) + ",eax");
+	} else if (it->a == "char") {
 		insert_into_x86_table("call $scan_char");
-		insert_into_x86_table("mov "+tell_me_the_address(it->b)+",eax");
-	} else if (it->a=="string"){
-		insert_into_x86_table("lea eax, "+tell_me_the_address(it->b));
+		insert_into_x86_table("mov " + tell_me_the_address(it->b) + ",eax");
+	} else if (it->a == "string") {
+		insert_into_x86_table("lea eax, " + tell_me_the_address(it->b));
 		insert_into_x86_table("push eax");
 		insert_into_x86_table("call $scan_string");
 		insert_into_x86_table("pop eax");
@@ -431,9 +667,9 @@ void translate_print() {
 		insert_into_x86_table("call $print_char");
 	} else if (it->a == "string") {
 		std::string itbadd;
-		bool has_bracket=true;
-		if (it->b[0]=='?') itbadd=it->b,has_bracket= false;
-		else itbadd=tell_me_the_address(it->b);
+		bool has_bracket = true;
+		if (it->b[0] == '?') itbadd = it->b, has_bracket = false;
+		else itbadd = tell_me_the_address(it->b);
 		if (has_bracket) insert_into_x86_table("lea eax," + itbadd);
 		else insert_into_x86_table("mov eax," + itbadd);
 		insert_into_x86_table("push eax");

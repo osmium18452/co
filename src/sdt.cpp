@@ -346,7 +346,7 @@ void parse_print_statement() {
 	while (true) {
 		switch (tokens[curr_token].type) {
 			case TOK_STRINGCONST:
-				s += tokens[curr_token].stringval;
+				s = tokens[curr_token].stringval;
 				if (!query_string_table(s, slabel)) {
 					insert_to_string_table(s, slabel);
 				}
