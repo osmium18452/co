@@ -60,18 +60,18 @@ qsort:
    lea esi,[g_a]
    mov edi,dword [ebp-8]
    imul edi,4
-   mov edx,[esi+edi]
+   mov edx,[esi+edi];read a[j]
    pop edi
    pop esi
-   mov [ebp-24],eax;
-   cmp edx,dword [ebp-12]
+   mov [ebp-24],eax;eax->temp2
+   cmp edx,dword [ebp-12];a[j],key
    jge .label_x86_true_ge_18
    xor eax,eax
    jmp .label_x86_end_ge_19
    .label_x86_true_ge_18:
    mov eax,1
    .label_x86_end_ge_19:
-   mov [ebp-32],eax
+   mov [ebp-32],eax;eax->temp4
    cmp dword [ebp-24],0
    je .label_x86_false_logiand_21
    cmp dword [ebp-32],0
@@ -90,7 +90,7 @@ qsort:
    mov [ebp-16],ecx
    mov [ebp-28],edx
    jmp .label_2
-   .label_3:
+   .label_3:;***********************
    mov eax,dword [ebp-4]
    cmp eax,dword [ebp-8]
    jb .label_x86_true_lt_23
@@ -106,7 +106,7 @@ qsort:
    lea esi,[g_a]
    mov edi,dword [ebp-8]
    imul edi,4
-   mov ebx,[esi+edi]
+   mov ebx,[esi+edi];ebx:a[j]
    pop edi
    pop esi
    push esi

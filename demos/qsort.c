@@ -3,9 +3,6 @@ int a[1000];
 void qsort(int l,int r,int n){
 	int i=l,j=r;
 	int key=a[l];
-	for (int i=0;i<n;i++) printf(a[i],' ');
-	printf("\n");
-	printf(l," ",key," ",a[l],"\n");
 	while (i<j){
 		while (i<j&&a[j]>=key){
 			j--;

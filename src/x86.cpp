@@ -820,6 +820,7 @@ void translate_param(int *curr_param_num) {
 	(*curr_param_num)++;
 	table_entry entry{IDN_VAR, it->a == "int" ? DATA_INT : DATA_CHAR, 0, (*curr_param_num) * INT_SIZE, l};
 	insert_to_symbol_table(LOCAL, it->b, entry);
+	cout<<entry.address<<" "<<it->b<<endl;
 }
 
 void translate_var_def(int *curr_var_num) {
@@ -827,7 +828,8 @@ void translate_var_def(int *curr_var_num) {
 	else (*curr_var_num) += std::stoi(it->c);
 	table_entry entry{it->c.empty() ? IDN_VAR : IDN_ARRAY, it->a == "int" ? DATA_INT : DATA_CHAR, 0,
 					  -(*curr_var_num) * INT_SIZE, l};
-	insert_to_symbol_table(LOCAL, it->b, entry);;
+	insert_to_symbol_table(LOCAL, it->b, entry);
+	cout<<entry.address<<"\t"<<it->b<<endl;
 }
 
 void gen_func_head() {

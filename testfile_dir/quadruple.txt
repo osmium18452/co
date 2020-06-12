@@ -12,123 +12,92 @@ VAR int key
 TEMP int ?temp_0 
 RDARR a l ?temp_0
 ASSIGN ?temp_0 key 
-CREATE_TABLE   
-VAR int i 
-ASSIGN 0 i 
 LABEL .label_0  
 TEMP int ?temp_1 
-LT i n ?temp_1
+LT i j ?temp_1
 CMP ?temp_1 0 
 JE .label_1  
-SAVE_REG   
-TEMP int ?temp_2 
-RDARR a i ?temp_2
-PRINT int ?temp_2 
-PRINT char 32 
-RESTORE_REG   
-INC i  
-JMP .label_0  
-LABEL .label_1  
-DESTROY_TABLE   
-SAVE_REG   
-PRINT string ?string_0 
-RESTORE_REG   
-SAVE_REG   
-PRINT int l 
-PRINT string ?string_1 
-PRINT int key 
-PRINT string ?string_1 
-TEMP int ?temp_3 
-RDARR a l ?temp_3
-PRINT int ?temp_3 
-PRINT string ?string_0 
-RESTORE_REG   
+CREATE_TABLE   
 LABEL .label_2  
+TEMP int ?temp_2 
+LT i j ?temp_2
+TEMP int ?temp_3 
+RDARR a j ?temp_3
 TEMP int ?temp_4 
-LT i j ?temp_4
-CMP ?temp_4 0 
+GE ?temp_3 key ?temp_4
+TEMP int ?temp_5 
+LOGI_AND ?temp_2 ?temp_4 ?temp_5
+CMP ?temp_5 0 
 JE .label_3  
 CREATE_TABLE   
-LABEL .label_4  
-TEMP int ?temp_5 
-LT i j ?temp_5
+DEC j  
+DESTROY_TABLE   
+JMP .label_2  
+LABEL .label_3  
 TEMP int ?temp_6 
-RDARR a j ?temp_6
+LT i j ?temp_6
+CMP ?temp_6 0 
+JE .label_4  
+CREATE_TABLE   
 TEMP int ?temp_7 
-GE ?temp_6 key ?temp_7
-TEMP int ?temp_8 
-LOGI_AND ?temp_5 ?temp_7 ?temp_8
-CMP ?temp_8 0 
-JE .label_5  
-CREATE_TABLE   
-DEC j  
+RDARR a j ?temp_7
+WRARR a i ?temp_7
+INC i  
 DESTROY_TABLE   
-JMP .label_4  
+JMP .label_5  
+LABEL .label_4  
 LABEL .label_5  
-TEMP int ?temp_9 
-LT i j ?temp_9
-CMP ?temp_9 0 
-JE .label_6  
-CREATE_TABLE   
-TEMP int ?temp_10 
-RDARR a j ?temp_10
-WRARR a i ?temp_10
-INC i  
-DESTROY_TABLE   
-JMP .label_7  
 LABEL .label_6  
-LABEL .label_7  
-LABEL .label_8  
+TEMP int ?temp_8 
+LT i j ?temp_8
+TEMP int ?temp_9 
+RDARR a i ?temp_9
+TEMP int ?temp_10 
+LT ?temp_9 key ?temp_10
 TEMP int ?temp_11 
-LT i j ?temp_11
-TEMP int ?temp_12 
-RDARR a i ?temp_12
-TEMP int ?temp_13 
-LT ?temp_12 key ?temp_13
-TEMP int ?temp_14 
-LOGI_AND ?temp_11 ?temp_13 ?temp_14
-CMP ?temp_14 0 
-JE .label_9  
+LOGI_AND ?temp_8 ?temp_10 ?temp_11
+CMP ?temp_11 0 
+JE .label_7  
 CREATE_TABLE   
 INC i  
 DESTROY_TABLE   
-JMP .label_8  
-LABEL .label_9  
-TEMP int ?temp_15 
-LT i j ?temp_15
-CMP ?temp_15 0 
-JE .label_10  
+JMP .label_6  
+LABEL .label_7  
+TEMP int ?temp_12 
+LT i j ?temp_12
+CMP ?temp_12 0 
+JE .label_8  
 CREATE_TABLE   
-TEMP int ?temp_16 
-RDARR a i ?temp_16
-WRARR a j ?temp_16
+TEMP int ?temp_13 
+RDARR a i ?temp_13
+WRARR a j ?temp_13
 DEC j  
 DESTROY_TABLE   
-JMP .label_11  
-LABEL .label_10  
-LABEL .label_11  
+JMP .label_9  
+LABEL .label_8  
+LABEL .label_9  
 WRARR a i key
 SAVE_REG   
-TEMP int ?temp_17 
-SUB i 1 ?temp_17
+TEMP int ?temp_14 
+SUB i 1 ?temp_14
 PUSH int n 
-PUSH int ?temp_17 
+PUSH int ?temp_14 
 PUSH int l 
 CALL qsort  
 RESTORE_STACK 3  
 RESTORE_REG   
 SAVE_REG   
-TEMP int ?temp_18 
-ADD i 1 ?temp_18
+TEMP int ?temp_15 
+ADD i 1 ?temp_15
 PUSH int n 
 PUSH int r 
-PUSH int ?temp_18 
+PUSH int ?temp_15 
 CALL qsort  
 RESTORE_STACK 3  
 RESTORE_REG   
 DESTROY_TABLE   
-JMP .label_2  
-LABEL .label_3  
+JMP .label_0  
+LABEL .label_1  
 DESTROY_TABLE   
 DESTROY_TABLE   
 END   
@@ -141,25 +110,25 @@ FLUSH_REGTABLE
 CREATE_TABLE   
 VAR int i 
 ASSIGN 0 i 
-LABEL .label_12  
-TEMP int ?temp_19 
-LT i n ?temp_19
-CMP ?temp_19 0 
-JE .label_13  
+LABEL .label_10  
+TEMP int ?temp_16 
+LT i n ?temp_16
+CMP ?temp_16 0 
+JE .label_11  
 FLUSH_REG   
-TEMP int ?temp_20 
-SCAN int ?temp_20 
-WRARR a i ?temp_20
+TEMP int ?temp_17 
+SCAN int ?temp_17 
+WRARR a i ?temp_17
 FLUSH_REGTABLE   
 INC i  
-JMP .label_12  
-LABEL .label_13  
+JMP .label_10  
+LABEL .label_11  
 DESTROY_TABLE   
 SAVE_REG   
-TEMP int ?temp_21 
-SUB n 1 ?temp_21
+TEMP int ?temp_18 
+SUB n 1 ?temp_18
 PUSH int n 
-PUSH int ?temp_21 
+PUSH int ?temp_18 
 PUSH int 0 
 CALL qsort  
 RESTORE_STACK 3  
@@ -167,20 +136,20 @@ RESTORE_REG
 CREATE_TABLE   
 VAR int i 
 ASSIGN 0 i 
-LABEL .label_14  
-TEMP int ?temp_22 
-LT i n ?temp_22
-CMP ?temp_22 0 
-JE .label_15  
+LABEL .label_12  
+TEMP int ?temp_19 
+LT i n ?temp_19
+CMP ?temp_19 0 
+JE .label_13  
 SAVE_REG   
-TEMP int ?temp_23 
-RDARR a i ?temp_23
-PRINT int ?temp_23 
+TEMP int ?temp_20 
+RDARR a i ?temp_20
+PRINT int ?temp_20 
 PRINT char 32 
 RESTORE_REG   
 INC i  
-JMP .label_14  
-LABEL .label_15  
+JMP .label_12  
+LABEL .label_13  
 DESTROY_TABLE   
 SAVE_REG   
 PRINT string ?string_0 

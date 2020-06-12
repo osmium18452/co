@@ -1,2 +1,1 @@
-?string_1 " ",00h
 ?string_0 "",0AH,"",00h
