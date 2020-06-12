@@ -96,6 +96,8 @@ void gen_text_section() {
 }
 
 void translate_push() {
+	write_the_reg_back(EAX);
+	change_reg_table_unit(EAX,NONE);
 	insert_into_x86_table("mov eax," + where_is_the_var(it->b));
 	insert_into_x86_table("push eax");
 }
@@ -157,6 +159,7 @@ void translate_func() {
 				translate_var_def(&curr_var_num);
 				break;
 			case CREATE_TABLE:
+				flush_the_regs();
 				create_new_local_table_2();
 				break;
 			case DESTROY_TABLE:
@@ -379,12 +382,8 @@ void translate_ne() {
 		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 	}
 	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
-	insert_into_x86_table("je " + equal_label);
-	insert_into_x86_table("mov eax,1");
-	insert_into_x86_table("jmp " + end_label);
-	insert_into_x86_table(equal_label + ":");
-	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table(end_label + ":");
+	insert_into_x86_table("setne al");
+	insert_into_x86_table("and eax,000000ffh");
 	change_reg_table_unit(EAX, it->c);
 }
 
@@ -404,12 +403,8 @@ void translate_eq() {
 		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 	}
 	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
-	insert_into_x86_table("je " + equal_label);
-	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table("jmp " + end_label);
-	insert_into_x86_table(equal_label + ":");
-	insert_into_x86_table("mov eax,1");
-	insert_into_x86_table(end_label + ":");
+	insert_into_x86_table("sete al");
+	insert_into_x86_table("and eax,000000ffh");
 	change_reg_table_unit(EAX, it->c);
 }
 
@@ -429,12 +424,8 @@ void translate_le() {
 		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 	}
 	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
-	insert_into_x86_table("jbe " + true_label);
-	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table("jmp " + end_label);
-	insert_into_x86_table(true_label + ":");
-	insert_into_x86_table("mov eax,1");
-	insert_into_x86_table(end_label + ":");
+	insert_into_x86_table("setle al");
+	insert_into_x86_table("and eax,000000ffh");
 	change_reg_table_unit(EAX, it->c);
 }
 
@@ -454,12 +445,8 @@ void translate_lt() {
 		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 	}
 	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
-	insert_into_x86_table("jb " + true_label);
-	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table("jmp " + end_label);
-	insert_into_x86_table(true_label + ":");
-	insert_into_x86_table("mov eax,1");
-	insert_into_x86_table(end_label + ":");
+	insert_into_x86_table("setl al");
+	insert_into_x86_table("and eax,000000ffh");
 	change_reg_table_unit(EAX, it->c);
 }
 
@@ -479,12 +466,8 @@ void translate_gt() {
 		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 	}
 	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
-	insert_into_x86_table("jg " + true_label);
-	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table("jmp " + end_label);
-	insert_into_x86_table(true_label + ":");
-	insert_into_x86_table("mov eax,1");
-	insert_into_x86_table(end_label + ":");
+	insert_into_x86_table("setg al");
+	insert_into_x86_table("and eax,000000ffh");
 	change_reg_table_unit(EAX, it->c);
 }
 
@@ -504,12 +487,8 @@ void translate_ge() {
 		insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 	}
 	insert_into_x86_table("cmp " + (flag ? "eax" : where_is_the_var(it->a)) + "," + where_is_the_var(it->b));
-	insert_into_x86_table("jge " + true_label);
-	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table("jmp " + end_label);
-	insert_into_x86_table(true_label + ":");
-	insert_into_x86_table("mov eax,1");
-	insert_into_x86_table(end_label + ":");
+	insert_into_x86_table("setge al");
+	insert_into_x86_table("and eax,000000ffh");
 	change_reg_table_unit(EAX, it->c);
 }
 
@@ -523,12 +502,8 @@ void translate_not() {
 	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	insert_into_x86_table("cmp " + where_is_the_var(it->a) + ",0");
-	insert_into_x86_table("je " + equal_label);
-	insert_into_x86_table("xor eax,eax");
-	insert_into_x86_table("jmp " + equal_label);
-	insert_into_x86_table(equal_label + ":");
-	insert_into_x86_table("mov eax,1");
-	insert_into_x86_table(end_label + ":");
+	insert_into_x86_table("sete al");
+	insert_into_x86_table("and eax,000000ffh");
 	change_reg_table_unit(EAX, it->b);
 }
 
@@ -820,7 +795,6 @@ void translate_param(int *curr_param_num) {
 	(*curr_param_num)++;
 	table_entry entry{IDN_VAR, it->a == "int" ? DATA_INT : DATA_CHAR, 0, (*curr_param_num) * INT_SIZE, l};
 	insert_to_symbol_table(LOCAL, it->b, entry);
-	cout<<entry.address<<" "<<it->b<<endl;
 }
 
 void translate_var_def(int *curr_var_num) {
@@ -829,7 +803,6 @@ void translate_var_def(int *curr_var_num) {
 	table_entry entry{it->c.empty() ? IDN_VAR : IDN_ARRAY, it->a == "int" ? DATA_INT : DATA_CHAR, 0,
 					  -(*curr_var_num) * INT_SIZE, l};
 	insert_to_symbol_table(LOCAL, it->b, entry);
-	cout<<entry.address<<"\t"<<it->b<<endl;
 }
 
 void gen_func_head() {

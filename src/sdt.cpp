@@ -813,10 +813,12 @@ void parse_while_statement() {
 	std::string res;
 	dtype res_dtype;
 	quadruple_element element{};
-	start_label = gen_temp_label();
-	end_label = gen_temp_label();
+	start_label = gen_temp_label("while_start");
+	end_label = gen_temp_label("while_end");
 	continue_point = start_label;
 	break_point = end_label;
+	element = {CREATE_TABLE, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
 	element = {LABEL, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 	match();// while
@@ -836,6 +838,8 @@ void parse_while_statement() {
 	insert_to_quadruple_list(element);
 	element = {LABEL, end_label, NONE, NONE};
 	insert_to_quadruple_list(element);
+	element = {DESTROY_TABLE, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
 }
 
 void parse_do_statement() {
@@ -847,6 +851,8 @@ void parse_do_statement() {
 	end_label = gen_temp_label();
 	continue_point = start_label;
 	break_point = end_label;
+	element = {CREATE_TABLE, NONE, NONE, NONE};
+	insert_to_quadruple_list(element);
 	element = {LABEL, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 	match();//do
@@ -861,6 +867,8 @@ void parse_do_statement() {
 	element = {JMP, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 	element = {LABEL, end_label, NONE, NONE};
+	insert_to_quadruple_list(element);
+	element = {DESTROY_TABLE, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
 

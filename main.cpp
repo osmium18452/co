@@ -14,19 +14,62 @@ using std::cin;
 using std::endl;
 
 int main(int argc, char **argv) {
+	std::vector<std::string> args;
+	args.reserve(argc);
+	for (int i = 0; i < argc; i++) {
+		args.emplace_back(argv[i]);
+	}
+	if (args[1] == "-h" || args[1] == "--help") {
+		cout << "co <input_file> [option][file]" << endl;
+		cout << "options:" << endl;
+		cout << "-h --help: show this guide." << endl;
+		cout << "-k --tokens: set the file that write the tokens in." << endl;
+		cout << "-b --table: set the file that write the symbol table in." << endl;
+		cout << "-q --quadruple: set the file that write the quadruples in." << endl;
+		cout << "-p --param: set the file that write the paramater table in." << endl;
+		cout << "-s --string: set the file that write the string table in." << endl;
+		cout << "-x --x86: set the file that write the x86 asm in." << endl;
+		cout << "-o --output: set the name of the executable file." << endl;
+		return 1;
+	}
 	std::string token_file = "../testfile_dir/tokens.txt";
 	std::string table_file = "../testfile_dir/table.txt";
 	std::string quadruple_file = "../testfile_dir/quadruple.txt";
 	std::string para_table_file = "../testfile_dir/para_table.txt";
 	std::string string_file = "../testfile_dir/string_table.txt";
-	std::string x86_file="../testfile_dir/x86.asm";
-	std::string file = "../demos/qsort.c";
-	if (argc > 1) file = argv[2];
+	std::string x86_file = "../testfile_dir/x86.asm";
+	bool print_which[5]={false};
+	for (int i = 2; i < argc; i += 2) {
+		if (args[i] == "-k" || args[i] == "--tokens") {
+			print_which[0]=true;
+			token_file = args[i + 1];
+		}
+		if (args[i] == "-b" || args[i] == "--table") {
+			print_which[1]=true;
+			token_file = args[i + 1];
+		}
+		if (args[i] == "-q" || args[i] == "--quadruple") {
+			print_which[2]=true;
+			token_file = args[i + 1];
+		}
+		if (args[i] == "-p" || args[i] == "--param") {
+			print_which[3]=true;
+			token_file = args[i + 1];
+		}
+		if (args[i] == "-s" || args[i] == "--string") {
+			print_which[4]=true;
+			token_file = args[i + 1];
+		}
+		if (args[i] == "-x" || args[i] == "--x86") {
+			token_file = args[i + 1];
+		}
+	}
+	std::string file = args[1];
 	std::string s;
 	s = readfile(file);
 	cout << s << endl;
 	get_token(s, false);
-	print_token_table(token_file);
+	if (print_which[0]) print_token_table(token_file);
 	cout << "tokens size: " << tokens.size() << endl;
 	curr_token = 0;
 	init_symbol_table();
@@ -36,13 +79,13 @@ int main(int argc, char **argv) {
 	init_temp_label();
 	parse_program();
 	cout << "global symbol table size: " << symbol_table[0].size() << endl;
-	print_symbol_table(table_file, 0, true);
-	print_quadruple_list(quadruple_file);
-	print_string_table(string_file);
+	if (print_which[1])print_symbol_table(table_file, 0, true);
+	if (print_which[2])print_quadruple_list(quadruple_file);
+	if (print_which[4])print_string_table(string_file);
 	cout << "quadruple list size: " << quadruple_list.size() << endl;
 	init_local_symbol_table();
 	init_reg_table();
-	cout<<"symbol table size :"<<symbol_table.size()<<endl;
+	cout << "symbol table size :" << symbol_table.size() << endl;
 	translate_to_x86();
 	print_x86_table(x86_file);
 	return 0;

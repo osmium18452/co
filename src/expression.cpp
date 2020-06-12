@@ -132,16 +132,24 @@ void parse_exp2(std::string &res, dtype &res_dtype) {
 				if (is_const(res, t1)) {
 					res = std::to_string(-t1);
 				} else {
-					element = {SUB, "0", res, res};
+					std::string new_res = gen_temp_var();
+					element = {TEMP, "int", new_res, NONE};
 					insert_to_quadruple_list(element);
+					element = {SUB, "0", res, new_res};
+					insert_to_quadruple_list(element);
+					res=new_res;
 				}
 				break;
 			case NOT:
 				if (is_const(res, t1)) {
 					res = std::to_string(t1 ? 0 : 1);
 				} else {
-					element = {NOT, res, NONE, NONE};
+					std::string new_res = gen_temp_var();
+					element = {TEMP, "int", new_res, NONE};
 					insert_to_quadruple_list(element);
+					element = {NOT, res, new_res, NONE};
+					insert_to_quadruple_list(element);
+					res=new_res;
 				}
 				break;
 		}
