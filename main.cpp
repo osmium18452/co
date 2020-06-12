@@ -20,66 +20,14 @@ int main(int argc, char **argv) {
 	std::string para_table_file = "../testfile_dir/para_table.txt";
 	std::string string_file = "../testfile_dir/string_table.txt";
 	std::string x86_file="../testfile_dir/x86.asm";
-	std::string file = "../testfile_dir/in2.c";
+	std::string file = "../demos/qsort.c";
 	if (argc > 1) file = argv[2];
-	std::ostream token_stream(NULL);
-	std::filebuf token_buffer;
-	token_buffer.open(token_file, std::ios_base::out);
-	token_stream.rdbuf(&token_buffer);
 	std::string s;
-	int token_num;
 	s = readfile(file);
 	cout << s << endl;
-	token_num = get_token(s, false);
+	get_token(s, false);
+	print_token_table(token_file);
 	cout << "tokens size: " << tokens.size() << endl;
-	for (int i = 0; i < token_num; i++) {
-		switch (tokens[i].type) {
-			case TOK_SHORTCONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].shortval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_USHORTCONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].ushortval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_INTCONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].intval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_UINTCONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].uintval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_LONGCONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].llval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_ULONGCONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].ullval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_IDENT:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].stringval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_FLOATCONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].floatval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_DOUBLECONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].doubleval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			case TOK_CHARCONST:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].charval << " "
-				             << tokens[i].line_num << endl;
-				break;
-			default:
-				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].stringval << " "
-				             << tokens[i].line_num << endl;
-				break;
-		}
-	}
 	curr_token = 0;
 	init_symbol_table();
 	init_param_table();

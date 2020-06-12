@@ -52,8 +52,8 @@ void parse_factor(std::string &res, dtype &res_dtype) {
 					break;
 			}
 			break;
-		case TOK_CHARCONST:
-			break;
+//		case TOK_CHARCONST:
+//			break;
 		case TOK_LPARE:
 			match();//(
 			expression(res, res_dtype);
@@ -61,6 +61,7 @@ void parse_factor(std::string &res, dtype &res_dtype) {
 			break;
 		default:
 			res = std::to_string(tokens[curr_token].intval);
+			res_dtype=tokens[curr_token].type==TOK_CHARCONST?DATA_CHAR:DATA_INT;
 			match();
 			break;
 	}

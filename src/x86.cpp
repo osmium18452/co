@@ -79,7 +79,7 @@ void gen_global_table() {
 				insert_into_x86_table("g_" + i.first + " dd 0");
 				break;
 			case IDN_ARRAY:
-				insert_into_x86_table("g_" + i.first + " dd " + std::to_string(i.second.value) + " dup (0)");
+				insert_into_x86_table("g_" + i.first + " times " + std::to_string(i.second.value)+" dd 0" );
 				break;
 			default:
 				break;
@@ -325,6 +325,7 @@ void translate_logiand() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	insert_into_x86_table("cmp " + where_is_the_var(it->a) + ",0");
 	insert_into_x86_table("je " + false_label);
@@ -347,6 +348,7 @@ void translate_logior() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	insert_into_x86_table("cmp " + where_is_the_var(it->a) + ",0");
 	insert_into_x86_table("ja " + true_label);
@@ -368,6 +370,7 @@ void translate_ne() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
 	bool flag = false;
@@ -392,6 +395,7 @@ void translate_eq() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
 	bool flag = false;
@@ -416,6 +420,7 @@ void translate_le() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
 	bool flag = false;
@@ -440,6 +445,7 @@ void translate_lt() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
 	bool flag = false;
@@ -464,6 +470,7 @@ void translate_gt() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
 	bool flag = false;
@@ -488,6 +495,7 @@ void translate_ge() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	regs vara = where_is_the_var_2(it->a), varb = where_is_the_var_2(it->b);
 	bool flag = false;
@@ -512,6 +520,7 @@ void translate_not() {
 	if (varc < 4) {
 		change_reg_table_unit(varc, NONE);
 	}
+	write_the_reg_back(EAX);
 	change_reg_table_unit(EAX, NONE);
 	insert_into_x86_table("cmp " + where_is_the_var(it->a) + ",0");
 	insert_into_x86_table("je " + equal_label);
@@ -675,7 +684,12 @@ void translate_dec() {
 }
 
 void translate_ret() {
-	insert_into_x86_table("mov eax," + where_is_the_var(it->a));
+	if (it->a.empty()){
+		insert_into_x86_table("pop ebx");
+		insert_into_x86_table("leave");
+		insert_into_x86_table("ret");
+	}
+	else insert_into_x86_table("mov eax," + where_is_the_var(it->a));
 }
 
 void translate_print() {

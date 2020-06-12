@@ -436,6 +436,8 @@ void parse_scan_statement() {
 				case IDN_ARRAY:
 					if (tokens[curr_token + 1].type == TOK_LBRACKET) {
 						tmp_var = gen_temp_var();
+						element = {TEMP, entry.dtype == DATA_INT ? "int" : "char", tmp_var, NONE};
+						insert_to_quadruple_list(element);
 						element = {SCAN, entry.dtype == DATA_INT ? "int" : "char", tmp_var, NONE};
 						insert_to_quadruple_list(element);
 						arr_name = tokens[curr_token].stringval;
@@ -544,6 +546,7 @@ void parse_bitxorass() {
 }
 
 void parse_argument_list(const std::vector<dtype> &param_list) {
+//	cout<<"parsing func call***************"<<endl;
 	std::stack<quadruple_element> temp_quadruple_stack;
 	std::string temp_var;
 	dtype temp_dtype;
@@ -557,7 +560,9 @@ void parse_argument_list(const std::vector<dtype> &param_list) {
 	auto iter = quadruple_list.end();
 	while (true) {
 		expression_without_comma(temp_var, temp_dtype);
+//		cout<<arg_cnt<<"....."<<temp_var<<" "<<curr_token<<endl;
 		if (temp_dtype != param_list[arg_cnt]) {
+//			cout<<temp_dtype<<" "<<param_list[arg_cnt]<<" "<<arg_cnt<<endl;
 			cout << "not matched param data type" << endl;
 			return;
 		}
@@ -581,6 +586,7 @@ void parse_argument_list(const std::vector<dtype> &param_list) {
 }
 
 void parse_func_call_statement(const std::string &id) {
+
 	table_entry entry{};
 	if (!query_symbol_table(id, entry)) {
 		cout << "function " << id << " not defined." << endl;

@@ -1,3 +1,2 @@
-?string_2 "",0AH,"",00h
-?string_0 "Please input: ",00h
 ?string_1 " ",00h
+?string_0 "",0AH,"",00h

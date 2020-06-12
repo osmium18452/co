@@ -110,6 +110,60 @@ std::string token_convert_table[]={
 		"TOK_BITANDASS",  "TOK_BITORASS",   "TOK_BITXORASS",
 };
 
+void print_token_table(const std::string &file){
+	std::ostream token_stream(nullptr);
+	std::filebuf token_buffer;
+	token_buffer.open(file, std::ios_base::out);
+	token_stream.rdbuf(&token_buffer);
+	for (int i = 0; i < tokens.size(); i++) {
+		switch (tokens[i].type) {
+			case TOK_SHORTCONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].shortval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_USHORTCONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].ushortval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_INTCONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].intval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_UINTCONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].uintval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_LONGCONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].llval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_ULONGCONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].ullval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_IDENT:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].stringval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_FLOATCONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].floatval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_DOUBLECONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].doubleval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			case TOK_CHARCONST:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].charval << " "
+							 << tokens[i].line_num << endl;
+				break;
+			default:
+				token_stream << i << ": " << token_convert_table[tokens[i].type] << " " << tokens[i].stringval << " "
+							 << tokens[i].line_num << endl;
+				break;
+		}
+	}
+}
 
 int get_token(std::string &s, bool use_blank) {
 	int line_num = 0;
@@ -284,7 +338,7 @@ int get_token(std::string &s, bool use_blank) {
 				token tmp;
 				tmp.line_num = line_num;
 				tmp.type = TOK_USHORTCONST;
-				tmp.ushortval = (unsigned short) strtoll(s.substr(left, right - left - 2).c_str(), NULL, 10);
+				tmp.ushortval = (unsigned short) strtoll(s.substr(left, right - left - 2).c_str(), nullptr, 10);
 				tokens.push_back(tmp);
 				token_num++;
 				state = STAT_START;
@@ -332,6 +386,7 @@ int get_token(std::string &s, bool use_blank) {
 				tmp.line_num = line_num;
 				tmp.type = TOK_CHARCONST;
 				tmp.charval = s[right];
+				tmp.intval=s[right];
 				tokens.push_back(tmp);
 				token_num++;
 				right++;

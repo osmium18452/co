@@ -99,5 +99,6 @@ extern std::vector<token> tokens;
 extern std::string token_convert_table[];
 
 int get_token(std::string &s, bool use_blank);
+void print_token_table(const std::string &file);
 
 #endif //CO_LEX_H

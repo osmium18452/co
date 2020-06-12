@@ -17,6 +17,7 @@ add_executable(co main.cpp
 		headers/x86.h
 		headers/reg.h
 		headers/x86_func_def.h
+		headers/reg_func_def.h
 		src/readfile.cpp
 		src/lex.cpp
 		src/global.cpp
@@ -25,4 +26,4 @@ add_executable(co main.cpp
 		src/quadruple.cpp
 		src/expression.cpp
 		src/x86.cpp
-		src/regs.cpp headers/reg_func_def.h)
+		src/regs.cpp)
