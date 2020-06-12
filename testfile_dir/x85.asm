@@ -97,7 +97,7 @@ qsort:
    xor eax,eax
    jmp .label_x86_end_lt_24
    .label_x86_true_lt_23:
-   mov eax,1
+   mov eax,1;notice here
    .label_x86_end_lt_24:
    cmp eax,dword 0
    je .label_4
@@ -118,7 +118,7 @@ qsort:
    pop edi
    pop esi
    inc dword [ebp-4]
-   mov [ebp-40],eax
+   mov [ebp-40],eax;notice here
    mov [ebp-44],ebx
    jmp .label_5
    .label_4:
