@@ -1,0 +1,18 @@
+FUNC int aa 
+CREATE_TABLE   
+CREATE_TABLE   
+CMP 1 0 
+JE .label_0  
+PRINT int 1 
+JMP .label_1  
+LABEL .label_0  
+PRINT int 2 
+LABEL .label_1  
+RET 1  
+DESTROY_TABLE   
+END   
+DESTROY_TABLE   
+CREATE_TABLE   
+CREATE_TABLE   
+DESTROY_TABLE   
+
