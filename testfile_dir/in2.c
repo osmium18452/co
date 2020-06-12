@@ -1,21 +1,12 @@
-int fib(int n)
-{
-	if (n == 0) {
-		return(1);
-	} else if (n == 1) {
-		return(1);
-	} else {
-		return(fib(n - 1) + fib(n - 2));
-	}
-}
-
-void main()
-{
+int main(){
+	int a[100];
+	a[0]=1;
+	a[1]=1;
 	int n;
-	printf("Please input: ");
 	scanf(n);
 	for (int i=0;i<n;i++){
-		printf(fib(i)," ");
+		if (i>1) a[i]=a[i-1]+a[i-2];
+		printf(i+1,":",a[i],"\n");
 	}
-	printf("\n");
+	return 0;
 }
