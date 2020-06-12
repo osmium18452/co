@@ -1,1 +1,4 @@
-?string_0 "",0AH,"",00h
+?string_3 " ",00h
+?string_2 "",0AH,"",00h
+?string_0 "l: ",00h
+?string_1 " r: ",00h

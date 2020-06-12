@@ -1,6 +1,7 @@
 int a[1000];
 
 void qsort(int l,int r,int n){
+	printf("l: ",l," r: ",r,"\n");
 	int i=l,j=r;
 	int key=a[l];
 	while (i<j){
@@ -25,9 +26,14 @@ void qsort(int l,int r,int n){
 }
 
 int main() {
-	int n;
-	scanf(n);
-	for (int i=0;i<n;i++) scanf(a[i]);
+	int n=5;
+	a[0]=2;
+	a[1]=1;
+	a[2]=3;
+	a[3]=5;
+	a[4]=4;
+	for (int i=0;i<n;i++) printf(a[i]," ");
+	printf("\n");
 	qsort(0,n-1,n);
 	for (int i=0;i<n;i++) printf(a[i],' ');
 	printf("\n");

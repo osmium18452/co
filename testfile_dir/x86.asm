@@ -2,7 +2,10 @@
 section .data
    msg db "hello world",0ah,00h
    rtn db 0ah,00h
-   ?string_0 db "",0AH,"",00h
+   ?string_3 db " ",00h
+   ?string_2 db "",0AH,"",00h
+   ?string_0 db "l: ",00h
+   ?string_1 db " r: ",00h
    g_a times 1000 dd 0
 section .bss
    ?res resb 64
@@ -20,6 +23,36 @@ qsort:
    mov ebp,esp
    push ebx
    sub esp,76
+
+
+
+   push edx
+   push ecx
+   push eax
+   mov eax,?string_0
+   push eax
+   call $print_str
+   pop eax
+   mov eax,dword [ebp+8]
+   push eax
+   call $print_int
+   pop eax
+   mov eax,?string_1
+   push eax
+   call $print_str
+   pop eax
+   mov eax,dword [ebp+12]
+   push eax
+   call $print_int
+   pop eax
+   mov eax,?string_2
+   push eax
+   call $print_str
+   pop eax
+   pop eax
+   pop ecx
+   pop edx
+
    mov eax,[ebp+8]
    mov [ebp-4],eax
    mov ebx,[ebp+12]
@@ -54,7 +87,7 @@ qsort:
    jmp .label_x86_end_lt_17
    .label_x86_true_lt_16:
    mov eax,1
-   .label_x86_end_lt_17:;i<j
+   .label_x86_end_lt_17:
    push esi
    push edi
    lea esi,[g_a]
@@ -63,7 +96,7 @@ qsort:
    mov edx,[esi+edi]
    pop edi
    pop esi
-   mov [ebp-24],eax;
+   mov [ebp-24],eax
    cmp edx,dword [ebp-12]
    jge .label_x86_true_ge_18
    xor eax,eax
@@ -251,8 +284,47 @@ main:
    mov ebp,esp
    push ebx
    sub esp,32
-   call $scan_int
-   mov [ebp-4],eax
+   mov [ebp-4],dword 5
+   push esi
+   push edi
+   lea esi,[g_a]
+   mov edi,dword 0
+   imul edi,4
+   mov dword [esi+edi],2
+   pop edi
+   pop esi
+   push esi
+   push edi
+   lea esi,[g_a]
+   mov edi,dword 1
+   imul edi,4
+   mov dword [esi+edi],1
+   pop edi
+   pop esi
+   push esi
+   push edi
+   lea esi,[g_a]
+   mov edi,dword 2
+   imul edi,4
+   mov dword [esi+edi],3
+   pop edi
+   pop esi
+   push esi
+   push edi
+   lea esi,[g_a]
+   mov edi,dword 3
+   imul edi,4
+   mov dword [esi+edi],5
+   pop edi
+   pop esi
+   push esi
+   push edi
+   lea esi,[g_a]
+   mov edi,dword 4
+   imul edi,4
+   mov dword [esi+edi],4
+   pop edi
+   pop esi
    mov [ebp-8],dword 0
    .label_10:
    mov eax,dword [ebp-8]
@@ -265,21 +337,42 @@ main:
    .label_x86_end_lt_35:
    cmp eax,dword 0
    je .label_11
-   mov [ebp-12],eax
-   call $scan_int
-   mov [ebp-16],eax
+   push edx
+   push ecx
+   push eax
    push esi
    push edi
    lea esi,[g_a]
    mov edi,dword [ebp-8]
    imul edi,4
-   mov eax,[ebp-16]
-   mov [esi+edi],eax
+   mov ebx,[esi+edi]
    pop edi
    pop esi
+   mov eax,ebx
+   push eax
+   call $print_int
+   pop eax
+   mov eax,?string_3
+   push eax
+   call $print_str
+   pop eax
+   pop eax
+   pop ecx
+   pop edx
    inc dword [ebp-8]
    jmp .label_10
    .label_11:
+   mov [ebp-12],eax
+   push edx
+   push ecx
+   push eax
+   mov eax,?string_2
+   push eax
+   call $print_str
+   pop eax
+   pop eax
+   pop ecx
+   pop edx
    push edx
    push ecx
    push eax
@@ -337,7 +430,7 @@ main:
    push edx
    push ecx
    push eax
-   mov eax,?string_0
+   mov eax,?string_2
    push eax
    call $print_str
    pop eax
