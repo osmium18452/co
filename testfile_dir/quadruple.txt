@@ -1,0 +1,166 @@
+FUNC           void      qsort               
+CREATE_TABLE                                 
+PARAM          int       l                   
+PARAM          int       r                   
+PARAM          int       n                   
+CREATE_TABLE                                 
+VAR            int       i                   
+ASSIGN         l         i                   
+VAR            int       j                   
+ASSIGN         r         j                   
+VAR            int       key                 
+TEMP           int       ?temp_1             
+RDARR          a         l         ?temp_1   
+ASSIGN         ?temp_1   key                 
+CREATE_TABLE                                 
+LABEL          .label_while_start_0                    
+TEMP           int       ?temp_2             
+LT             i         j         ?temp_2   
+CMP            ?temp_2   0                   
+JE             .label_while_end_1                    
+CREATE_TABLE                                 
+CREATE_TABLE                                 
+LABEL          .label_while_start_2                    
+TEMP           int       ?temp_3             
+LT             i         j         ?temp_3   
+TEMP           int       ?temp_4             
+RDARR          a         j         ?temp_4   
+TEMP           int       ?temp_5             
+GE             ?temp_4   key       ?temp_5   
+TEMP           int       ?temp_6             
+LOGI_AND       ?temp_3   ?temp_5   ?temp_6   
+CMP            ?temp_6   0                   
+JE             .label_while_end_3                    
+CREATE_TABLE                                 
+DEC            j                             
+DESTROY_TABLE                                
+JMP            .label_while_start_2                    
+LABEL          .label_while_end_3                    
+DESTROY_TABLE                                
+TEMP           int       ?temp_7             
+LT             i         j         ?temp_7   
+CMP            ?temp_7   0                   
+JE             .label_4                      
+CREATE_TABLE                                 
+TEMP           int       ?temp_8             
+RDARR          a         j         ?temp_8   
+WRARR          a         i         ?temp_8   
+INC            i                             
+DESTROY_TABLE                                
+JMP            .label_5                      
+LABEL          .label_4                      
+LABEL          .label_5                      
+CREATE_TABLE                                 
+LABEL          .label_while_start_6                    
+TEMP           int       ?temp_9             
+LT             i         j         ?temp_9   
+TEMP           int       ?temp_10            
+RDARR          a         i         ?temp_10  
+TEMP           int       ?temp_11            
+LT             ?temp_10  key       ?temp_11  
+TEMP           int       ?temp_12            
+LOGI_AND       ?temp_9   ?temp_11  ?temp_12  
+CMP            ?temp_12  0                   
+JE             .label_while_end_7                    
+CREATE_TABLE                                 
+INC            i                             
+DESTROY_TABLE                                
+JMP            .label_while_start_6                    
+LABEL          .label_while_end_7                    
+DESTROY_TABLE                                
+TEMP           int       ?temp_13            
+LT             i         j         ?temp_13  
+CMP            ?temp_13  0                   
+JE             .label_8                      
+CREATE_TABLE                                 
+TEMP           int       ?temp_14            
+RDARR          a         i         ?temp_14  
+WRARR          a         j         ?temp_14  
+DEC            j                             
+DESTROY_TABLE                                
+JMP            .label_9                      
+LABEL          .label_8                      
+LABEL          .label_9                      
+WRARR          a         i         key       
+SAVE_REG                                     
+TEMP           int       ?temp_15            
+SUB            i         1         ?temp_15  
+PUSH           int       n                   
+PUSH           int       ?temp_15            
+PUSH           int       l                   
+CALL           qsort                         
+RESTORE_STACK  3                             
+RESTORE_REG                                  
+SAVE_REG                                     
+TEMP           int       ?temp_16            
+ADD            i         1         ?temp_16  
+PUSH           int       n                   
+PUSH           int       r                   
+PUSH           int       ?temp_16            
+CALL           qsort                         
+RESTORE_STACK  3                             
+RESTORE_REG                                  
+DESTROY_TABLE                                
+JMP            .label_while_start_0                    
+LABEL          .label_while_end_1                    
+DESTROY_TABLE                                
+DESTROY_TABLE                                
+DESTROY_TABLE                                
+END                                          
+FUNC           void      main                
+CREATE_TABLE                                 
+VAR            int       n                   
+FLUSH_REG                                    
+SCAN           int       n                   
+FLUSH_REGTABLE                               
+CREATE_TABLE                                 
+VAR            int       i                   
+ASSIGN         0         i                   
+LABEL          .label_10                     
+TEMP           int       ?temp_17            
+LT             i         n         ?temp_17  
+CMP            ?temp_17  0                   
+JE             .label_11                     
+FLUSH_REG                                    
+TEMP           int       ?temp_18            
+SCAN           int       ?temp_18            
+WRARR          a         i         ?temp_18  
+FLUSH_REGTABLE                               
+INC            i                             
+JMP            .label_10                     
+LABEL          .label_11                     
+DESTROY_TABLE                                
+SAVE_REG                                     
+TEMP           int       ?temp_19            
+SUB            n         1         ?temp_19  
+PUSH           int       n                   
+PUSH           int       ?temp_19            
+PUSH           int       0                   
+CALL           qsort                         
+RESTORE_STACK  3                             
+RESTORE_REG                                  
+CREATE_TABLE                                 
+VAR            int       i                   
+ASSIGN         0         i                   
+LABEL          .label_12                     
+TEMP           int       ?temp_20            
+LT             i         n         ?temp_20  
+CMP            ?temp_20  0                   
+JE             .label_13                     
+SAVE_REG                                     
+TEMP           int       ?temp_21            
+RDARR          a         i         ?temp_21  
+PRINT          int       ?temp_21            
+PRINT          char      32                  
+RESTORE_REG                                  
+INC            i                             
+JMP            .label_12                     
+LABEL          .label_13                     
+DESTROY_TABLE                                
+SAVE_REG                                     
+PRINT          string    ?string_0           
+RESTORE_REG                                  
+RET            0                             
+DESTROY_TABLE                                
+END                                          
+

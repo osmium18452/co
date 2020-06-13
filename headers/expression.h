@@ -6,6 +6,7 @@
 
 extern int temp_var_num;
 extern int curr_token;
+extern int curr_line_num;
 
 extern void match();
 

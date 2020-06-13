@@ -76,7 +76,7 @@ void gen_global_table() {
 	for (const auto &i:symbol_table[0]) {
 		switch (i.second.itype) {
 			case IDN_VAR:
-				insert_into_x86_table("g_" + i.first + " dd 0");
+				insert_into_x86_table("g_" + i.first + " dd "+std::to_string(i.second.value));
 				break;
 			case IDN_ARRAY:
 				insert_into_x86_table("g_" + i.first + " times " + std::to_string(i.second.value)+" dd 0" );
@@ -685,6 +685,9 @@ void translate_print() {
 		else insert_into_x86_table("mov eax," + itbadd);
 		insert_into_x86_table("push eax");
 		insert_into_x86_table("call $print_str");
+	} else if (it->a=="const"){
+		insert_into_x86_table("push dword "+it->b);
+		insert_into_x86_table("call $print_int");
 	}
 	insert_into_x86_table("pop eax");
 }

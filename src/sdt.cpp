@@ -5,8 +5,11 @@
 #include "../headers/expression.h"
 #include "../headers/sdt_func_decl.h"
 #include "../headers/utils.h"
+#include "../headers/error.h"
 
 int curr_token;
+int curr_line_num;
+bool has_main_func;
 
 std::string break_point, continue_point;
 
@@ -15,47 +18,76 @@ std::string break_point, continue_point;
 
 void match() {
 	curr_token++;
+	curr_line_num = tokens[curr_token].line_num;
 }
 
 void parse_program() {
+	curr_line_num = 0;
 	while (tokens[curr_token].type != TOK_PROG_END) {
 		if (tokens[curr_token].type == TOK_CONST) {
 			parse_const_declaration(GLOBAL);
 		} else if (tokens[curr_token].type == TOK_VOID || tokens[curr_token + 2].type == TOK_LPARE) {
 			parse_func_declaration();
 		} else if (tokens[curr_token + 2].type == TOK_COMMA || tokens[curr_token + 2].type == TOK_SEMICOLON ||
-				   tokens[curr_token + 2].type == TOK_ASSIGN || tokens[curr_token + 2].type == TOK_LBRACKET) {
+		           tokens[curr_token + 2].type == TOK_ASSIGN || tokens[curr_token + 2].type == TOK_LBRACKET) {
+			parse_var_declaration(GLOBAL);
+		} else {
+			print_error("expected variable or const or function definition, but got nothing.");
 			parse_var_declaration(GLOBAL);
 		}
+	}
+	if (!has_main_func) {
+		print_error("you didn't define a main func. the x86 assembly can't be properly assembled by nasm");
 	}
 }
 
 void parse_const_declaration(scope scope) {
-	match();
+	if (tokens[curr_token].type == TOK_CONST) {
+		match();
+	} else {
+		print_error("'const' expected, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	parse_const_definition(scope);
 }
 
 void parse_const_definition(scope scope) {
 	dtype dtype = DATA_INT;
-	switch (tokens[curr_token].type) {
-		case TOK_INT:
-			dtype = DATA_INT;
-			break;
-		case TOK_CHAR:
-			dtype = DATA_CHAR;
-			break;
-		default:
-			break;
+	if (tokens[curr_token].type == TOK_INT || tokens[curr_token].type == TOK_CHARCONST) {
+		switch (tokens[curr_token].type) {
+			case TOK_INT:
+				dtype = DATA_INT;
+				break;
+			case TOK_CHAR:
+				dtype = DATA_CHAR;
+				break;
+			default:
+				break;
+		}
+		match();
+	} else {
+		print_error("expected 'int' or 'char', but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+		dtype = DATA_INT;
 	}
-//	cout<<"***************"<<endl;
-	match();
 	table_entry entry{};
 	std::string ident_name;
 	while (true) {
 		ident_name = tokens[curr_token].stringval;
-//		cout<<"ident_name: "<<ident_name<<endl;
-		match();
-		match();/*'=' token*/
+		if (tokens[curr_token].type == TOK_IDENT) match();/* identifier here.*/
+		else {
+			print_error("expected identifier here, but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			error_warning_handler_summary();
+			exit(EXCODE_IDENTIFIER_EXPECTED);
+		}
+		if (tokens[curr_token].type == TOK_ASSIGN) match();/*'=' token*/
+		else {
+			print_error("expected '=' here, but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			error_warning_handler_summary();
+			exit(EXCODE_ASSIGN_EXPECTED);
+		}
 		switch (dtype) {
 			case DATA_INT:
 				entry = {IDN_CONST, dtype, tokens[curr_token].intval, -1};
@@ -70,8 +102,13 @@ void parse_const_definition(scope scope) {
 		if (tokens[curr_token].type == TOK_SEMICOLON) {
 			match();
 			break;
-		} else {
+		} else if (tokens[curr_token].type == TOK_COMMA) {
 			match();
+		} else {
+			print_error("expected comma or semicolon, but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			error_warning_handler_summary();
+			exit(EXCODE_COMMA_AND_SEMICOLON_EXPECTED);
 		}
 	}
 }
@@ -85,56 +122,87 @@ void parse_var_definition(scope scope) {
 	table_entry entry{};
 	quadruple_element element{};
 	std::string ident_name;
-	switch (tokens[curr_token].type) {
-		case TOK_INT:
-			data_type = DATA_INT;
-			break;
-		case TOK_CHAR:
-			data_type = DATA_CHAR;
-			break;
-		default:
-			break;
+	if (tokens[curr_token].type == TOK_INT || tokens[curr_token].type == TOK_CHARCONST) {
+		switch (tokens[curr_token].type) {
+			case TOK_INT:
+				data_type = DATA_INT;
+				break;
+			case TOK_CHAR:
+				data_type = DATA_CHAR;
+				break;
+			default:
+				break;
+		}
+		match();
+	} else {
+		print_error("expected 'int' or 'char', but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+		data_type = DATA_INT;
 	}
-	match();
 	while (true) {
+		if (tokens[curr_token].type != TOK_IDENT) {
+			print_error("expected identifier here, but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			error_warning_handler_summary();
+			exit(EXCODE_IDENTIFIER_EXPECTED);
+		}
 		ident_name = tokens[curr_token].stringval;
 		if (tokens[curr_token + 1].type == TOK_LBRACKET) {
 			match();
 			match();//consume the [;
-			int array_size = tokens[curr_token].intval;
-			match();
+			std::string temp_var = gen_temp_var();
+			dtype temp_type;
+			expression(temp_var, temp_type);
+			int array_size;
+			if (!is_num(temp_var)) {
+				print_waring("a const is expected while defining an array, but got a variable. whatever i set the size to 100 for you.");
+				array_size = 100;
+			} else array_size = std::stoi(temp_var);
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name,
-					   std::to_string(array_size)};
+			           std::to_string(array_size)};
 			if (element.instruct == VAR) insert_to_quadruple_list(element);
 			entry = {IDN_ARRAY, data_type, array_size, -1, scope == GLOBAL ? g : l};
 			insert_to_symbol_table(scope, ident_name, entry);
-			match();
+			if (tokens[curr_token].type == TOK_RBRACKET) match();//consume the [
+			else {
+				print_error("expected right bracket, but got "
+				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			}
 		} else {
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name, NONE};
 			if (element.instruct == VAR) insert_to_quadruple_list(element);
 			entry = {IDN_VAR, data_type, -1, -1, scope == GLOBAL ? g : l};
 			insert_to_symbol_table(scope, ident_name, entry);
-			match();
+			match();//consume the [
 		}
 		if (tokens[curr_token].type == TOK_ASSIGN) {
 			match();// =
 			std::string res;
 			dtype res_dtype;
 			expression_without_comma(res, res_dtype);
-			element = {ASSIGN, res, ident_name, NONE};
-			insert_to_quadruple_list(element);
+			if (scope == GLOBAL) {
+				symbol_table[0][ident_name].value = std::stoi(res);
+			} else {
+				element = {ASSIGN, res, ident_name, NONE};
+				insert_to_quadruple_list(element);
+			}
 		}
 		if (tokens[curr_token].type == TOK_SEMICOLON) {
 			match();
 			break;
 		} else if (tokens[curr_token].type == TOK_COMMA) {
 			match();
+		} else {
+			print_error("expected semicolon or comma, but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			break;
 		}
 	}
 }
 
 void parse_func_declaration() {
 	if (tokens[curr_token + 1].stringval == "main") {
+		has_main_func = true;
 		parse_main_func_declaration();
 	} else if (tokens[curr_token].type == TOK_VOID) {
 		parse_func_without_return_value();
@@ -146,8 +214,16 @@ void parse_func_declaration() {
 void parse_main_func_declaration() {
 	match();
 	match();
-	match();
-	match();
+	if (tokens[curr_token].type==TOK_LPARE) match();
+	else {
+		print_error("expected left parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
+	if (tokens[curr_token].type==TOK_RPARE)match();
+	else {
+		print_error("expected left parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	quadruple_element element{FUNC, "void", "main", NONE};
 	insert_to_quadruple_list(element);
 	parse_block();
@@ -170,21 +246,30 @@ void parse_func_without_return_value() {
 		case TOK_CHAR:
 			dtype = DATA_CHAR;
 			tp = "char";
+			match();
 			break;
 		case TOK_VOID:
 			dtype = DATA_VOID;
 			tp = "void";
+			match();
 			break;
 		default:
+			print_error("expected 'int' or 'char', but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			dtype = DATA_INT;
+			tp = "int";
 			break;
 	}
-	match();
 	para_table_num = allocate_a_param_table();
 	entry = {IDN_FUNCTION, dtype, para_table_num, -1};
 	ident_name = tokens[curr_token].stringval;
 	element = {FUNC, tp, ident_name, NONE};
 	match();
-	match();//left parenthesis
+	if (tokens[curr_token].type==TOK_LPARE) match();//left parenthesis
+	else {
+		print_error("expected left parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	insert_to_symbol_table(GLOBAL, ident_name, entry);
 	insert_to_quadruple_list(element);
 	create_new_local_table();
@@ -357,8 +442,8 @@ void parse_print_statement() {
 			case TOK_INTCONST:
 			case TOK_CHARCONST:
 				element = {PRINT, tokens[curr_token].type == TOK_INTCONST ? "int" : "char", std::to_string(
-						tokens[curr_token].type == TOK_INTCONST ? tokens[curr_token].intval
-																: tokens[curr_token].charval), NONE};
+					tokens[curr_token].type == TOK_INTCONST ? tokens[curr_token].intval
+					                                        : tokens[curr_token].charval), NONE};
 				insert_to_quadruple_list(element);
 				match();
 				break;
@@ -367,8 +452,9 @@ void parse_print_statement() {
 				switch (entry.itype) {
 					case IDN_VAR:
 					case IDN_ARRAY:
-						if (entry.itype==IDN_ARRAY&&entry.dtype==DATA_CHAR&&tokens[curr_token+1].type!=TOK_LBRACKET){
-							element={PRINT,"string",tokens[curr_token].stringval,NONE};
+						if (entry.itype == IDN_ARRAY && entry.dtype == DATA_CHAR &&
+						    tokens[curr_token + 1].type != TOK_LBRACKET) {
+							element = {PRINT, "string", tokens[curr_token].stringval, NONE};
 							insert_to_quadruple_list(element);
 						} else {
 							expression_without_comma(res, dtype);
@@ -391,7 +477,7 @@ void parse_print_statement() {
 						break;
 					case IDN_CONST:
 						res = entry.dtype == DATA_CHAR ? std::to_string((char) (entry.value)) : std::to_string(
-								entry.value);
+							entry.value);
 						element = {PRINT, "const", res, NONE};
 						insert_to_quadruple_list(element);
 						match();
@@ -923,8 +1009,8 @@ void parse_switch_statement() {
 	head_of_switch.push_back(element);
 	element = {JA, label_default, NONE, NONE};
 	head_of_switch.push_back(element);
-	std::string tmp_var=gen_temp_var();
-	element={TEMP,"int",tmp_var,NONE};
+	std::string tmp_var = gen_temp_var();
+	element = {TEMP, "int", tmp_var, NONE};
 	head_of_switch.push_back(element);
 	element = {SUB, res, std::to_string(case_table.begin()->kase_num), tmp_var};
 	head_of_switch.push_back(element);

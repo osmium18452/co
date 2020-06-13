@@ -8,6 +8,7 @@
 #include "headers/utils.h"
 #include "headers/x86.h"
 #include "headers/reg.h"
+#include "headers/error.h"
 
 using std::cout;
 using std::cin;
@@ -15,6 +16,10 @@ using std::endl;
 
 int main(int argc, char **argv) {
 	std::vector<std::string> args;
+	if (argc<2){
+		cout<<"you must specify a file for the compiler or type \"co -h\" for help."<<endl;
+		return 0;
+	}
 	args.reserve(argc);
 	for (int i = 0; i < argc; i++) {
 		args.emplace_back(argv[i]);
@@ -30,7 +35,7 @@ int main(int argc, char **argv) {
 		cout << "-s --string: set the file that write the string table in." << endl;
 		cout << "-x --x86: set the file that write the x86 asm in." << endl;
 		cout << "-o --output: set the name of the executable file." << endl;
-		return 1;
+		return 0;
 	}
 	std::string token_file = "../testfile_dir/tokens.txt";
 	std::string table_file = "../testfile_dir/table.txt";
@@ -42,26 +47,26 @@ int main(int argc, char **argv) {
 	for (int i = 2; i < argc; i += 2) {
 		if (args[i] == "-k" || args[i] == "--tokens") {
 			print_which[0]=true;
-			token_file = args[i + 1];
+			if (args[i+1]!="default") token_file = args[i + 1];
 		}
 		if (args[i] == "-b" || args[i] == "--table") {
 			print_which[1]=true;
-			token_file = args[i + 1];
+			if (args[i+1]!="default") token_file = args[i + 1];
 		}
 		if (args[i] == "-q" || args[i] == "--quadruple") {
 			print_which[2]=true;
-			token_file = args[i + 1];
+			if (args[i+1]!="default") token_file = args[i + 1];
 		}
 		if (args[i] == "-p" || args[i] == "--param") {
 			print_which[3]=true;
-			token_file = args[i + 1];
+			if (args[i+1]!="default") token_file = args[i + 1];
 		}
 		if (args[i] == "-s" || args[i] == "--string") {
 			print_which[4]=true;
-			token_file = args[i + 1];
+			if (args[i+1]!="default") token_file = args[i + 1];
 		}
 		if (args[i] == "-x" || args[i] == "--x86") {
-			token_file = args[i + 1];
+			if (args[i+1]!="default") token_file = args[i + 1];
 		}
 	}
 	std::string file = args[1];
@@ -70,22 +75,24 @@ int main(int argc, char **argv) {
 	cout << s << endl;
 	get_token(s, false);
 	if (print_which[0]) print_token_table(token_file);
-	cout << "tokens size: " << tokens.size() << endl;
+//	cout << "tokens size: " << tokens.size() << endl;
 	curr_token = 0;
 	init_symbol_table();
 	init_param_table();
 	init_string_table();
 	init_temp_var();
 	init_temp_label();
+	init_error_warning_handler();
 	parse_program();
-	cout << "global symbol table size: " << symbol_table[0].size() << endl;
+	error_warning_handler_summary();
+//	cout << "global symbol table size: " << symbol_table[0].size() << endl;
 	if (print_which[1])print_symbol_table(table_file, 0, true);
 	if (print_which[2])print_quadruple_list(quadruple_file);
 	if (print_which[4])print_string_table(string_file);
-	cout << "quadruple list size: " << quadruple_list.size() << endl;
+//	cout << "quadruple list size: " << quadruple_list.size() << endl;
 	init_local_symbol_table();
 	init_reg_table();
-	cout << "symbol table size :" << symbol_table.size() << endl;
+//	cout << "symbol table size :" << symbol_table.size() << endl;
 	translate_to_x86();
 	print_x86_table(x86_file);
 	return 0;
