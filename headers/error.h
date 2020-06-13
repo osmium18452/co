@@ -15,6 +15,8 @@
 #define EXCODE_TOO_FEW_PARAMS_FOR_FUNC 17
 #define EXCODE_FUNC_NOT_DEFINED 18
 #define EXCODE_IDENTIFIER_IS_NOT_A_FUNC 19
+#define EXCODE_IDENTIFIER_NOT_FOUND 20
+#define EXCODE_IDENTIFIER_IS_NOT_ARRAY 21
 
 extern int curr_line_num;
 extern bool has_main_func;

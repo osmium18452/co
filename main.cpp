@@ -86,7 +86,7 @@ int main(int argc, char **argv) {
 	parse_program();
 	error_warning_handler_summary();
 //	cout << "global symbol table size: " << symbol_table[0].size() << endl;
-	if (print_which[1])print_symbol_table(table_file, 0, true);
+//	if (print_which[1])print_symbol_table(table_file, 0, true);
 	if (print_which[2])print_quadruple_list(quadruple_file);
 	if (print_which[4])print_string_table(string_file);
 //	cout << "quadruple list size: " << quadruple_list.size() << endl;

@@ -24,12 +24,14 @@ std::string allocate_string_table_label() {
 	return "?string_" + std::to_string(string_label_num++);
 }
 
-void insert_to_string_table(const std::string &s, std::string &slabel) {
+bool insert_to_string_table(const std::string &s, std::string &slabel) {
 	if (string_table.find(s) == string_table.end()) {
 		slabel = allocate_string_table_label();
 		string_table[s] = slabel;
+		return true;
 	} else {
 		cout << "string " << s << " has already in the table." << endl;
+		return false;
 	}
 }
 
@@ -114,12 +116,14 @@ void destroy_current_local_table_2() {
 	local_symbol_table_level--;
 }
 
-void insert_to_symbol_table(scope gol, std::string &ident, table_entry &entry) {
+bool insert_to_symbol_table(scope gol, std::string &ident, table_entry &entry) {
 	int table_level = gol == GLOBAL ? 0 : local_symbol_table_level;
 	if (symbol_table[table_level].find(ident) == symbol_table[table_level].end()) {
 		symbol_table[table_level][ident] = entry;
+		return true;
 	} else {
 		cout << "identifier " << ident << " has already been defined." << endl;
+		return false;
 	}
 }
 

@@ -29,7 +29,7 @@ void parse_program() {
 		} else if (tokens[curr_token].type == TOK_VOID || tokens[curr_token + 2].type == TOK_LPARE) {
 			parse_func_declaration();
 		} else if (tokens[curr_token + 2].type == TOK_COMMA || tokens[curr_token + 2].type == TOK_SEMICOLON ||
-		           tokens[curr_token + 2].type == TOK_ASSIGN || tokens[curr_token + 2].type == TOK_LBRACKET) {
+				   tokens[curr_token + 2].type == TOK_ASSIGN || tokens[curr_token + 2].type == TOK_LBRACKET) {
 			parse_var_declaration(GLOBAL);
 		} else {
 			print_error("expected variable or const or function definition, but got nothing.");
@@ -46,7 +46,7 @@ void parse_const_declaration(scope scope) {
 		match();
 	} else {
 		print_error("'const' expected, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	parse_const_definition(scope);
 }
@@ -64,7 +64,7 @@ void parse_const_definition(scope scope) {
 			break;
 		default:
 			print_error("expected 'int' or 'char', but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			dtype = DATA_INT;
 			break;
 	}
@@ -75,25 +75,29 @@ void parse_const_definition(scope scope) {
 		if (tokens[curr_token].type == TOK_IDENT) match();/* identifier here.*/
 		else {
 			print_error("expected identifier here, but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			error_warning_handler_summary();
 			exit(EXCODE_IDENTIFIER_EXPECTED);
 		}
 		if (tokens[curr_token].type == TOK_ASSIGN) match();/*'=' token*/
 		else {
 			print_error("expected '=' here, but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			error_warning_handler_summary();
 			exit(EXCODE_ASSIGN_EXPECTED);
 		}
 		switch (dtype) {
 			case DATA_INT:
 				entry = {IDN_CONST, dtype, tokens[curr_token].intval, -1};
-				insert_to_symbol_table(scope, ident_name, entry);
+				if (!insert_to_symbol_table(scope, ident_name, entry)){
+					print_error("identifier "+ident_name+" has already been defined.");
+				}
 				break;
 			case DATA_CHAR:
 				entry = {IDN_CONST, dtype, tokens[curr_token].charval, -1};
-				insert_to_symbol_table(scope, ident_name, entry);
+				if (!insert_to_symbol_table(scope, ident_name, entry)){
+					print_error("identifier "+ident_name+" has already been defined.");
+				}
 				break;
 		}
 		match();
@@ -104,7 +108,7 @@ void parse_const_definition(scope scope) {
 			match();
 		} else {
 			print_error("expected comma or semicolon, but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			error_warning_handler_summary();
 			exit(EXCODE_COMMA_AND_SEMICOLON_EXPECTED);
 		}
@@ -131,14 +135,14 @@ void parse_var_definition(scope scope) {
 			break;
 		default:
 			print_error("expected 'int' or 'char', but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			data_type = DATA_INT;
 			break;
 	}
 	while (true) {
 		if (tokens[curr_token].type != TOK_IDENT) {
 			print_error("expected identifier here, but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			error_warning_handler_summary();
 			exit(EXCODE_IDENTIFIER_EXPECTED);
 		}
@@ -152,24 +156,28 @@ void parse_var_definition(scope scope) {
 			int array_size;
 			if (!is_num(temp_var)) {
 				print_warning(
-					"a const is expected while defining an array, but got a variable. whatever i set the size to 100 for you.");
+						"a const is expected while defining an array, but got a variable. whatever i set the size to 100 for you.");
 				array_size = 100;
 			} else array_size = std::stoi(temp_var);
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name,
-			           std::to_string(array_size)};
+					   std::to_string(array_size)};
 			if (element.instruct == VAR) insert_to_quadruple_list(element);
 			entry = {IDN_ARRAY, data_type, array_size, -1, scope == GLOBAL ? g : l};
-			insert_to_symbol_table(scope, ident_name, entry);
+			if (!insert_to_symbol_table(scope, ident_name, entry)){
+				print_error("identifier "+ident_name+" has already been defined.");
+			}
 			if (tokens[curr_token].type == TOK_RBRACKET) match();//consume the [
 			else {
 				print_error("expected right bracket, but got "
-				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+							+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			}
 		} else {
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name, NONE};
 			if (element.instruct == VAR) insert_to_quadruple_list(element);
 			entry = {IDN_VAR, data_type, -1, -1, scope == GLOBAL ? g : l};
-			insert_to_symbol_table(scope, ident_name, entry);
+			if (!insert_to_symbol_table(scope, ident_name, entry)){
+				print_error("identifier "+ident_name+" has already been defined.");
+			}
 			match();//consume the [
 		}
 		if (tokens[curr_token].type == TOK_ASSIGN) {
@@ -191,7 +199,7 @@ void parse_var_definition(scope scope) {
 			match();
 		} else {
 			print_error("expected semicolon or comma, but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			break;
 		}
 	}
@@ -214,12 +222,12 @@ void parse_main_func_declaration() {
 	if (tokens[curr_token].type == TOK_LPARE) match();
 	else {
 		print_error("expected left parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	if (tokens[curr_token].type == TOK_RPARE)match();
 	else {
 		print_error("expected left parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	quadruple_element element{FUNC, "void", "main", NONE};
 	insert_to_quadruple_list(element);
@@ -252,7 +260,7 @@ void parse_func_without_return_value() {
 			break;
 		default:
 			print_error("expected 'int' or 'char', but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			dtype = DATA_INT;
 			tp = "int";
 			break;
@@ -265,9 +273,11 @@ void parse_func_without_return_value() {
 	if (tokens[curr_token].type == TOK_LPARE) match();//left parenthesis
 	else {
 		print_error("expected left parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
-	insert_to_symbol_table(GLOBAL, ident_name, entry);
+	if (!insert_to_symbol_table(GLOBAL, ident_name, entry)){
+		print_error("identifier "+ident_name+" has already been defined.");
+	}
 	insert_to_quadruple_list(element);
 	create_new_local_table();
 	if (tokens[curr_token].type != TOK_RPARE) {// function with parameters.
@@ -278,7 +288,7 @@ void parse_func_without_return_value() {
 	if (tokens[curr_token].type == TOK_RPARE) match();//right parenthesis
 	else {
 		print_error("expected right parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	parse_block();
 	destroy_current_local_table();
@@ -306,7 +316,7 @@ void parse_para_list(const int para_table_num) {
 				break;
 			default:
 				print_error("expected 'int' or 'char', but got "
-				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+							+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 				dtype = DATA_INT;
 				break;
 		}
@@ -314,13 +324,15 @@ void parse_para_list(const int para_table_num) {
 			para_name = tokens[curr_token].stringval;
 			entry = {IDN_VAR, dtype, -1, -1};
 			element = {PARAM, tp, para_name, NONE};
-			insert_to_symbol_table(LOCAL, para_name, entry);
+			if (!insert_to_symbol_table(LOCAL, para_name, entry)){
+				print_error("identifier "+para_name+" has already been defined.");
+			}
 			insert_to_quadruple_list(element);
 			insert_to_para_table(para_table_num, dtype);
 			match();
 		} else {
 			print_error("expected identifier, but got "
-			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			exit(EXCODE_IDENTIFIER_EXPECTED);
 		}
 		if (tokens[curr_token].type != TOK_COMMA) {
@@ -348,7 +360,7 @@ void parse_single_statement() {
 		case TOK_CHAR:
 			if (tokens[curr_token + 2].type == TOK_LPARE) {
 				print_error("expected right brace, but got "
-				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+							+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 				exit(EXCODE_RIGHT_BRACE_EXPECTED);
 			}
 			parse_var_declaration(LOCAL);
@@ -388,7 +400,7 @@ void parse_single_statement() {
 			if (tokens[curr_token].type == TOK_SEMICOLON) match();
 			else {
 				print_error("expected semicolon, but got "
-				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+							+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			}
 			break;
 		case TOK_IDENT:
@@ -416,8 +428,8 @@ void parse_single_statement() {
 					if (tokens[curr_token].type == TOK_SEMICOLON) match();
 					else {
 						print_error("expected semicolon, but got "
-						            +
-						            (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+									+
+									(tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 					}
 					break;
 			}
@@ -427,7 +439,7 @@ void parse_single_statement() {
 			if (tokens[curr_token].type == TOK_SEMICOLON) match();
 			else {
 				print_error("expected semicolon, but got "
-				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+							+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 			}
 			break;
 	}
@@ -437,7 +449,7 @@ void parse_block() {
 	if (tokens[curr_token].type == TOK_LBRACE) match();
 	else {
 		print_error("expected left brace, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	create_new_local_table();
 	while (tokens[curr_token].type != TOK_RBRACE) {
@@ -460,7 +472,7 @@ void parse_print_statement() {
 	if (tokens[curr_token].type == TOK_LPARE) match();// (
 	else {
 		print_error("expected left parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	element = {SAVE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
@@ -478,8 +490,8 @@ void parse_print_statement() {
 			case TOK_INTCONST:
 			case TOK_CHARCONST:
 				element = {PRINT, tokens[curr_token].type == TOK_INTCONST ? "int" : "char", std::to_string(
-					tokens[curr_token].type == TOK_INTCONST ? tokens[curr_token].intval
-					                                        : tokens[curr_token].charval), NONE};
+						tokens[curr_token].type == TOK_INTCONST ? tokens[curr_token].intval
+																: tokens[curr_token].charval), NONE};
 				insert_to_quadruple_list(element);
 				match();
 				break;
@@ -489,7 +501,7 @@ void parse_print_statement() {
 					case IDN_VAR:
 					case IDN_ARRAY:
 						if (entry.itype == IDN_ARRAY && entry.dtype == DATA_CHAR &&
-						    tokens[curr_token + 1].type != TOK_LBRACKET) {
+							tokens[curr_token + 1].type != TOK_LBRACKET) {
 							element = {PRINT, "string", tokens[curr_token].stringval, NONE};
 							insert_to_quadruple_list(element);
 						} else {
@@ -498,13 +510,7 @@ void parse_print_statement() {
 							element = {PRINT, dtp, res, NONE};
 							insert_to_quadruple_list(element);
 						}
-//						match();
 						break;
-						/*parse_array_read(res, dtype, tokens[curr_token].stringval);
-						dtp = dtype == DATA_CHAR ? "char" : "int";
-						element = {PRINT, dtp, res, NONE};
-						insert_to_quadruple_list(element);
-						break;*/
 					case IDN_FUNCTION:
 						parse_non_void_func_call(res, dtype, tokens[curr_token].stringval);
 						dtp = dtype == DATA_CHAR ? "char" : "int";
@@ -513,7 +519,7 @@ void parse_print_statement() {
 						break;
 					case IDN_CONST:
 						res = entry.dtype == DATA_CHAR ? std::to_string((char) (entry.value)) : std::to_string(
-							entry.value);
+								entry.value);
 						element = {PRINT, "const", res, NONE};
 						insert_to_quadruple_list(element);
 						match();
@@ -531,12 +537,12 @@ void parse_print_statement() {
 	if (tokens[curr_token].type == TOK_RPARE) match();// )
 	else {
 		print_error("expected right parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
 	else {
 		print_error("expected semicolon, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	element = {RESTORE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
@@ -551,7 +557,7 @@ void parse_scan_statement() {
 	if (tokens[curr_token].type == TOK_LPARE) match();// (
 	else {
 		print_error("expected left parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	element = {FLUSH_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
@@ -587,7 +593,7 @@ void parse_scan_statement() {
 						match();
 					} else {
 						print_warning("you can't read an array. identifier " + tokens[curr_token].stringval +
-						              " is ignored for scanning.");
+									  " is ignored for scanning.");
 						match();
 					}
 					break;
@@ -601,12 +607,12 @@ void parse_scan_statement() {
 	if (tokens[curr_token].type == TOK_RPARE) match();// )
 	else {
 		print_error("expected right parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
 	else {
 		print_error("expected semicolon, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	element = {FLUSH_REGTABLE, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
@@ -664,7 +670,7 @@ void parse_bitorass() {
 	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
 	else {
 		print_error("expected semicolon, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 }
 
@@ -680,7 +686,7 @@ void parse_bitandass() {
 	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
 	else {
 		print_error("expected semicolon, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 }
 
@@ -696,7 +702,7 @@ void parse_bitxorass() {
 	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
 	else {
 		print_error("expected semicolon, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 }
 
@@ -751,7 +757,7 @@ void parse_func_call_statement(const std::string &id) {
 	if (tokens[curr_token].type == TOK_LPARE) match();// (
 	else {
 		print_error("expected left parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	std::vector<dtype> para_list = get_para_table(entry.value);
 	if (!para_list.empty() && tokens[curr_token].type == TOK_RPARE) {
@@ -766,7 +772,7 @@ void parse_func_call_statement(const std::string &id) {
 	if (tokens[curr_token].type == TOK_RPARE) match();// )
 	else {
 		print_error("expected right parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 
 	element = {CALL, id, NONE, NONE};
@@ -779,7 +785,7 @@ void parse_func_call_statement(const std::string &id) {
 	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
 	else {
 		print_error("expected semicolon, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 }
 
@@ -795,15 +801,16 @@ void parse_non_void_func_call(std::string &res, dtype &data_type, const std::str
 		exit(EXCODE_IDENTIFIER_IS_NOT_A_FUNC);
 	}
 	if (entry.dtype == DATA_VOID) {
-		print_error("function " +id +" has no return value. i set it to 0.");
-		res="0";
-		data_type=DATA_INT;
+		print_error("function " + id + " has no return value. i set it to 0.");
+		res = "0";
+		data_type = DATA_INT;
+		return ;
 	}
 	match();// identifier
 	if (tokens[curr_token].type == TOK_LPARE) match();// (
 	else {
 		print_error("expected left parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	std::vector<dtype> para_list = get_para_table(entry.value);
 	if (!para_list.empty() && tokens[curr_token].type == TOK_RPARE) {
@@ -818,7 +825,7 @@ void parse_non_void_func_call(std::string &res, dtype &data_type, const std::str
 	if (tokens[curr_token].type == TOK_RPARE) match();// )
 	else {
 		print_error("expected right parenthesis, but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	element = {CALL, id, NONE, NONE};
 	insert_to_quadruple_list(element);
@@ -840,17 +847,25 @@ void parse_array_read(std::string &res, dtype &data_dtype, const std::string &id
 	dtype index_dtype;
 	quadruple_element element{};
 	if (!query_symbol_table(id, entry)) {
-		cout << "cannot find identifier" << id << endl;
-		return;
+		print_error("cannot find identifier" + id);
+		exit(EXCODE_IDENTIFIER_NOT_FOUND);
 	}
 	if (entry.itype != IDN_ARRAY) {
-		cout << id << " is not an array" << endl;
-		return;
+		print_error(id + " is not an array");
+		exit(EXCODE_IDENTIFIER_IS_NOT_ARRAY);
 	}
-	match();// identifier
-	match();// [
+	match();// IDENTIFIER
+	if (tokens[curr_token].type == TOK_LBRACKET) match();// [
+	else {
+		print_error("expected left bracket, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	expression(index, index_dtype);
-	match();// ]
+	if (tokens[curr_token].type == TOK_RBRACKET) match();// ]
+	else {
+		print_error("expected right bracket, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	res = gen_temp_var();
 	data_dtype = entry.dtype;
 	element = {TEMP, data_dtype == DATA_INT ? "int" : "char", res, NONE};
@@ -868,21 +883,29 @@ void parse_array_assign() {
 	dtype res_type;
 	match();// identifier.
 	if (!query_symbol_table(id, entry)) {
-		cout << "cannot find identifier" << id << endl;
-		return;
+		print_error("cannot find identifier" + id);
+		exit(EXCODE_IDENTIFIER_NOT_FOUND);
 	}
 	if (entry.itype != IDN_ARRAY) {
-		cout << id << " is not an array" << endl;
-		return;
+		print_error(id + " is not an array");
+		exit(EXCODE_IDENTIFIER_IS_NOT_ARRAY);
 	}
 	match();// [
 	expression(index, index_dtype);
-	match();// ]
+	if (tokens[curr_token].type == TOK_RBRACKET) match();// ]
+	else {
+		print_error("expected right bracket, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	match();// =
 	expression(res, res_type);
 	quadruple_element element{WRARR, id, index, res};
 	insert_to_quadruple_list(element);
-	match();// ;
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_return_statement() {
@@ -898,12 +921,20 @@ void parse_return_statement() {
 		element = {RET, ret_val, NONE, NONE};
 		insert_to_quadruple_list(element);
 	}
-	match();// ;
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_if_else_statement() {
 	match();// if
-	match();// (
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	std::string res;
 	dtype res_dtype;
 	quadruple_element element{};
@@ -911,7 +942,11 @@ void parse_if_else_statement() {
 	false_label = gen_temp_label();
 	end_label = gen_temp_label();
 	expression(res, res_dtype);
-	match();// )
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected left parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	element = {CMP, res, "0", NONE};
 	insert_to_quadruple_list(element);
 	element = {JE, false_label, NONE, NONE};
@@ -950,12 +985,20 @@ void parse_for_statement() {
 	continue_point = start_label;
 	break_point = end_label;
 	match();//for
-	match();//(
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	parse_single_statement();
 	element = {LABEL, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 	expression(res, res_dtype);
-	match();//;
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	element = {CMP, res, "0", NONE};
 	insert_to_quadruple_list(element);
 	element = {JE, end_label, NONE, NONE};
@@ -966,7 +1009,11 @@ void parse_for_statement() {
 		quadruple_element_for_exp3.push_back(quadruple_list.back());
 		quadruple_list.pop_back();
 	}
-	match();// )
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected right parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	if (tokens[curr_token].type == TOK_LBRACE) {
 		parse_block();
 	} else {
@@ -997,9 +1044,17 @@ void parse_while_statement() {
 	element = {LABEL, start_label, NONE, NONE};
 	insert_to_quadruple_list(element);
 	match();// while
-	match();// (
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	expression(res, res_dtype);
-	match();// )
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected right parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	element = {CMP, res, "0", NONE};
 	insert_to_quadruple_list(element);
 	element = {JE, end_label, NONE, NONE};
@@ -1033,7 +1088,11 @@ void parse_do_statement() {
 	match();//do
 	parse_block();
 	match();//while
-	match();//(
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	expression(res, res_dtype);
 	element = {CMP, res, "0", NONE};
 	insert_to_quadruple_list(element);
@@ -1045,6 +1104,16 @@ void parse_do_statement() {
 	insert_to_quadruple_list(element);
 	element = {DESTROY_TABLE, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected right parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_switch_statement() {
@@ -1059,11 +1128,23 @@ void parse_switch_statement() {
 	label_jump_table = gen_temp_label("jump_table");
 	break_point = label_end_of_switch;
 	match();//switch
-	match();//(
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	expression(res, res_dtype);
 	auto place_recorder = quadruple_list.end() - quadruple_list.begin();
-	match();//)
-	match();//{
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected right parenthesis, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
+	if (tokens[curr_token].type == TOK_LBRACE) match();//{
+	else {
+		print_error("expected left brace, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	while (tokens[curr_token].type != TOK_RBRACE) {
 		if (tokens[curr_token].type == TOK_CASE) {
 			match();//case
@@ -1084,12 +1165,13 @@ void parse_switch_statement() {
 	}
 	element = {LABEL, label_end_of_switch, NONE, NONE};
 	insert_to_quadruple_list(element);
-	match();//}
+	if (tokens[curr_token].type == TOK_RBRACE) match();//}
+	else {
+		print_error("expected right brace, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	//generate jump table.
 	std::sort(case_table.begin(), case_table.end());
-	for (const auto &i:case_table) {
-		cout << i.kase_num << " " << i.kase_label << endl;
-	}
 	element = {CMP, res, std::to_string(case_table.begin()->kase_num), NONE};
 	head_of_switch.push_back(element);
 	element = {JB, label_default, NONE, NONE};
@@ -1134,7 +1216,11 @@ void parse_ass() {
 	expression(res, res_dtype);
 	quadruple_element element{ASSIGN, res, id, NONE};
 	insert_to_quadruple_list(element);
-	match();// ;
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_addass() {
@@ -1146,7 +1232,11 @@ void parse_addass() {
 	expression(res, res_dtype);
 	quadruple_element element{ADD, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_subass() {
@@ -1158,7 +1248,11 @@ void parse_subass() {
 	expression(res, res_dtype);
 	quadruple_element element{SUB, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_modass() {
@@ -1170,7 +1264,11 @@ void parse_modass() {
 	expression(res, res_dtype);
 	quadruple_element element{MOD, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_mulass() {
@@ -1182,7 +1280,11 @@ void parse_mulass() {
 	expression(res, res_dtype);
 	quadruple_element element{MUL, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_divass() {
@@ -1194,7 +1296,11 @@ void parse_divass() {
 	expression(res, res_dtype);
 	quadruple_element element{DIV, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_shlass() {
@@ -1206,7 +1312,11 @@ void parse_shlass() {
 	expression(res, res_dtype);
 	quadruple_element element{SHL, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_shrass() {
@@ -1218,20 +1328,31 @@ void parse_shrass() {
 	expression(res, res_dtype);
 	quadruple_element element{SHR, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_break_statement() {
 	quadruple_element element{JMP, break_point, NONE, NONE};
 	insert_to_quadruple_list(element);
 	match();
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_continue_statement() {
 	quadruple_element element{JMP, continue_point, NONE, NONE};
 	insert_to_quadruple_list(element);
 	match();
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
-

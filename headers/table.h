@@ -43,7 +43,7 @@ extern std::string dtype_convert_table[];
 extern int local_symbol_table_level;
 extern std::unordered_map<std::string,std::string> string_table;
 
-void insert_to_string_table(const std::string &s, std::string &slabel);
+bool insert_to_string_table(const std::string &s, std::string &slabel);
 
 bool query_string_table(const std::string &s, std::string &label);
 
@@ -61,7 +61,7 @@ void destroy_current_local_table();
 
 void destroy_current_local_table_2();
 
-void insert_to_symbol_table(scope gol, std::string &ident, table_entry &entry);
+bool insert_to_symbol_table(scope gol, std::string &ident, table_entry &entry);
 
 bool query_symbol_table(const std::string &ident,table_entry &entry);
 
