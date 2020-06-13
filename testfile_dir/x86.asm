@@ -2,7 +2,8 @@
 section .data
    msg db "hello world",0ah,00h
    rtn db 0ah,00h
-   ?string_0 db "",0AH,"",00h
+   ?string_1 db "",0AH,"",00h
+   ?string_0 db " ",00h
    g_a times 1000 dd 0
 section .bss
    ?res resb 64
@@ -225,41 +226,79 @@ main:
    push ebp
    mov ebp,esp
    push ebx
-   sub esp,32
+   sub esp,56
+   mov eax,dword [ebp-4]
+   add eax,dword [ebp-8]
+   mov ebx,eax
+   add ebx,dword [ebp-12]
+   mov [ebp-16],eax
+   mov [ebp-20],ebx
    call $scan_int
-   mov [ebp-4],eax
-   mov [ebp-8],dword 0
+   mov [ebp-24],eax
+   mov [ebp-28],dword 0
    .label_10:
-   mov eax,dword [ebp-8]
-   cmp eax,dword [ebp-4]
+   mov eax,dword [ebp-28]
+   cmp eax,dword [ebp-24]
    setl al
    and eax,000000ffh
    cmp eax,dword 0
    je .label_11
-   mov [ebp-12],eax
+   mov [ebp-32],eax
    call $scan_int
-   mov [ebp-16],eax
+   mov [ebp-36],eax
    push esi
    push edi
    lea esi,[g_a]
-   mov edi,dword [ebp-8]
+   mov edi,dword [ebp-28]
    imul edi,4
-   mov eax,[ebp-16]
+   mov eax,[ebp-36]
    mov [esi+edi],eax
    pop edi
    pop esi
-   inc dword [ebp-8]
+   push edx
+   push ecx
+   push eax
+   push esi
+   push edi
+   lea esi,[g_a]
+   mov edi,dword [ebp-28]
+   imul edi,4
+   mov ebx,[esi+edi]
+   pop edi
+   pop esi
+   mov eax,ebx
+   push eax
+   call $print_int
+   pop eax
+   mov eax,?string_0
+   push eax
+   call $print_str
+   pop eax
+   pop eax
+   pop ecx
+   pop edx
+   inc dword [ebp-28]
    jmp .label_10
    .label_11:
    push edx
    push ecx
    push eax
-   mov eax,dword [ebp-4]
-   sub eax,dword 1
-   mov [ebp-20],eax
-   mov eax,dword [ebp-4]
+   mov eax,?string_1
    push eax
-   mov eax,dword [ebp-20]
+   call $print_str
+   pop eax
+   pop eax
+   pop ecx
+   pop edx
+   push edx
+   push ecx
+   push eax
+   mov eax,dword [ebp-24]
+   sub eax,dword 1
+   mov [ebp-44],eax
+   mov eax,dword [ebp-24]
+   push eax
+   mov eax,dword [ebp-44]
    push eax
    mov eax,dword 0
    push eax
@@ -268,10 +307,10 @@ main:
    pop eax
    pop ecx
    pop edx
-   mov [ebp-24],dword 0
+   mov [ebp-48],dword 0
    .label_12:
-   mov eax,dword [ebp-24]
-   cmp eax,dword [ebp-4]
+   mov eax,dword [ebp-48]
+   cmp eax,dword [ebp-24]
    setl al
    and eax,000000ffh
    cmp eax,dword 0
@@ -282,7 +321,7 @@ main:
    push esi
    push edi
    lea esi,[g_a]
-   mov edi,dword [ebp-24]
+   mov edi,dword [ebp-48]
    imul edi,4
    mov ebx,[esi+edi]
    pop edi
@@ -298,14 +337,14 @@ main:
    pop eax
    pop ecx
    pop edx
-   inc dword [ebp-24]
+   inc dword [ebp-48]
    jmp .label_12
    .label_13:
-   mov [ebp-28],eax
+   mov [ebp-52],eax
    push edx
    push ecx
    push eax
-   mov eax,?string_0
+   mov eax,?string_1
    push eax
    call $print_str
    pop eax

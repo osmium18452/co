@@ -53,22 +53,20 @@ void parse_const_declaration(scope scope) {
 
 void parse_const_definition(scope scope) {
 	dtype dtype = DATA_INT;
-	if (tokens[curr_token].type == TOK_INT || tokens[curr_token].type == TOK_CHARCONST) {
-		switch (tokens[curr_token].type) {
-			case TOK_INT:
-				dtype = DATA_INT;
-				break;
-			case TOK_CHAR:
-				dtype = DATA_CHAR;
-				break;
-			default:
-				break;
-		}
-		match();
-	} else {
-		print_error("expected 'int' or 'char', but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
-		dtype = DATA_INT;
+	switch (tokens[curr_token].type) {
+		case TOK_INT:
+			dtype = DATA_INT;
+			match();
+			break;
+		case TOK_CHAR:
+			dtype = DATA_CHAR;
+			match();
+			break;
+		default:
+			print_error("expected 'int' or 'char', but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			dtype = DATA_INT;
+			break;
 	}
 	table_entry entry{};
 	std::string ident_name;
@@ -122,22 +120,20 @@ void parse_var_definition(scope scope) {
 	table_entry entry{};
 	quadruple_element element{};
 	std::string ident_name;
-	if (tokens[curr_token].type == TOK_INT || tokens[curr_token].type == TOK_CHARCONST) {
-		switch (tokens[curr_token].type) {
-			case TOK_INT:
-				data_type = DATA_INT;
-				break;
-			case TOK_CHAR:
-				data_type = DATA_CHAR;
-				break;
-			default:
-				break;
-		}
-		match();
-	} else {
-		print_error("expected 'int' or 'char', but got "
-		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
-		data_type = DATA_INT;
+	switch (tokens[curr_token].type) {
+		case TOK_INT:
+			data_type = DATA_INT;
+			match();
+			break;
+		case TOK_CHAR:
+			data_type = DATA_CHAR;
+			match();
+			break;
+		default:
+			print_error("expected 'int' or 'char', but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			data_type = DATA_INT;
+			break;
 	}
 	while (true) {
 		if (tokens[curr_token].type != TOK_IDENT) {
@@ -155,7 +151,8 @@ void parse_var_definition(scope scope) {
 			expression(temp_var, temp_type);
 			int array_size;
 			if (!is_num(temp_var)) {
-				print_waring("a const is expected while defining an array, but got a variable. whatever i set the size to 100 for you.");
+				print_warning(
+					"a const is expected while defining an array, but got a variable. whatever i set the size to 100 for you.");
 				array_size = 100;
 			} else array_size = std::stoi(temp_var);
 			element = {scope == GLOBAL ? GVAR : VAR, data_type == DATA_INT ? "int" : "char", ident_name,
@@ -214,12 +211,12 @@ void parse_func_declaration() {
 void parse_main_func_declaration() {
 	match();
 	match();
-	if (tokens[curr_token].type==TOK_LPARE) match();
+	if (tokens[curr_token].type == TOK_LPARE) match();
 	else {
 		print_error("expected left parenthesis, but got "
 		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
-	if (tokens[curr_token].type==TOK_RPARE)match();
+	if (tokens[curr_token].type == TOK_RPARE)match();
 	else {
 		print_error("expected left parenthesis, but got "
 		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
@@ -265,7 +262,7 @@ void parse_func_without_return_value() {
 	ident_name = tokens[curr_token].stringval;
 	element = {FUNC, tp, ident_name, NONE};
 	match();
-	if (tokens[curr_token].type==TOK_LPARE) match();//left parenthesis
+	if (tokens[curr_token].type == TOK_LPARE) match();//left parenthesis
 	else {
 		print_error("expected left parenthesis, but got "
 		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
@@ -275,10 +272,14 @@ void parse_func_without_return_value() {
 	create_new_local_table();
 	if (tokens[curr_token].type != TOK_RPARE) {// function with parameters.
 		parse_para_list(para_table_num);
-		std::string table_file = "../testfile_dir/table.txt";
-		print_symbol_table(table_file, local_symbol_table_level, true);
+		/*std::string table_file = "../testfile_dir/table.txt";
+		print_symbol_table(table_file, local_symbol_table_level, true);*/
 	}
-	match();//right parenthesis
+	if (tokens[curr_token].type == TOK_RPARE) match();//right parenthesis
+	else {
+		print_error("expected right parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	parse_block();
 	destroy_current_local_table();
 	element = {END, NONE, NONE, NONE};
@@ -296,23 +297,33 @@ void parse_para_list(const int para_table_num) {
 			case TOK_INT:
 				dtype = DATA_INT;
 				tp = "int";
+				match();
 				break;
 			case TOK_CHAR:
 				dtype = DATA_CHAR;
 				tp = "char";
+				match();
 				break;
 			default:
+				print_error("expected 'int' or 'char', but got "
+				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+				dtype = DATA_INT;
 				break;
 		}
-		match();
-		para_name = tokens[curr_token].stringval;
-		entry = {IDN_VAR, dtype, -1, -1};
-		element = {PARAM, tp, para_name, NONE};
-		insert_to_symbol_table(LOCAL, para_name, entry);
-		insert_to_quadruple_list(element);
-		insert_to_para_table(para_table_num, dtype);
-		match();
-		if (tokens[curr_token].type == TOK_RPARE) {
+		if (tokens[curr_token].type == TOK_IDENT) {
+			para_name = tokens[curr_token].stringval;
+			entry = {IDN_VAR, dtype, -1, -1};
+			element = {PARAM, tp, para_name, NONE};
+			insert_to_symbol_table(LOCAL, para_name, entry);
+			insert_to_quadruple_list(element);
+			insert_to_para_table(para_table_num, dtype);
+			match();
+		} else {
+			print_error("expected identifier, but got "
+			            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			exit(EXCODE_IDENTIFIER_EXPECTED);
+		}
+		if (tokens[curr_token].type != TOK_COMMA) {
 			break;
 		} else {
 			match();
@@ -335,6 +346,11 @@ void parse_single_statement() {
 			break;
 		case TOK_INT:
 		case TOK_CHAR:
+			if (tokens[curr_token + 2].type == TOK_LPARE) {
+				print_error("expected right brace, but got "
+				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+				exit(EXCODE_RIGHT_BRACE_EXPECTED);
+			}
 			parse_var_declaration(LOCAL);
 			break;
 		case TOK_LBRACE:
@@ -369,7 +385,11 @@ void parse_single_statement() {
 		case TOK_REVERSE:
 		case TOK_LOGINOT:
 			expression(res, dtype);
-			match();
+			if (tokens[curr_token].type == TOK_SEMICOLON) match();
+			else {
+				print_error("expected semicolon, but got "
+				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			}
 			break;
 		case TOK_IDENT:
 			switch (tokens[curr_token + 1].type) {
@@ -393,26 +413,38 @@ void parse_single_statement() {
 					break;
 				default:
 					expression(res, dtype);
-					match();
+					if (tokens[curr_token].type == TOK_SEMICOLON) match();
+					else {
+						print_error("expected semicolon, but got "
+						            +
+						            (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+					}
 					break;
 			}
 			break;
 		default:
 			expression(res, dtype);
-			match();
+			if (tokens[curr_token].type == TOK_SEMICOLON) match();
+			else {
+				print_error("expected semicolon, but got "
+				            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+			}
 			break;
 	}
 }
 
 void parse_block() {
-	match();
+	if (tokens[curr_token].type == TOK_LBRACE) match();
+	else {
+		print_error("expected left brace, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	create_new_local_table();
 	while (tokens[curr_token].type != TOK_RBRACE) {
 		parse_single_statement();
 	}
 	match();
-	std::string table_file = "../testfile_dir/table.txt";
-	print_symbol_table(table_file, local_symbol_table_level, true);
+	/* right brace is critical to this parser. if you lose one, it will cause a dead loop. */
 	destroy_current_local_table();
 }
 
@@ -425,7 +457,11 @@ void parse_print_statement() {
 	std::string s;
 	std::string slabel;
 	match();// printf
-	match();// (
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	element = {SAVE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 	while (true) {
@@ -492,8 +528,16 @@ void parse_print_statement() {
 		if (tokens[curr_token].type != TOK_COMMA) break;
 		else match();
 	}
-	match();// )
-	match();// ;
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected right parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	element = {RESTORE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
@@ -504,7 +548,11 @@ void parse_scan_statement() {
 	std::string tmp_var, index, arr_name;
 	dtype index_dtype;
 	match();// scanf
-	match();// (
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	element = {FLUSH_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 	while (true) {
@@ -538,7 +586,8 @@ void parse_scan_statement() {
 						insert_to_quadruple_list(element);
 						match();
 					} else {
-						cout << "you can't read an array" << endl;
+						print_warning("you can't read an array. identifier " + tokens[curr_token].stringval +
+						              " is ignored for scanning.");
 						match();
 					}
 					break;
@@ -549,8 +598,16 @@ void parse_scan_statement() {
 		if (tokens[curr_token].type != TOK_COMMA) break;
 		else match();
 	}
-	match();
-	match();
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected right parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	element = {FLUSH_REGTABLE, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 }
@@ -604,7 +661,11 @@ void parse_bitorass() {
 	expression(res, res_dtype);
 	quadruple_element element{BITOR, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_bitandass() {
@@ -616,7 +677,11 @@ void parse_bitandass() {
 	expression(res, res_dtype);
 	quadruple_element element{BITAND, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_bitxorass() {
@@ -628,10 +693,14 @@ void parse_bitxorass() {
 	expression(res, res_dtype);
 	quadruple_element element{BITXOR, id, res, id};
 	insert_to_quadruple_list(element);
-	match();
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
-void parse_argument_list(const std::vector<dtype> &param_list) {
+void parse_argument_list(const std::vector<dtype> &param_list, const std::string &func_name) {
 //	cout<<"parsing func call***************"<<endl;
 	std::stack<quadruple_element> temp_quadruple_stack;
 	std::string temp_var;
@@ -639,22 +708,19 @@ void parse_argument_list(const std::vector<dtype> &param_list) {
 	int arg_cnt = 0;
 	if (param_list.empty()) {
 		if (tokens[curr_token].type != TOK_RPARE) {
-			cout << "this is a function without params" << endl;
-			return;
+			print_error(func_name + " is a function without params.");
+			exit(EXCODE_TOO_MUCH_PARAMS_FOR_FUNC);
 		} else return;
 	}
 	auto iter = quadruple_list.end();
 	while (true) {
 		expression_without_comma(temp_var, temp_dtype);
-//		cout<<arg_cnt<<"....."<<temp_var<<" "<<curr_token<<endl;
 		if (temp_dtype != param_list[arg_cnt]) {
-//			cout<<temp_dtype<<" "<<param_list[arg_cnt]<<" "<<arg_cnt<<endl;
-			cout << "not matched param data type" << endl;
-			return;
+			print_warning("not matched param data type");
 		}
 		if (++arg_cnt > param_list.size()) {
-			cout << "too much args for function emm" << endl;
-			return;
+			print_error("too much args for function " + func_name);
+			exit(EXCODE_TOO_MUCH_PARAMS_FOR_FUNC);
 		}
 		quadruple_element element{PUSH, temp_dtype == DATA_INT ? "int" : "char", temp_var, NONE};
 		temp_quadruple_stack.push(element);
@@ -665,72 +731,95 @@ void parse_argument_list(const std::vector<dtype> &param_list) {
 		insert_to_quadruple_list(temp_quadruple_stack.top());
 		temp_quadruple_stack.pop();
 	}
-//	std::reverse(iter,quadruple_list.end());
 	if (arg_cnt < param_list.size()) {
-		cout << "too few args for func" << endl;
+		print_error("too few args for function " + func_name);
+		exit(EXCODE_TOO_FEW_PARAMS_FOR_FUNC);
 	}
 }
 
 void parse_func_call_statement(const std::string &id) {
-
 	table_entry entry{};
 	if (!query_symbol_table(id, entry)) {
-		cout << "function " << id << " not defined." << endl;
-		return;
+		print_error("function " + id + " not defined.");
+		exit(EXCODE_FUNC_NOT_DEFINED);
 	}
 	if (entry.itype != IDN_FUNCTION) {
-		cout << "identifier " << id << " is not a function" << endl;
-		return;
+		print_error("identifier " + id + " is not a function");
+		exit(EXCODE_IDENTIFIER_IS_NOT_A_FUNC);
 	}
 	match();// identifier
-	match();// (
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	std::vector<dtype> para_list = get_para_table(entry.value);
 	if (!para_list.empty() && tokens[curr_token].type == TOK_RPARE) {
-		cout << "expected args" << endl;
-		return;
+		print_error("too few args for function " + id);
+		exit(EXCODE_TOO_FEW_PARAMS_FOR_FUNC);
 	}
 	quadruple_element element{};
 	element = {SAVE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
-	parse_argument_list(para_list);
-	match();// )
+	parse_argument_list(para_list, id);
+
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected right parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
+
 	element = {CALL, id, NONE, NONE};
 	insert_to_quadruple_list(element);
 	element = {RESTORE_STACK, std::to_string(para_list.size()), NONE, NONE};
 	insert_to_quadruple_list(element);
 	element = {RESTORE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
-	match();// ;
+
+	if (tokens[curr_token].type == TOK_SEMICOLON) match();// ;
+	else {
+		print_error("expected semicolon, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 }
 
 void parse_non_void_func_call(std::string &res, dtype &data_type, const std::string &id) {
 	table_entry entry{};
 	quadruple_element element{};
 	if (!query_symbol_table(id, entry)) {
-		cout << "cannot find identifier " << id << endl;
-		return;
+		print_error("function " + id + " not defined.");
+		exit(EXCODE_FUNC_NOT_DEFINED);
 	}
 	if (entry.itype != IDN_FUNCTION) {
-		cout << id << " is not a function" << endl;
-		return;
+		print_error("identifier " + id + " is not a function");
+		exit(EXCODE_IDENTIFIER_IS_NOT_A_FUNC);
 	}
 	if (entry.dtype == DATA_VOID) {
-		cout << "function " << id << " has no return value" << endl;
-		return;
+		print_error("function " +id +" has no return value. i set it to 0.");
+		res="0";
+		data_type=DATA_INT;
 	}
 	match();// identifier
-	match();// (
+	if (tokens[curr_token].type == TOK_LPARE) match();// (
+	else {
+		print_error("expected left parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	std::vector<dtype> para_list = get_para_table(entry.value);
 	if (!para_list.empty() && tokens[curr_token].type == TOK_RPARE) {
-		cout << "expected args" << endl;
-		return;
+		print_error("too few args for function " + id);
+		exit(EXCODE_TOO_FEW_PARAMS_FOR_FUNC);
 	}
 	element = {SAVE_REG, NONE, NONE, NONE};
 	insert_to_quadruple_list(element);
 
-	parse_argument_list(para_list);
+	parse_argument_list(para_list, id);
 
-	match();// )
+	if (tokens[curr_token].type == TOK_RPARE) match();// )
+	else {
+		print_error("expected right parenthesis, but got "
+		            + (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
+	}
 	element = {CALL, id, NONE, NONE};
 	insert_to_quadruple_list(element);
 	res = gen_temp_var();

@@ -210,9 +210,11 @@ $scan_string:
 	push ebp
 	mov ebp,esp
 	push ebx
+	.recheck:
 	cmp byte [esi+edi],0ah
 	jne .pass
 	call $scan
+	jmp .recheck
 	.pass:
 	mov eax,[ebp+8]
 	dec edi
@@ -241,10 +243,22 @@ $scan_char:
 	ret
 
 $scan_int:
-	cmp byte [esi+edi],0ah
-	jne .pass
-	call $scan
-	.pass:
+    .begin:
+    dec edi
+    .consume_non_num_chars:
+		inc edi
+		cmp byte [esi+edi],00h
+		jne .pass1
+		call $scan
+		jmp .begin
+		.pass1:
+		cmp byte [esi+edi],'-'
+		je .end_of_consume
+		cmp byte [esi+edi],'0'
+		jb .consume_non_num_chars
+		cmp byte[esi+edi],'9'
+		ja .consume_non_num_chars
+	.end_of_consume:
 	call $stoi_for_scan
 	ret
 

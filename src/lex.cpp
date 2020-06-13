@@ -166,7 +166,7 @@ void print_token_table(const std::string &file){
 }
 
 int get_token(std::string &s, bool use_blank) {
-	int line_num = 0;
+	int line_num = 1;
 	int left = 0, right = 0;
 	state_type state = STAT_START;
 	int len = s.length();

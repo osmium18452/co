@@ -8,7 +8,7 @@ void print_error(const std::string &message) {
 	errors++;
 }
 
-void print_waring(const std::string &message) {
+void print_warning(const std::string &message) {
 	cout << "waring (" << curr_line_num << "):" << message << endl;
 	warnings++;
 }
