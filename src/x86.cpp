@@ -7,6 +7,7 @@
 
 std::vector<std::string> x86_table;
 std::vector<instr_table_element> instr_table;
+std::vector<instr_table_element> optimized_instr_table;
 int ident;
 std::vector<quadruple_element>::iterator it;
 
@@ -42,8 +43,7 @@ void print_x86_table(const std::string &file) {
 	for (const auto &i:x86_table) {
 		x86_stream << i << endl;
 	}
-	cout<<x86_table.size()<<endl;
-	for (const auto &i:instr_table) {
+	for (const auto &i:optimized_instr_table) {
 		if (i.instr == _label_) {
 			x86_stream << std::string(i.ident, ' ') << i.desc << ":" << endl;
 		} else {
