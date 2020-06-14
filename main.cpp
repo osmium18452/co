@@ -9,6 +9,7 @@
 #include "headers/x86.h"
 #include "headers/reg.h"
 #include "headers/error.h"
+#include "headers/optimizer.h"
 
 using std::cout;
 using std::cin;
@@ -75,7 +76,6 @@ int main(int argc, char **argv) {
 	cout << s << endl;
 	get_token(s, false);
 	if (print_which[0]) print_token_table(token_file);
-//	cout << "tokens size: " << tokens.size() << endl;
 	curr_token = 0;
 	init_symbol_table();
 	init_param_table();
@@ -85,15 +85,12 @@ int main(int argc, char **argv) {
 	init_error_warning_handler();
 	parse_program();
 	error_warning_handler_summary();
-//	cout << "global symbol table size: " << symbol_table[0].size() << endl;
-//	if (print_which[1])print_symbol_table(table_file, 0, true);
 	if (print_which[2])print_quadruple_list(quadruple_file);
 	if (print_which[4])print_string_table(string_file);
-//	cout << "quadruple list size: " << quadruple_list.size() << endl;
 	init_local_symbol_table();
 	init_reg_table();
-//	cout << "symbol table size :" << symbol_table.size() << endl;
 	translate_to_x86();
+	optimize();
 	print_x86_table(x86_file);
 	return 0;
 }

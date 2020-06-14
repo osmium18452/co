@@ -26,4 +26,4 @@ add_executable(co main.cpp
 		src/quadruple.cpp
 		src/expression.cpp
 		src/x86.cpp
-		src/regs.cpp headers/error.h src/error.cpp)
+		src/regs.cpp headers/error.h src/error.cpp headers/optimizer.h src/optimizer.cpp headers/optimizer_func_def.h)
