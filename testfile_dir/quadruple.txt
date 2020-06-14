@@ -109,13 +109,6 @@ DESTROY_TABLE
 END                                          
 FUNC           void      main                
 CREATE_TABLE                                 
-VAR            int       c                   
-VAR            int       d                   
-VAR            int       e                   
-TEMP           int       ?temp_17            
-ADD            c         d         ?temp_17  
-TEMP           int       ?temp_18            
-ADD            ?temp_17  e         ?temp_18  
 VAR            int       n                   
 FLUSH_REG                                    
 SCAN           int       n                   
@@ -124,35 +117,24 @@ CREATE_TABLE
 VAR            int       i                   
 ASSIGN         0         i                   
 LABEL          .label_10                     
-TEMP           int       ?temp_19            
-LT             i         n         ?temp_19  
-CMP            ?temp_19  0                   
+TEMP           int       ?temp_17            
+LT             i         n         ?temp_17  
+CMP            ?temp_17  0                   
 JE             .label_11                     
-CREATE_TABLE                                 
 FLUSH_REG                                    
-TEMP           int       ?temp_20            
-SCAN           int       ?temp_20            
-WRARR          a         i         ?temp_20  
+TEMP           int       ?temp_18            
+SCAN           int       ?temp_18            
+WRARR          a         i         ?temp_18  
 FLUSH_REGTABLE                               
-SAVE_REG                                     
-TEMP           int       ?temp_21            
-RDARR          a         i         ?temp_21  
-PRINT          int       ?temp_21            
-PRINT          string    ?string_0           
-RESTORE_REG                                  
-DESTROY_TABLE                                
 INC            i                             
 JMP            .label_10                     
 LABEL          .label_11                     
 DESTROY_TABLE                                
 SAVE_REG                                     
-PRINT          string    ?string_1           
-RESTORE_REG                                  
-SAVE_REG                                     
-TEMP           int       ?temp_22            
-SUB            n         1         ?temp_22  
+TEMP           int       ?temp_19            
+SUB            n         1         ?temp_19  
 PUSH           int       n                   
-PUSH           int       ?temp_22            
+PUSH           int       ?temp_19            
 PUSH           int       0                   
 CALL           qsort                         
 RESTORE_STACK  3                             
@@ -161,14 +143,14 @@ CREATE_TABLE
 VAR            int       i                   
 ASSIGN         0         i                   
 LABEL          .label_12                     
-TEMP           int       ?temp_23            
-LT             i         n         ?temp_23  
-CMP            ?temp_23  0                   
+TEMP           int       ?temp_20            
+LT             i         n         ?temp_20  
+CMP            ?temp_20  0                   
 JE             .label_13                     
 SAVE_REG                                     
-TEMP           int       ?temp_24            
-RDARR          a         i         ?temp_24  
-PRINT          int       ?temp_24            
+TEMP           int       ?temp_21            
+RDARR          a         i         ?temp_21  
+PRINT          int       ?temp_21            
 PRINT          char      32                  
 RESTORE_REG                                  
 INC            i                             
@@ -176,7 +158,7 @@ JMP            .label_12
 LABEL          .label_13                     
 DESTROY_TABLE                                
 SAVE_REG                                     
-PRINT          string    ?string_1           
+PRINT          string    ?string_0           
 RESTORE_REG                                  
 RET            0                             
 DESTROY_TABLE                                
