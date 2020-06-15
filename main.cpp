@@ -17,8 +17,8 @@ using std::endl;
 
 int main(int argc, char **argv) {
 	std::vector<std::string> args;
-	if (argc<2){
-		cout<<"you must specify a file for the compiler or type \"co -h\" for help."<<endl;
+	if (argc < 2) {
+		cout << "you must specify a file for the compiler or type \"co -h\" for help." << endl;
 		return 0;
 	}
 	args.reserve(argc);
@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
 		cout << "-s --string: set the file that write the string table in." << endl;
 		cout << "-x --x86: set the file that write the x86 asm in." << endl;
 		cout << "-o --output: set the name of the executable file." << endl;
+		cout << "-O : use optimization" << endl;
 		return 0;
 	}
 	std::string token_file = "../testfile_dir/tokens.txt";
@@ -44,30 +45,34 @@ int main(int argc, char **argv) {
 	std::string para_table_file = "../testfile_dir/para_table.txt";
 	std::string string_file = "../testfile_dir/string_table.txt";
 	std::string x86_file = "../testfile_dir/x86.asm";
-	bool print_which[5]={false};
+	bool print_which[5] = {false};
+	bool optimizee = false;
 	for (int i = 2; i < argc; i += 2) {
 		if (args[i] == "-k" || args[i] == "--tokens") {
-			print_which[0]=true;
-			if (args[i+1]!="default") token_file = args[i + 1];
+			print_which[0] = true;
+			if (args[i + 1] != "default") token_file = args[i + 1];
 		}
 		if (args[i] == "-b" || args[i] == "--table") {
-			print_which[1]=true;
-			if (args[i+1]!="default") token_file = args[i + 1];
+			print_which[1] = true;
+			if (args[i + 1] != "default") token_file = args[i + 1];
 		}
 		if (args[i] == "-q" || args[i] == "--quadruple") {
-			print_which[2]=true;
-			if (args[i+1]!="default") token_file = args[i + 1];
+			print_which[2] = true;
+			if (args[i + 1] != "default") token_file = args[i + 1];
 		}
 		if (args[i] == "-p" || args[i] == "--param") {
-			print_which[3]=true;
-			if (args[i+1]!="default") token_file = args[i + 1];
+			print_which[3] = true;
+			if (args[i + 1] != "default") token_file = args[i + 1];
 		}
 		if (args[i] == "-s" || args[i] == "--string") {
-			print_which[4]=true;
-			if (args[i+1]!="default") token_file = args[i + 1];
+			print_which[4] = true;
+			if (args[i + 1] != "default") token_file = args[i + 1];
 		}
 		if (args[i] == "-x" || args[i] == "--x86") {
-			if (args[i+1]!="default") token_file = args[i + 1];
+			if (args[i + 1] != "default") token_file = args[i + 1];
+		}
+		if (args[i] == "-O") {
+			optimizee = true;
 		}
 	}
 	std::string file = args[1];
@@ -90,7 +95,7 @@ int main(int argc, char **argv) {
 	init_local_symbol_table();
 	init_reg_table();
 	translate_to_x86();
-	optimize();
+	if (optimizee) optimize();
 	print_x86_table(x86_file);
 	return 0;
 }

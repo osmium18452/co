@@ -43,7 +43,7 @@ void print_x86_table(const std::string &file) {
 	for (const auto &i:x86_table) {
 		x86_stream << i << endl;
 	}
-	for (const auto &i:optimized_instr_table) {
+	for (const auto &i:instr_table) {
 		if (i.instr == _label_) {
 			x86_stream << std::string(i.ident, ' ') << i.desc << ":" << endl;
 		} else {
@@ -602,7 +602,7 @@ void translate_rdarr() {
 	insert_into_x86_table(_push_, "edi");
 	insert_into_x86_table(_lea_, "esi", lea_where_is_the_var(it->a));
 	insert_into_x86_table(_mov_, "edi", where_is_the_var(it->b));
-	insert_into_x86_table(_imul_, "edi", "4");
+	insert_into_x86_table(_shl_, "edi", "2");
 	regs varc = where_is_the_var_2(it->c);
 	if (varc < 4) {
 		
@@ -622,7 +622,7 @@ void translate_wrarr() {
 	insert_into_x86_table(_push_, "edi");
 	insert_into_x86_table(_lea_, "esi", lea_where_is_the_var(it->a));
 	insert_into_x86_table(_mov_, "edi", where_is_the_var(it->b));
-	insert_into_x86_table(_imul_, "edi", "4");
+	insert_into_x86_table(_shl_, "edi", "2");
 	regs varc = where_is_the_var_2(it->c);
 	if (varc < 4) {
 		insert_into_x86_table(_mov_, "[esi+edi]", regs_convert_table[varc]);

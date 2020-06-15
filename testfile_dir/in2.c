@@ -28,7 +28,8 @@ int main() {
 	int n;
 	scanf(n);
 	for (int i=0;i<n;i++) scanf(a[i]);
-	qsort(0,n-1,n);
+	qsort(0,
+			n-1,n);
 	for (int i=0;i<n;i++) printf(a[i],' ');
 	printf("\n");
 	return 0;

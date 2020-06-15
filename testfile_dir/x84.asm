@@ -28,7 +28,7 @@ qsort:
     push edi
     lea esi , [g_a]
     mov edi , eax
-    shl edi , 2
+    imul edi , 4
     mov ecx , [esi+edi]
     pop edi
     pop esi
@@ -41,7 +41,7 @@ qsort:
     cmp eax , dword [ebp-8]
     setl al
     and eax , 000000ffh
-    cmp eax , 0
+    cmp eax , dword 0
     je .label_while_end_1
     mov [ebp-20] , eax
     .label_while_start_2:
@@ -53,7 +53,7 @@ qsort:
     push edi
     lea esi , [g_a]
     mov edi , dword [ebp-8]
-    shl edi , 2
+    imul edi , 4
     mov [ebp-24] , eax
     mov eax , [esi+edi]
     pop edi
@@ -74,7 +74,7 @@ qsort:
     .label_x86_false_logiand_21:
     xor eax , eax
     .label_x86_end_logiand_22:
-    cmp eax , 0
+    cmp eax , dword 0
     je .label_while_end_3
     mov [ebp-36] , eax
     dec dword [ebp-8]
@@ -84,18 +84,22 @@ qsort:
     cmp eax , dword [ebp-8]
     setl al
     and eax , 000000ffh
-    cmp eax , 0
+    cmp eax , dword 0
     je .label_4
     mov [ebp-40] , eax
     push esi
     push edi
     lea esi , [g_a]
     mov edi , dword [ebp-8]
-    shl edi , 2
+    imul edi , 4
     mov eax , [esi+edi]
+    pop edi
+    pop esi
+    push esi
+    push edi
     lea esi , [g_a]
     mov edi , dword [ebp-4]
-    shl edi , 2
+    imul edi , 4
     mov [esi+edi] , eax
     pop edi
     pop esi
@@ -113,7 +117,7 @@ qsort:
     push edi
     lea esi , [g_a]
     mov edi , dword [ebp-4]
-    shl edi , 2
+    imul edi , 4
     mov [ebp-48] , eax
     mov eax , [esi+edi]
     pop edi
@@ -134,7 +138,7 @@ qsort:
     .label_x86_false_logiand_30:
     xor eax , eax
     .label_x86_end_logiand_31:
-    cmp eax , 0
+    cmp eax , dword 0
     je .label_while_end_7
     mov [ebp-60] , eax
     inc dword [ebp-4]
@@ -144,18 +148,22 @@ qsort:
     cmp eax , dword [ebp-8]
     setl al
     and eax , 000000ffh
-    cmp eax , 0
+    cmp eax , dword 0
     je .label_8
     mov [ebp-64] , eax
     push esi
     push edi
     lea esi , [g_a]
     mov edi , dword [ebp-4]
-    shl edi , 2
+    imul edi , 4
     mov eax , [esi+edi]
+    pop edi
+    pop esi
+    push esi
+    push edi
     lea esi , [g_a]
     mov edi , dword [ebp-8]
-    shl edi , 2
+    imul edi , 4
     mov [esi+edi] , eax
     pop edi
     pop esi
@@ -168,7 +176,7 @@ qsort:
     push edi
     lea esi , [g_a]
     mov edi , dword [ebp-4]
-    shl edi , 2
+    imul edi , 4
     mov eax , [ebp-12]
     mov [esi+edi] , eax
     pop edi
@@ -177,7 +185,7 @@ qsort:
     push ecx
     push eax
     mov ebx , dword [ebp-4]
-    dec ebx
+    sub ebx , dword 1
     mov [ebp-12] , eax
     mov eax , dword [ebp+16]
     push eax
@@ -187,8 +195,14 @@ qsort:
     push eax
     call qsort
     add esp , 12
+    pop eax
+    pop ecx
+    pop edx
+    push edx
+    push ecx
+    push eax
     mov ecx , dword [ebp-4]
-    inc ecx
+    add ecx , dword 1
     mov [ebp-12] , eax
     mov eax , dword [ebp+16]
     push eax
@@ -205,8 +219,8 @@ qsort:
     jmp .label_while_start_0
     .label_while_end_1:
     pop ebx
-    leave 
-    ret 
+    leave
+    ret
 main:
     push ebp
     mov ebp , esp
@@ -220,7 +234,7 @@ main:
     cmp eax , dword [ebp-4]
     setl al
     and eax , 000000ffh
-    cmp eax , 0
+    cmp eax , dword 0
     je .label_11
     mov [ebp-12] , eax
     call $scan_int
@@ -229,7 +243,7 @@ main:
     push edi
     lea esi , [g_a]
     mov edi , dword [ebp-8]
-    shl edi , 2
+    imul edi , 4
     mov eax , [ebp-16]
     mov [esi+edi] , eax
     pop edi
@@ -241,13 +255,13 @@ main:
     push ecx
     push eax
     mov eax , dword [ebp-4]
-    dec eax
+    sub eax , dword 1
     mov [ebp-20] , eax
     mov eax , dword [ebp-4]
     push eax
     mov eax , dword [ebp-20]
     push eax
-    xor eax , eax
+    mov eax , dword 0
     push eax
     call qsort
     add esp , 12
@@ -260,7 +274,7 @@ main:
     cmp eax , dword [ebp-4]
     setl al
     and eax , 000000ffh
-    cmp eax , 0
+    cmp eax , dword 0
     je .label_13
     push edx
     push ecx
@@ -269,7 +283,7 @@ main:
     push edi
     lea esi , [g_a]
     mov edi , dword [ebp-24]
-    shl edi , 2
+    imul edi , 4
     mov ebx , [esi+edi]
     pop edi
     pop esi
@@ -277,7 +291,7 @@ main:
     push eax
     call $print_int
     pop eax
-    mov eax , 32
+    mov eax , dword 32
     push eax
     call $print_char
     pop eax
@@ -298,7 +312,7 @@ main:
     pop eax
     pop ecx
     pop edx
-    xor eax , eax
+    mov eax , dword 0
     pop ebx
-    leave 
-    ret 
+    leave
+    ret
