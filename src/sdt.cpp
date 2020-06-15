@@ -258,6 +258,11 @@ void parse_func_without_return_value() {
 			tp = "void";
 			match();
 			break;
+		case TOK_INT:
+			dtype = DATA_INT;
+			tp = "int";
+			match();
+			break;
 		default:
 			print_error("expected 'int' or 'char', but got "
 						+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));

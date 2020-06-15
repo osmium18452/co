@@ -168,9 +168,9 @@ void translate_call() {
 
 void translate_restore_reg() {
 	
-	insert_into_x86_table(_pop_, "eax");
-	insert_into_x86_table(_pop_, "ecx");
 	insert_into_x86_table(_pop_, "edx");
+	insert_into_x86_table(_pop_, "ecx");
+	insert_into_x86_table(_pop_, "eax");
 	reg_table[EAX].var = save_reg_table_var_table[EAX];
 	reg_table[EBX].var = save_reg_table_var_table[EBX];
 	reg_table[ECX].var = save_reg_table_var_table[ECX];
@@ -179,9 +179,9 @@ void translate_restore_reg() {
 
 void translate_save_reg() {
 	
-	insert_into_x86_table(_push_, "edx");
-	insert_into_x86_table(_push_, "ecx");
 	insert_into_x86_table(_push_, "eax");
+	insert_into_x86_table(_push_, "ecx");
+	insert_into_x86_table(_push_, "edx");
 	save_reg_table_var_table[EAX] = reg_table[EAX].var;
 	save_reg_table_var_table[EBX] = reg_table[EBX].var;
 	save_reg_table_var_table[ECX] = reg_table[ECX].var;
