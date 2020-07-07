@@ -3,6 +3,6 @@ int main(){
 	do{
 		j+=2;
 		i++;
-	} while (i<10);
-	printf(i,j);
+	} while (i<0);
+	printf(i," ",j,'\n');
 }

@@ -39,14 +39,16 @@ int main(int argc, char **argv) {
 		cout << "-O : use optimization" << endl;
 		return 0;
 	}
-	std::string token_file = "../testfile_dir/tokens.txt";
-	std::string table_file = "../testfile_dir/table.txt";
-	std::string quadruple_file = "../testfile_dir/quadruple.txt";
-	std::string para_table_file = "../testfile_dir/para_table.txt";
-	std::string string_file = "../testfile_dir/string_table.txt";
-	std::string x86_file = "../testfile_dir/x86.asm";
+	std::string token_file = "tokens.txt";
+	std::string table_file = "table.txt";
+	std::string quadruple_file = "quadruple.txt";
+	std::string para_table_file = "para_table.txt";
+	std::string string_file = "string_table.txt";
+	std::string x86_file = "x86.asm";
+	std::string binary_file="a";
 	bool print_which[5] = {false};
 	bool optimizee = false;
+	bool to_binary=false;
 	for (int i = 2; i < argc; i += 2) {
 		if (args[i] == "-k" || args[i] == "--tokens") {
 			print_which[0] = true;
@@ -70,6 +72,10 @@ int main(int argc, char **argv) {
 		}
 		if (args[i] == "-x" || args[i] == "--x86") {
 			if (args[i + 1] != "default") x86_file = args[i + 1];
+		}
+		if (args[i] == "-o" || args[i] == "--output") {
+			to_binary=true;
+			if (args[i + 1] != "default") binary_file = args[i + 1];
 		}
 		if (args[i] == "-O") {
 			optimizee = true;
@@ -97,5 +103,10 @@ int main(int argc, char **argv) {
 	translate_to_x86();
 	if (optimizee) optimize();
 	print_x86_table(x86_file);
+	if (to_binary){
+		system(("nasm -f elf "+x86_file+" -o _oayo_.o").c_str());
+		system(("ld -m elf_i386 _oayo_.o -o "+binary_file).c_str());
+		system("rm _oayo_.o");
+	}
 	return 0;
 }
