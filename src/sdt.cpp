@@ -52,7 +52,7 @@ void parse_const_declaration(scope scope) {
 }
 
 void parse_const_definition(scope scope) {
-	dtype dtype = DATA_INT;
+	_dtype dtype = DATA_INT;
 	switch (tokens[curr_token].type) {
 		case TOK_INT:
 			dtype = DATA_INT;
@@ -120,7 +120,7 @@ void parse_var_declaration(scope scope) {
 }
 
 void parse_var_definition(scope scope) {
-	dtype data_type = DATA_INT;
+	_dtype data_type = DATA_INT;
 	table_entry entry{};
 	quadruple_element element{};
 	std::string ident_name;
@@ -151,7 +151,7 @@ void parse_var_definition(scope scope) {
 			match();
 			match();//consume the [;
 			std::string temp_var = gen_temp_var();
-			dtype temp_type;
+			_dtype temp_type;
 			expression(temp_var, temp_type);
 			int array_size;
 			if (!is_num(temp_var)) {
@@ -183,7 +183,7 @@ void parse_var_definition(scope scope) {
 		if (tokens[curr_token].type == TOK_ASSIGN) {
 			match();// =
 			std::string res;
-			dtype res_dtype;
+			_dtype res_dtype;
 			expression_without_comma(res, res_dtype);
 			if (scope == GLOBAL) {
 				symbol_table[0][ident_name].value = std::stoi(res);
@@ -245,7 +245,7 @@ void parse_func_without_return_value() {
 	quadruple_element element{};
 	std::string ident_name;
 	std::string tp = "int";
-	dtype dtype = DATA_INT;
+	_dtype dtype = DATA_INT;
 	int para_table_num;
 	switch (tokens[curr_token].type) {
 		case TOK_CHAR:
@@ -305,7 +305,7 @@ void parse_para_list(const int para_table_num) {
 	while (true) {
 		std::string para_name;
 		std::string tp;
-		dtype dtype = DATA_INT;
+		_dtype dtype = DATA_INT;
 		table_entry entry{};
 		quadruple_element element{};
 		switch (tokens[curr_token].type) {
@@ -350,7 +350,7 @@ void parse_para_list(const int para_table_num) {
 
 void parse_single_statement() {
 	std::string res;
-	dtype dtype;
+	_dtype dtype;
 	switch (tokens[curr_token].type) {
 		case TOK_CONTINUE:
 			parse_continue_statement();
@@ -469,7 +469,7 @@ void parse_print_statement() {
 	quadruple_element element{};
 	std::string dtp;
 	std::string res;
-	dtype dtype;
+	_dtype dtype;
 	table_entry entry{};
 	std::string s;
 	std::string slabel;
@@ -557,7 +557,7 @@ void parse_scan_statement() {
 	quadruple_element element{};
 	table_entry entry{};
 	std::string tmp_var, index, arr_name;
-	dtype index_dtype;
+	_dtype index_dtype;
 	match();// scanf
 	if (tokens[curr_token].type == TOK_LPARE) match();// (
 	else {
@@ -668,7 +668,7 @@ void parse_bitorass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{BITOR, id, res, id};
 	insert_to_quadruple_list(element);
@@ -684,7 +684,7 @@ void parse_bitandass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{BITAND, id, res, id};
 	insert_to_quadruple_list(element);
@@ -700,7 +700,7 @@ void parse_bitxorass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{BITXOR, id, res, id};
 	insert_to_quadruple_list(element);
@@ -711,11 +711,11 @@ void parse_bitxorass() {
 	}
 }
 
-void parse_argument_list(const std::vector<dtype> &param_list, const std::string &func_name) {
+void parse_argument_list(const std::vector<_dtype> &param_list, const std::string &func_name) {
 //	cout<<"parsing func call***************"<<endl;
 	std::stack<quadruple_element> temp_quadruple_stack;
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	int arg_cnt = 0;
 	if (param_list.empty()) {
 		if (tokens[curr_token].type != TOK_RPARE) {
@@ -764,7 +764,7 @@ void parse_func_call_statement(const std::string &id) {
 		print_error("expected left parenthesis, but got "
 					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
-	std::vector<dtype> para_list = get_para_table(entry.value);
+	std::vector<_dtype> para_list = get_para_table(entry.value);
 	if (!para_list.empty() && tokens[curr_token].type == TOK_RPARE) {
 		print_error("too few args for function " + id);
 		exit(EXCODE_TOO_FEW_PARAMS_FOR_FUNC);
@@ -794,7 +794,7 @@ void parse_func_call_statement(const std::string &id) {
 	}
 }
 
-void parse_non_void_func_call(std::string &res, dtype &data_type, const std::string &id) {
+void parse_non_void_func_call(std::string &res, _dtype &data_type, const std::string &id) {
 	table_entry entry{};
 	quadruple_element element{};
 	if (!query_symbol_table(id, entry)) {
@@ -817,7 +817,7 @@ void parse_non_void_func_call(std::string &res, dtype &data_type, const std::str
 		print_error("expected left parenthesis, but got "
 					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
-	std::vector<dtype> para_list = get_para_table(entry.value);
+	std::vector<_dtype> para_list = get_para_table(entry.value);
 	if (!para_list.empty() && tokens[curr_token].type == TOK_RPARE) {
 		print_error("too few args for function " + id);
 		exit(EXCODE_TOO_FEW_PARAMS_FOR_FUNC);
@@ -846,10 +846,10 @@ void parse_non_void_func_call(std::string &res, dtype &data_type, const std::str
 	insert_to_quadruple_list(element);
 }
 
-void parse_array_read(std::string &res, dtype &data_dtype, const std::string &id) {
+void parse_array_read(std::string &res, _dtype &data_dtype, const std::string &id) {
 	table_entry entry{};
 	std::string index;
-	dtype index_dtype;
+	_dtype index_dtype;
 	quadruple_element element{};
 	if (!query_symbol_table(id, entry)) {
 		print_error("cannot find identifier" + id);
@@ -883,9 +883,9 @@ void parse_array_assign() {
 	table_entry entry{};
 	std::string id = tokens[curr_token].stringval;
 	std::string index;
-	dtype index_dtype;
+	_dtype index_dtype;
 	std::string res;
-	dtype res_type;
+	_dtype res_type;
 	match();// identifier.
 	if (!query_symbol_table(id, entry)) {
 		print_error("cannot find identifier" + id);
@@ -916,7 +916,7 @@ void parse_array_assign() {
 void parse_return_statement() {
 	match();
 	std::string ret_val;
-	dtype ret_dtype;
+	_dtype ret_dtype;
 	quadruple_element element;
 	if (tokens[curr_token].type == TOK_SEMICOLON) {
 		element = {RET, NONE, NONE, NONE};
@@ -941,7 +941,7 @@ void parse_if_else_statement() {
 					+ (tokens[curr_token].stringval.empty() ? "nothing" : tokens[curr_token].stringval));
 	}
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	quadruple_element element{};
 	std::string false_label, end_label;
 	false_label = gen_temp_label();
@@ -980,7 +980,7 @@ void parse_if_else_statement() {
 void parse_for_statement() {
 	std::string start_label, end_label;
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	quadruple_element element{};
 	std::vector<quadruple_element> quadruple_element_for_exp3;
 	int quadruple_list_size_b4_stmt3;
@@ -1038,7 +1038,7 @@ void parse_for_statement() {
 void parse_while_statement() {
 	std::string start_label, end_label;
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	quadruple_element element{};
 	start_label = gen_temp_label("while_start");
 	end_label = gen_temp_label("while_end");
@@ -1080,7 +1080,7 @@ void parse_while_statement() {
 void parse_do_statement() {
 	std::string start_label, end_label;
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	quadruple_element element{};
 	start_label = gen_temp_label();
 	end_label = gen_temp_label();
@@ -1124,7 +1124,7 @@ void parse_do_statement() {
 void parse_switch_statement() {
 	std::string label_end_of_switch, label_case, label_default, label_jump_table;
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	std::vector<kase_table> case_table;
 	quadruple_element element{};
 	std::vector<quadruple_element> head_of_switch;
@@ -1217,7 +1217,7 @@ void parse_ass() {
 	match();// identifier.
 	match();// =
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{ASSIGN, res, id, NONE};
 	insert_to_quadruple_list(element);
@@ -1233,7 +1233,7 @@ void parse_addass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{ADD, id, res, id};
 	insert_to_quadruple_list(element);
@@ -1249,7 +1249,7 @@ void parse_subass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{SUB, id, res, id};
 	insert_to_quadruple_list(element);
@@ -1265,7 +1265,7 @@ void parse_modass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{MOD, id, res, id};
 	insert_to_quadruple_list(element);
@@ -1281,7 +1281,7 @@ void parse_mulass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{MUL, id, res, id};
 	insert_to_quadruple_list(element);
@@ -1297,7 +1297,7 @@ void parse_divass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{DIV, id, res, id};
 	insert_to_quadruple_list(element);
@@ -1313,7 +1313,7 @@ void parse_shlass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{SHL, id, res, id};
 	insert_to_quadruple_list(element);
@@ -1329,7 +1329,7 @@ void parse_shrass() {
 	match();
 	match();
 	std::string res;
-	dtype res_dtype;
+	_dtype res_dtype;
 	expression(res, res_dtype);
 	quadruple_element element{SHR, id, res, id};
 	insert_to_quadruple_list(element);

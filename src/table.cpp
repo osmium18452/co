@@ -5,7 +5,7 @@
 #include "../headers/reg.h"
 
 std::vector<std::unordered_map<std::string, table_entry>> symbol_table;
-std::vector<std::vector<dtype>> param_table;
+std::vector<std::vector<_dtype>> param_table;
 std::unordered_map<std::string, std::string> string_table;
 int local_symbol_table_level;
 int curr_param_table;
@@ -63,12 +63,12 @@ void init_string_table() {
 
 
 int allocate_a_param_table() {
-	std::vector<dtype> empty_table;
+	std::vector<_dtype> empty_table;
 	param_table.push_back(empty_table);
 	return curr_param_table++;
 }
 
-void insert_to_para_table(const int para_table_num, const dtype dtype) {
+void insert_to_para_table(const int para_table_num, const _dtype dtype) {
 	param_table[para_table_num].push_back(dtype);
 }
 
@@ -77,7 +77,7 @@ void init_param_table() {
 	curr_param_table = 0;
 }
 
-std::vector<dtype> get_para_table(const int para_table_num) {
+std::vector<_dtype> get_para_table(const int para_table_num) {
 	return param_table[para_table_num];
 }
 

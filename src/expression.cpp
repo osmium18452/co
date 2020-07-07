@@ -10,11 +10,11 @@ std::string dtype_convert_table_2[]={
 		"int","char","void"
 };
 
-void expression(std::string &res, dtype &res_dtype) {
+void expression(std::string &res, _dtype &res_dtype) {
 	parse_exp14(res, res_dtype);
 }
 
-void expression_without_comma(std::string &res, dtype &res_type) {
+void expression_without_comma(std::string &res, _dtype &res_type) {
 	parse_exp13(res, res_type);
 }
 
@@ -23,9 +23,9 @@ void expression_without_comma(std::string &res, dtype &res_type) {
  *          func call (with return value)
  *          array read
  */
-void parse_factor(std::string &res, dtype &res_dtype) {
+void parse_factor(std::string &res, _dtype &res_dtype) {
 	std::string temp_res, id_name;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	table_entry entry{};
 	switch (tokens[curr_token].type) {
 		case TOK_IDENT:
@@ -72,10 +72,10 @@ void parse_factor(std::string &res, dtype &res_dtype) {
 	}
 }
 
-void parse_exp1(std::string &res, dtype &res_dtype) {
+void parse_exp1(std::string &res, _dtype &res_dtype) {
 	parse_factor(res, res_dtype);
 	if (tokens[curr_token].type == TOK_INC || tokens[curr_token].type == TOK_DEC) {
-		instruct instr = tokens[curr_token].type == TOK_INC ? INC : DEC;
+		_instruct instr = tokens[curr_token].type == TOK_INC ? INC : DEC;
 		quadruple_element element{};
 		match();
 		if (res_dtype != DATA_INT) {
@@ -91,9 +91,9 @@ void parse_exp1(std::string &res, dtype &res_dtype) {
 	}
 }/* (backward) ++ -- */
 
-void parse_exp2(std::string &res, dtype &res_dtype) {
+void parse_exp2(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	instruct instr;
+	_instruct instr;
 	quadruple_element element{};
 	bool flag = false;
 	if (tokens[curr_token].type == TOK_INC || tokens[curr_token].type == TOK_DEC ||
@@ -173,11 +173,11 @@ void parse_exp2(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* (frontward) ++ -- $ ! */
-void parse_exp3(std::string &res, dtype &res_dtype) {
+void parse_exp3(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
-	instruct instr;
+	_instruct instr;
 	parse_exp2(res, res_dtype);
 	while (tokens[curr_token].type == TOK_MUL || tokens[curr_token].type == TOK_DIV ||
 		   tokens[curr_token].type == TOK_MOD) {
@@ -203,11 +203,11 @@ void parse_exp3(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* * / % */
-void parse_exp4(std::string &res, dtype &res_dtype) {
+void parse_exp4(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
-	instruct instr;
+	_instruct instr;
 	parse_exp3(res, res_dtype);
 	while (tokens[curr_token].type == TOK_PLUS || tokens[curr_token].type == TOK_SUB) {
 		instr = tokens[curr_token].type == TOK_PLUS ? ADD : SUB;
@@ -232,11 +232,11 @@ void parse_exp4(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* + - */
-void parse_exp5(std::string &res, dtype &res_dtype) {
+void parse_exp5(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
-	instruct instr;
+	_instruct instr;
 	parse_exp4(res, res_dtype);
 	while (tokens[curr_token].type == TOK_SHL || tokens[curr_token].type == TOK_SHR) {
 		instr = tokens[curr_token].type == TOK_SHL ? SHL : SHR;
@@ -260,11 +260,11 @@ void parse_exp5(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* << >> */
-void parse_exp6(std::string &res, dtype &res_dtype) {
+void parse_exp6(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
-	instruct instr;
+	_instruct instr;
 	parse_exp5(res, res_dtype);
 	while (tokens[curr_token].type == TOK_GT || tokens[curr_token].type == TOK_GE ||
 		   tokens[curr_token].type == TOK_LT || tokens[curr_token].type == TOK_LE) {
@@ -322,11 +322,11 @@ void parse_exp6(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* > < >= <= */
-void parse_exp7(std::string &res, dtype &res_dtype) {
+void parse_exp7(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
-	instruct instr;
+	_instruct instr;
 	parse_exp6(res, res_dtype);
 	while (tokens[curr_token].type == TOK_NE || tokens[curr_token].type == TOK_EQ) {
 		instr = tokens[curr_token].type == TOK_NE ? NE : EQ;
@@ -352,9 +352,9 @@ void parse_exp7(std::string &res, dtype &res_dtype) {
 	}
 }/* == != */
 
-void parse_exp85(std::string &res, dtype &res_dtype) {
+void parse_exp85(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	instruct instr;
+	_instruct instr;
 	quadruple_element element{};
 	bool flag = false;
 	if (tokens[curr_token].type == TOK_BITNOT) {
@@ -374,9 +374,9 @@ void parse_exp85(std::string &res, dtype &res_dtype) {
 	}
 }/* ~ */
 
-void parse_exp8(std::string &res, dtype &res_dtype) {
+void parse_exp8(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
 	parse_exp85(res, res_dtype);
 	while (tokens[curr_token].type == TOK_BITAND) {
@@ -400,9 +400,9 @@ void parse_exp8(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* & */
-void parse_exp9(std::string &res, dtype &res_dtype) {
+void parse_exp9(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
 	parse_exp8(res, res_dtype);
 	while (tokens[curr_token].type == TOK_BITXOR) {
@@ -426,9 +426,9 @@ void parse_exp9(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* ^ */
-void parse_exp10(std::string &res, dtype &res_dtype) {
+void parse_exp10(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
 	parse_exp9(res, res_dtype);
 	while (tokens[curr_token].type == TOK_BITOR) {
@@ -452,9 +452,9 @@ void parse_exp10(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* | */
-void parse_exp11(std::string &res, dtype &res_dtype) {
+void parse_exp11(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
 	parse_exp10(res, res_dtype);
 	while (tokens[curr_token].type == TOK_LOGIAND) {
@@ -478,9 +478,9 @@ void parse_exp11(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* && */
-void parse_exp12(std::string &res, dtype &res_dtype) {
+void parse_exp12(std::string &res, _dtype &res_dtype) {
 	std::string temp_var;
-	dtype temp_dtype;
+	_dtype temp_dtype;
 	quadruple_element element{};
 	parse_exp11(res, res_dtype);
 	while (tokens[curr_token].type == TOK_LOGIOR) {
@@ -504,10 +504,10 @@ void parse_exp12(std::string &res, dtype &res_dtype) {
 		}
 	}
 }/* || */
-void parse_exp13(std::string &res, dtype &res_dtype) {//not supported yet.
+void parse_exp13(std::string &res, _dtype &res_dtype) {//not supported yet.
 	parse_exp12(res, res_dtype);
 }/* ? : */
-void parse_exp14(std::string &res, dtype &res_dtype) {//looks comma operand won't do anything...
+void parse_exp14(std::string &res, _dtype &res_dtype) {//looks comma operand won't do anything...
 	parse_exp13(res, res_dtype);
 	while (tokens[curr_token].type == TOK_COMMA) {
 		match();

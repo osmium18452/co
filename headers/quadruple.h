@@ -3,7 +3,7 @@
 
 #include "global.h"
 
-enum instruct {
+enum _instruct {
 	GVAR, VAR,
 	PARAM, FUNC,
 	ASSIGN,
@@ -30,7 +30,7 @@ enum instruct {
 };
 
 struct quadruple_element {
-	instruct instruct;
+	_instruct instruct;
 	std::string a;
 	std::string b;
 	std::string c;

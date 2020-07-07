@@ -21,8 +21,8 @@ void peephole() {
 			case _push_:
 				if (it + 1 < instr_table.size() && instr_table[it + 1].instr == _pop_ &&
 					instr_table[it].desc == instr_table[it + 1].desc) {
-					/*cout << instr_convert_table[(begin + it)->instr] << " " << (begin + it)->desc << endl;
-					cout << instr_convert_table[(begin + it + 1)->instr] << " " << (begin + it + 1)->desc << endl;*/
+					/*cout << instr_convert_table[(begin + it)->_instr] << " " << (begin + it)->desc << endl;
+					cout << instr_convert_table[(begin + it + 1)->_instr] << " " << (begin + it + 1)->desc << endl;*/
 					instr_table.erase(begin + it, begin + it + 2);
 					it--;
 				} else it++;
@@ -31,10 +31,10 @@ void peephole() {
 				if (it + 1 < instr_table.size() && instr_table[it + 1].instr == _push_ &&
 					instr_table[it].desc == instr_table[it + 1].desc) {
 					/*cout << it + 18 << endl;
-					cout << (begin + it)->instr << " " << instr_convert_table[(begin + it)->instr] << " "
+					cout << (begin + it)->_instr << " " << instr_convert_table[(begin + it)->_instr] << " "
 						 << (begin + it)->desc
 						 << endl;
-					cout << (begin + it + 1)->instr << " " << instr_convert_table[(begin + it + 1)->instr] << " "
+					cout << (begin + it + 1)->_instr << " " << instr_convert_table[(begin + it + 1)->_instr] << " "
 						 << (begin + it + 1)->desc << endl
 						 << endl;*/
 					instr_table.erase(begin + it, begin + it + 2);

@@ -63,15 +63,15 @@ void dec_ident() {
 	ident -= 4;
 }
 
-void insert_into_x86_table(instr instr, const std::string &desc, const std::string &src) {
+void insert_into_x86_table(_instr instr, const std::string &desc, const std::string &src) {
 	instr_table.emplace_back(instr_table_element{ident, instr, desc, src});
 }
 
-void insert_into_x86_table(instr instr, const std::string &desc) {
+void insert_into_x86_table(_instr instr, const std::string &desc) {
 	instr_table.emplace_back(instr_table_element{ident, instr, desc, NONE});
 }
 
-void insert_into_x86_table(instr instr) {
+void insert_into_x86_table(_instr instr) {
 	instr_table.emplace_back(instr_table_element{ident, instr, NONE, NONE});
 }
 

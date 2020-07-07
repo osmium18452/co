@@ -10,7 +10,7 @@ extern int curr_line_num;
 
 extern void match();
 
-void expression(std::string &res,dtype &dtype);
-void expression_without_comma(std::string &res,dtype &res_type);
+void expression(std::string &res, _dtype &dtype);
+void expression_without_comma(std::string &res, _dtype &res_type);
 
 #endif //CO_EXPRESSION_H

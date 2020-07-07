@@ -25,7 +25,7 @@ void parse_assignment_statement();
 
 void parse_func_call_statement(const std::string &id);
 
-void parse_non_void_func_call(std::string &res, dtype &data_type, const std::string &id);
+void parse_non_void_func_call(std::string &res, _dtype &data_type, const std::string &id);
 
 void parse_return_statement();
 
@@ -61,11 +61,11 @@ void parse_scan_statement();
 
 void parse_single_statement();
 
-void parse_array_read(std::string &res, dtype &data_dtype, const std::string &id);
+void parse_array_read(std::string &res, _dtype &data_dtype, const std::string &id);
 
 void parse_array_assign();
 
-void parse_argument_list(const std::vector<dtype> &param_list,const std::string &func_name);
+void parse_argument_list(const std::vector<_dtype> &param_list, const std::string &func_name);
 
 void parse_break_statement();
 

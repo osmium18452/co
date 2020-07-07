@@ -5,7 +5,7 @@
 
 #define INT_SIZE 4
 
-enum instr {
+enum _instr {
 	_mov_,
 	_pop_, _push_,
 	_popa_, _pusha_,
@@ -30,7 +30,7 @@ enum instr {
 
 struct instr_table_element {
 	int ident;
-	instr instr;
+	_instr instr;
 	std::string desc, src;
 };
 
@@ -40,10 +40,10 @@ void print_x86_table(const std::string &file);
 
 void insert_into_x86_table(const std::string &s);
 
-void insert_into_x86_table(instr instr, const std::string &desc, const std::string &src);
+void insert_into_x86_table(_instr instr, const std::string &desc, const std::string &src);
 
-void insert_into_x86_table(instr instr, const std::string &desc);
+void insert_into_x86_table(_instr instr, const std::string &desc);
 
-void insert_into_x86_table(instr instr);
+void insert_into_x86_table(_instr instr);
 
 #endif //CO_X86_H

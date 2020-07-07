@@ -54,22 +54,22 @@ int main(int argc, char **argv) {
 		}
 		if (args[i] == "-b" || args[i] == "--table") {
 			print_which[1] = true;
-			if (args[i + 1] != "default") token_file = args[i + 1];
+			if (args[i + 1] != "default") table_file = args[i + 1];
 		}
 		if (args[i] == "-q" || args[i] == "--quadruple") {
 			print_which[2] = true;
-			if (args[i + 1] != "default") token_file = args[i + 1];
+			if (args[i + 1] != "default") quadruple_file = args[i + 1];
 		}
 		if (args[i] == "-p" || args[i] == "--param") {
 			print_which[3] = true;
-			if (args[i + 1] != "default") token_file = args[i + 1];
+			if (args[i + 1] != "default") para_table_file = args[i + 1];
 		}
 		if (args[i] == "-s" || args[i] == "--string") {
 			print_which[4] = true;
-			if (args[i + 1] != "default") token_file = args[i + 1];
+			if (args[i + 1] != "default") string_file = args[i + 1];
 		}
 		if (args[i] == "-x" || args[i] == "--x86") {
-			if (args[i + 1] != "default") token_file = args[i + 1];
+			if (args[i + 1] != "default") x86_file = args[i + 1];
 		}
 		if (args[i] == "-O") {
 			optimizee = true;

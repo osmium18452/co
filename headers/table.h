@@ -4,12 +4,12 @@
 #include "global.h"
 
 /* identifier type */
-enum itype {
+enum _itype {
 	IDN_CONST, IDN_VAR, IDN_ARRAY, IDN_FUNCTION,
 };
 
 /* data type */
-enum dtype {
+enum _dtype {
 	DATA_INT,
 	DATA_CHAR, DATA_VOID,
 };
@@ -19,21 +19,21 @@ enum scope {
 };
 
 /*
- * itype stand for the type of the identifier
- * dtype stand for the data type of the identifier
+ * _itype stand for the type of the identifier
+ * _dtype stand for the data type of the identifier
  * value stand for the size of the array or the value of constant
  * address is used to assign an memory address for each variable,only used in the quadruple to x86 process
  */
-enum table_level{
+enum _table_level{
 	g,l,
 };
 
 struct table_entry {
-	itype itype;
-	dtype dtype;
+	_itype itype;
+	_dtype dtype;
 	int value;
 	int address;
-	table_level table_level;
+	_table_level table_level;
 };
 
 
@@ -71,9 +71,9 @@ int allocate_a_param_table();
 
 void init_param_table();
 
-void insert_to_para_table(const int para_table_num,const dtype dtype);
+void insert_to_para_table(const int para_table_num,const _dtype dtype);
 
-std::vector<dtype> get_para_table(const int para_table_num);
+std::vector<_dtype> get_para_table(const int para_table_num);
 
 void print_para_table(std::string &file, int which_table, bool append);
 
